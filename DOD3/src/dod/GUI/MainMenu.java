@@ -129,7 +129,7 @@ public class MainMenu extends JFrame {
 		
 		//Text field for map name is added defaultMap is entered automatically
 		gbc.gridx = 1;
-		final JTextField mapTextField = getNewTextField("defaultMap");
+		final JTextField mapTextField = getNewTextField("DOD3/defaultMap");
 		canvas.add(mapTextField, gbc);
 		
 		//Text "Name" is added
@@ -255,7 +255,7 @@ public class MainMenu extends JFrame {
 		JLabel portLabel = new JLabel("Port"); //Port Text
 		final JTextField portTextField = getNewTextField(""); //Text field for the Port Number
 		final JLabel mapLabel = new JLabel("Map Name"); //"Map Name" text
-		final JTextField mapTextField = getNewTextField("defaultMap"); //Text field for the Map name
+		final JTextField mapTextField = getNewTextField("DOD3/defaultMap"); //Text field for the Map name
 		final JCheckBox localPlayCheckBox = new JCheckBox("Play on Server"); //Check box to indicate if the user wants to play on the server
 		final JButton startButton = new JButton("Start Server"); //Button to start the server
 		
