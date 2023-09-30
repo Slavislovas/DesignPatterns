@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dod.GUI.ClientListener;
+import dod.factory.GameItemFactory;
 import dod.game.items.Armour;
 import dod.game.items.GameItem;
 import dod.game.items.Sword;
@@ -34,6 +35,8 @@ public class GameLogic {
     private ClientListener serverListener; //For any server listening to this GameLogic //This can be null
     
     private boolean gameStarted;
+
+	private GameItemFactory gameItemFactory;
     
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -47,6 +50,7 @@ public class GameLogic {
 	    ParseException {
 	this.map = new Map(mapFile);
 	this.serverListener = null;
+	this.gameItemFactory = new GameItemFactory();
 	setUpAttributes();
 	
 	// Check if there is enough gold to win
@@ -186,7 +190,7 @@ public class GameLogic {
 			//K is a player with armour on an exit tile
 			if(this.map.getMapCell(location).toChar() == 'E')
 			{
-				if(playerList.get(tilePlayerID).hasItem(new Armour()))
+				if(playerList.get(tilePlayerID).hasItem(gameItemFactory.createGameItem('A')))
 				{
 					content = 'K';
 				}
@@ -197,7 +201,7 @@ public class GameLogic {
 			}
 			else
 			{
-				if(playerList.get(tilePlayerID).hasItem(new Armour()))
+				if(playerList.get(tilePlayerID).hasItem(gameItemFactory.createGameItem('A')))
 				{
 					content = 'R';
 				}
@@ -318,7 +322,7 @@ public class GameLogic {
 			//add one for attacker having sword
 			damage++;
 		}
-		if (victimPlayer.hasItem(new Armour()))
+		if (victimPlayer.hasItem(gameItemFactory.createGameItem('A')))
 		{
 			//minus one for victim having armour
 			damage--;
