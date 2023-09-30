@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import dod.factory.GameItemFactory;
 import dod.game.items.GameItem;
 import dod.game.items.Gold;
 
@@ -36,6 +37,8 @@ public class Map {
     // Minimum number of lines
     private static final int MINLINES = 3;
 
+	private GameItemFactory gameItemFactory;
+
     /**
      * Creates a map from the file specified. Note that this is not robust...
      * 
@@ -46,7 +49,7 @@ public class Map {
      */
     public Map(String filename) throws ParseException, FileNotFoundException {
 	final List<String> lines = readFile(filename);
-
+	this.gameItemFactory = new GameItemFactory();
 	// Good programmers always check this...
 	if (lines.size() < MINLINES) {
 	    throw new ParseException(
@@ -99,7 +102,7 @@ public class Map {
     	Tile tile = getMapCell(location);
     	if ((tile.hasItem() == false) && (tile.isExit() == false))
     	{
-    		this.map[location.getRow()][location.getCol()] = new Tile(GameItem.fromChar('G'));
+    		this.map[location.getRow()][location.getCol()] = new Tile(gameItemFactory.createGameItem('G'));
     	}
     }
 

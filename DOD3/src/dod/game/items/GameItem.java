@@ -47,26 +47,4 @@ public abstract class GameItem {
      * @return a single character
      */
     public abstract char toChar();
-
-    public static GameItem fromChar(char ch) {
-	switch (ch) {
-	case 'A':
-	    return new Armour();
-
-	case 'G':
-	    return new Gold();
-
-	case 'H':
-	    return new Health();
-
-	case 'L':
-	    return new Lantern();
-
-	case 'S':
-	    return new Sword();
-
-	default:
-	    throw new IllegalArgumentException("Invalid tile type" + ch);
-	}
-    }
 }

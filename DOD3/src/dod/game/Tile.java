@@ -1,5 +1,6 @@
 package dod.game;
 
+import dod.factory.GameItemFactory;
 import dod.game.items.GameItem;
 
 /**
@@ -36,6 +37,7 @@ public class Tile {
 
     // A tile may contain an item
     private GameItem item = null;
+	private static final GameItemFactory gameItemFactory = new GameItemFactory();
 
     /**
      * Creates a tile without an item
@@ -135,6 +137,6 @@ public class Tile {
 	}
 
 	// If we get here, it must be an tile with an item
-	return new Tile(GameItem.fromChar(character));
+	return new Tile(gameItemFactory.createGameItem(character));
     }
 }
