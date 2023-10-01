@@ -289,6 +289,11 @@ public class Player implements GameItemConsumer {
         this.listener.win();
     }
 
+    @Override
+    public void addToAP(int value){
+        this.ap += value;
+    }
+
     /**
      * Reset the player's AP to the initial value.
      */

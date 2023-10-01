@@ -3,14 +3,16 @@ package dod.game;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import dod.GUI.ClientListener;
-import dod.factory.GameItemFactory;
-import dod.game.items.Armour;
+import dod.abstractfactory.AbstractFactory;
+import dod.factory.Creator;
+import dod.factory.MapCreator;
+import dod.game.items.armour.Armour;
 import dod.game.items.GameItem;
-import dod.game.items.Sword;
+import dod.game.items.sword.Sword;
+import dod.game.maps.Map;
 import dod.observer.Subject;
 
 /**
@@ -38,7 +40,7 @@ public class GameLogic {
 
     private boolean gameStarted;
 
-    private GameItemFactory gameItemFactory;
+    private AbstractFactory gameItemFactory;
     private Subject subject = new Subject();
 
     /**
@@ -49,9 +51,9 @@ public class GameLogic {
      */
     public GameLogic(String mapFile) throws FileNotFoundException,
             ParseException {
-        this.map = new Map(mapFile);
+        this.map = new MapCreator().factoryMethod(mapFile);
         this.serverListener = null;
-        this.gameItemFactory = new GameItemFactory();
+        this.gameItemFactory = map.getAbstractFactory();
         setUpAttributes();
 
         // Check if there is enough gold to win
@@ -185,13 +187,13 @@ public class GameLogic {
                     //R is a player with armour on a standard tile
                     //K is a player with armour on an exit tile
                     if (this.map.getMapCell(location).toChar() == 'E') {
-                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createGameItem('A'))) {
+                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour())) {
                             content = 'K';
                         } else {
                             content = 'Q';
                         }
                     } else {
-                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createGameItem('A'))) {
+                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour())) {
                             content = 'R';
                         } else {
                             content = 'P';
@@ -298,11 +300,11 @@ public class GameLogic {
         {
             //if it hits we get the victim player from the list
             short damage = 1;
-            if (this.player.hasItem(new Sword())) {
+            if (this.player.hasItem(gameItemFactory.createSword())) {
                 //add one for attacker having sword
                 damage++;
             }
-            if (victimPlayer.hasItem(gameItemFactory.createGameItem('A'))) {
+            if (victimPlayer.hasItem(gameItemFactory.createArmour())) {
                 //minus one for victim having armour
                 damage--;
             }
