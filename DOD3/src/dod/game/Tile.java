@@ -1,7 +1,10 @@
 package dod.game;
 
-import dod.factory.GameItemFactory;
+import dod.abstractfactory.AbstractFactory;
 import dod.game.items.GameItem;
+import dod.game.maps.Map;
+
+import java.util.HashMap;
 
 /**
  * An class to represent the tiles on the Map.
@@ -37,7 +40,6 @@ public class Tile {
 
     // A tile may contain an item
     private GameItem item = null;
-    private static final GameItemFactory gameItemFactory = new GameItemFactory();
 
     /**
      * Creates a tile without an item
@@ -126,14 +128,20 @@ public class Tile {
      * @param ch the character representing the map tile
      * @return the Tile object corresponding to the character
      */
-    public static Tile fromChar(char character) {
+    public static Tile fromChar(char character, Map map) {
+        AbstractFactory gameItemFactory = map.getAbstractFactory();
         for (final TileType type : TileType.values()) {
             if (character == type.toChar()) {
                 return new Tile(type);
             }
         }
-
+        HashMap<Character, GameItem> itemHashMap = new HashMap<>();
+        itemHashMap.put(gameItemFactory.createArmour().toChar(), gameItemFactory.createArmour());
+        itemHashMap.put(gameItemFactory.createGold().toChar(), gameItemFactory.createGold());
+        itemHashMap.put(gameItemFactory.createHealth().toChar(), gameItemFactory.createHealth());
+        itemHashMap.put(gameItemFactory.createLantern().toChar(), gameItemFactory.createLantern());
+        itemHashMap.put(gameItemFactory.createSword().toChar(), gameItemFactory.createSword());
         // If we get here, it must be an tile with an item
-        return new Tile(gameItemFactory.createGameItem(character));
+        return new Tile(itemHashMap.get(character));
     }
 }

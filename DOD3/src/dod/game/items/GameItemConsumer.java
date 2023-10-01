@@ -28,4 +28,6 @@ public interface GameItemConsumer {
      */
     public abstract void zeroAP();
 
+    public abstract void addToAP(int value);
+
 }

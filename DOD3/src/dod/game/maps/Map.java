@@ -1,4 +1,4 @@
-package dod.game;
+package dod.game.maps;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import dod.factory.GameItemFactory;
-import dod.game.items.GameItem;
-import dod.game.items.Gold;
+import dod.abstractfactory.AbstractFactory;
+import dod.game.Location;
+import dod.game.Tile;
+import dod.game.items.gold.Gold;
 
 /**
  * Class containing the map used by the game engine. Allows for reading in ASCII
@@ -19,12 +20,12 @@ import dod.game.items.Gold;
  * to perform error checking on the extra code that you write to network the
  * client and server.
  */
-public class Map {
+public abstract class Map {
     // The name of the map
     private String name;
 
     // The tiles of the map, stored in row-major order, i.e. [row][col]
-    private Tile map[][];
+    Tile map[][];
 
     // The number of gold required to win
     private int goal;
@@ -37,7 +38,6 @@ public class Map {
     // Minimum number of lines
     private static final int MINLINES = 3;
 
-    private GameItemFactory gameItemFactory;
 
     /**
      * Creates a map from the file specified. Note that this is not robust...
@@ -48,7 +48,6 @@ public class Map {
      */
     public Map(String filename) throws ParseException, FileNotFoundException {
         final List<String> lines = readFile(filename);
-        this.gameItemFactory = new GameItemFactory();
         // Good programmers always check this...
         if (lines.size() < MINLINES) {
             throw new ParseException(
@@ -65,6 +64,8 @@ public class Map {
         // Read in the map data from the file
         readMap(lines);
     }
+
+    public abstract AbstractFactory getAbstractFactory();
 
     /**
      * @return The width of the map
@@ -95,12 +96,8 @@ public class Map {
      * @param location The location where gold is to be dropped
      * @author Benjamin Dring
      */
-    public void dropGold(Location location) {
-        Tile tile = getMapCell(location);
-        if ((tile.hasItem() == false) && (tile.isExit() == false)) {
-            this.map[location.getRow()][location.getCol()] = new Tile(gameItemFactory.createGameItem('G'));
-        }
-    }
+    public abstract void dropGold(Location location);
+
 
     /**
      * @return The amount of gold required to win on this map
@@ -139,7 +136,7 @@ public class Map {
         for (final Tile[] tileRow : this.map) {
             for (final Tile tile : tileRow) {
                 if (tile.hasItem()) {
-                    if (tile.getItem().getClass() == Gold.class) {
+                    if (tile.getItem() instanceof Gold) {
                         goldCount++;
                     }
                 }
@@ -205,7 +202,7 @@ public class Map {
                 // Just use the character representation in the input file.
 
                 try {
-                    this.map[row][col] = Tile.fromChar(line.charAt(col));
+                    this.map[row][col] = Tile.fromChar(line.charAt(col), this);
                 } catch (final IllegalArgumentException e) {
                     throw new ParseException("Invalid character (col:" + col
                             + ")", lineNum);
