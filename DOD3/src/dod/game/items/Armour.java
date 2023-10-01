@@ -7,17 +7,17 @@ package dod.game.items;
 public class Armour extends GameItem {
     @Override
     public boolean isRetainable() {
-	// A sword is retained
-	return true;
+        // A sword is retained
+        return true;
     }
 
     @Override
     public String toString() {
-	return "armour";
+        return "armour";
     }
 
     @Override
     public char toChar() {
-	return 'A';
+        return 'A';
     }
 }

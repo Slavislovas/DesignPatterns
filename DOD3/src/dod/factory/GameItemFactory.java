@@ -7,11 +7,11 @@ import dod.game.items.Health;
 import dod.game.items.Lantern;
 import dod.game.items.Sword;
 
-public class GameItemFactory extends Factory{
+public class GameItemFactory extends Factory {
 
     @Override
-    public GameItem createGameItem(char itemType){
-        switch (itemType){
+    public GameItem createGameItem(char itemType) {
+        switch (itemType) {
             case 'A':
                 return new Armour();
             case 'G':
