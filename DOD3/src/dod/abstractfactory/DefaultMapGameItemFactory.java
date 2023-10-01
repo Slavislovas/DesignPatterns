@@ -3,13 +3,14 @@ package dod.abstractfactory;
 import dod.game.items.GameItem;
 import dod.game.items.armour.LightArmour;
 import dod.game.items.gold.SmallGold;
+import dod.game.items.health.WeakHealth;
 import dod.game.items.lantern.WeakLantern;
 import dod.game.items.sword.WeakSword;
 
 public class DefaultMapGameItemFactory extends AbstractFactory {
     @Override
     public GameItem createHealth() {
-        return new WeakLantern();
+        return new WeakHealth();
     }
 
     @Override
