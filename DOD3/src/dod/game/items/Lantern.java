@@ -8,23 +8,23 @@ public class Lantern extends GameItem {
 
     @Override
     public boolean isRetainable() {
-	// The lantern is retained
-	return true;
+        // The lantern is retained
+        return true;
     }
 
     @Override
     public int lookDistanceIncrease() {
-	// The lantern increases the look distance by one
-	return 1;
+        // The lantern increases the look distance by one
+        return 1;
     }
 
     @Override
     public String toString() {
-	return "lantern";
+        return "lantern";
     }
 
     @Override
     public char toChar() {
-	return 'L';
+        return 'L';
     }
 }

@@ -10,26 +10,26 @@ public class Tile {
 
     // An enum to handle the different tile types
     public enum TileType {
-	FLOOR('.', true), WALL('#', false), EXIT('E', true);
+        FLOOR('.', true), WALL('#', false), EXIT('E', true);
 
-	// The textual representation of the character
-	private final char character;
+        // The textual representation of the character
+        private final char character;
 
-	// Whether or not the character can be walked on
-	private final boolean walkable;
+        // Whether or not the character can be walked on
+        private final boolean walkable;
 
-	private TileType(char character, boolean walkable) {
-	    this.character = character;
-	    this.walkable = walkable;
-	}
+        private TileType(char character, boolean walkable) {
+            this.character = character;
+            this.walkable = walkable;
+        }
 
-	public boolean walkable() {
-	    return this.walkable;
-	}
+        public boolean walkable() {
+            return this.walkable;
+        }
 
-	public char toChar() {
-	    return this.character;
-	}
+        public char toChar() {
+            return this.character;
+        }
     }
 
     // The type of the tile
@@ -37,106 +37,103 @@ public class Tile {
 
     // A tile may contain an item
     private GameItem item = null;
-	private static final GameItemFactory gameItemFactory = new GameItemFactory();
+    private static final GameItemFactory gameItemFactory = new GameItemFactory();
 
     /**
      * Creates a tile without an item
-     * 
-     * @param type
-     *            the type of tile to create
+     *
+     * @param type the type of tile to create
      */
     public Tile(TileType type) {
-	this.type = type;
+        this.type = type;
     }
 
     /**
      * Creates a tile with an item
-     * 
-     * @param item
-     *            the item to add to the tile
+     *
+     * @param item the item to add to the tile
      */
     public Tile(GameItem item) {
-	// Only a floor tile can have an item
-	this(TileType.FLOOR);
+        // Only a floor tile can have an item
+        this(TileType.FLOOR);
 
-	this.item = item;
+        this.item = item;
     }
 
     /**
      * Turn the tile into a char
-     * 
+     *
      * @return the char corresponding to the tile
      */
     public char toChar() {
-	if (!hasItem()) {
-	    return this.type.toChar();
-	} else {
-	    return this.item.toChar();
-	}
+        if (!hasItem()) {
+            return this.type.toChar();
+        } else {
+            return this.item.toChar();
+        }
     }
 
     /**
      * Check if the tile can be walked on.
-     * 
+     *
      * @return true if the tile can be walked on
      */
     public boolean isWalkable() {
-	return this.type.walkable();
+        return this.type.walkable();
     }
 
     /**
      * @return true if the square is an exit square
      */
     public boolean isExit() {
-	return (this.type == TileType.EXIT);
+        return (this.type == TileType.EXIT);
     }
 
     /**
      * Check if the tile has the item
-     * 
+     *
      * @return true if there is an item on the tile
      */
     public boolean hasItem() {
-	return (this.item != null);
+        return (this.item != null);
     }
 
     /**
      * Gets the tile on the item, but *does not remove it*. This allows us to
      * see if the player already has the item, without removing it.
-     * 
+     *
      * @return the item on the tile
      */
     public GameItem getItem() {
-	return this.item;
+        return this.item;
     }
 
     /**
      * Removes the item from the tile, e.g. after a successful pickup.
      */
     public void removeItem() {
-	if (this.item == null) {
-	    // There is no item to pick up
-	    throw new IllegalStateException("there is no item to pick up");
-	} else {
-	    this.item = null;
-	}
+        if (this.item == null) {
+            // There is no item to pick up
+            throw new IllegalStateException("there is no item to pick up");
+        } else {
+            this.item = null;
+        }
     }
 
     /**
      * Turn a character into a map tile
-     * 
-     * @param ch
-     *            the character representing the map tile
+     *
+     * @param ch the character representing the map tile
      * @return the Tile object corresponding to the character
      */
     public static Tile fromChar(char character) {
-	for (final TileType type : TileType.values()) {
-	    if (character == type.toChar()) {
-		return new Tile(type);
-	    }
-	}
+        for (final TileType type : TileType.values()) {
+            if (character == type.toChar()) {
+                return new Tile(type);
+            }
+        }
 
-	// If we get here, it must be an tile with an item
-	return new Tile(gameItemFactory.createGameItem(character));
+        // If we get here, it must be an tile with an item
+        return new Tile(gameItemFactory.createGameItem(character));
     }
 }

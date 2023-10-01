@@ -8,7 +8,7 @@ import dod.game.items.GameItemConsumer;
 
 /**
  * Class representing a player
- * 
+ * <p>
  * Note: Player variables should be kept as a part of the server functionality
  * in your coursework implementation, they are the game's internal
  * representation of a player, not used by the client side code.
@@ -47,148 +47,140 @@ public class Player implements GameItemConsumer {
 
     /**
      * Constructor for players
-     * 
-     * @param name
-     *            the name of the player
-     * @param location
-     *            the location of the player
-     * @param listener
-     *            a player may be "listened to" for updates.
+     *
+     * @param name     the name of the player
+     * @param location the location of the player
+     * @param listener a player may be "listened to" for updates.
      */
     public Player(String name, Location location, PlayerListener listener) {
-	this.name = name;
-	this.location = location;
+        this.name = name;
+        this.location = location;
 
-	// By default the player starts with nothing
-	this.items = new ArrayList<GameItem>();
+        // By default the player starts with nothing
+        this.items = new ArrayList<GameItem>();
 
-	this.listener = listener;
+        this.listener = listener;
 
-	// Reset the player's AP
-	resetAP();
+        // Reset the player's AP
+        resetAP();
     }
 
     /**
      * Returns the name of the player
-     * 
+     *
      * @return The name of the player
      */
     public String getName() {
-	return this.name;
+        return this.name;
     }
 
     /**
      * Sets the name of the player
-     * 
-     * @param name
-     *            The new name of the player
+     *
+     * @param name The new name of the player
      * @throws CommandException
      */
     public void setName(String name) throws CommandException {
-	if (!this.defaultName) {
-	    throw new CommandException("player's name already set");
-	}
+        if (!this.defaultName) {
+            throw new CommandException("player's name already set");
+        }
 
-	this.name = name;
-	this.defaultName = false;
+        this.name = name;
+        this.defaultName = false;
     }
 
     /**
      * Returns the current location of the player
-     * 
+     *
      * @return player's location
      */
     public Location getLocation() {
-	return this.location;
+        return this.location;
     }
 
     /**
      * Sets the player to a new location
-     * 
-     * @param location
-     *            the player's new location
+     *
+     * @param location the player's new location
      */
     public void setLocation(Location location) {
-	this.location = location;
+        this.location = location;
     }
 
     /**
      * @return The amount of gold the player has
      */
     public int getGold() {
-	return this.gold;
+        return this.gold;
     }
 
     /**
      * Adds gold to the player
-     * 
-     * @param gold
-     *            Amount of gold to give to the player
+     *
+     * @param gold Amount of gold to give to the player
      */
     @Override
     public void addGold(int gold) {
-	this.gold += gold;
-	this.listener.treasureChange(gold);
+        this.gold += gold;
+        this.listener.treasureChange(gold);
     }
 
     /**
      * A player is dead if they have 0hp or less
-     * 
+     *
      * @return true if the player is dead, false otherwise
      */
     public boolean isDead() {
-	return (this.hp <= 0);
+        return (this.hp <= 0);
     }
-    
-    public void kill(){
-    	this.hp = 0;
+
+    public void kill() {
+        this.hp = 0;
     }
 
     /**
      * @return The amount of HP the player has
      */
     public int getHp() {
-	return this.hp;
+        return this.hp;
     }
 
     /**
      * Increments the player's health, e.g. for health potion
-     * 
-     * @param hp
-     *            The amount of hp to add ot the player
+     *
+     * @param hp The amount of hp to add ot the player
      */
     @Override
     public void incrementHealth(int hp) {
-	this.hp += hp;
-	this.listener.hpChange(hp);
+        this.hp += hp;
+        this.listener.hpChange(hp);
     }
-    
+
     /**
+     * @param hpLoss the hp that is lost
      * @author Benjamin Dring
      * removes hp from a player for an attack
-     * @param hpLoss the hp that is lost
      */
-    public void damage(int hpLoss)
-    {
-    	this.hp -= hpLoss;
-    	this.listener.damage(hpLoss);
+    public void damage(int hpLoss) {
+        this.hp -= hpLoss;
+        this.listener.damage(hpLoss);
     }
 
     /**
      * Returns the amount of AP the player has
-     * 
+     *
      * @return The amount of AP the player has
      */
     public int remainingAp() {
-	return this.ap;
+        return this.ap;
     }
 
     /**
      * Decreases the amount of AP the player has by 1
      */
     public void decrementAp() {
-	this.ap--;
-	assert this.ap >= 0;
+        this.ap--;
+        assert this.ap >= 0;
     }
 
     /**
@@ -196,139 +188,136 @@ public class Player implements GameItemConsumer {
      */
     @Override
     public void zeroAP() {
-	this.ap = 0;
+        this.ap = 0;
     }
 
     /**
      * Calculates the distances the player can see
-     * 
+     *
      * @return the distance visible to the player
      */
     public int lookDistance() {
-	int lookDistance = defaultLookDistance;
+        int lookDistance = defaultLookDistance;
 
-	// Some items, e.g. the lantern, may increase the look distance
-	for (final GameItem item : this.items) {
-	    lookDistance += item.lookDistanceIncrease();
-	}
+        // Some items, e.g. the lantern, may increase the look distance
+        for (final GameItem item : this.items) {
+            lookDistance += item.lookDistanceIncrease();
+        }
 
-	return lookDistance;
+        return lookDistance;
     }
 
     /**
      * Returns true if a player can see a tile, based on the offset from the
      * player
-     * 
+     *
      * @param rowOffset
      * @param colOffset
      * @return true if the player can see the tile with the specified offset.
      */
     public boolean canSeeTile(int rowOffset, int colOffset) {
-	// This is based on the Manhattan distance
+        // This is based on the Manhattan distance
 
-	final boolean canSeeTile = (Math.abs(rowOffset) + Math.abs(colOffset) <= lookDistance() + 1);
-	return canSeeTile;
+        final boolean canSeeTile = (Math.abs(rowOffset) + Math.abs(colOffset) <= lookDistance() + 1);
+        return canSeeTile;
     }
 
     /**
      * Check if the player already has a given item type (e.g. any sword, not
      * just "that" sword)
-     * 
-     * @param item
-     *            An instance of the item to compare with
+     *
+     * @param item An instance of the item to compare with
      * @return true if the player has the item, false otherwise
      */
     public boolean hasItem(GameItem item) {
-	for (final GameItem itemToCompare : this.items) {
-	    if (item.getClass() == itemToCompare.getClass()) {
-		return true;
-	    }
-	}
+        for (final GameItem itemToCompare : this.items) {
+            if (item.getClass() == itemToCompare.getClass()) {
+                return true;
+            }
+        }
 
-	return false;
+        return false;
     }
 
     /**
      * Gives the item to the player. The player allows the item to act on the
      * player (through this), and keeps it in the item list if it is retainable.
-     * 
-     * @param item
-     *            the item to pick up
+     *
+     * @param item the item to pick up
      */
     public void giveItem(GameItem item) {
-	if (hasItem(item)) {
-	    throw new IllegalStateException("the player already has this item.");
-	}
+        if (hasItem(item)) {
+            throw new IllegalStateException("the player already has this item.");
+        }
 
-	// The item may do something to the player straight away
-	item.processPickUp(this);
+        // The item may do something to the player straight away
+        item.processPickUp(this);
 
-	// See if the item is retained by the player
-	if (item.isRetainable()) {
-	    this.items.add(item);
-	}
+        // See if the item is retained by the player
+        if (item.isRetainable()) {
+            this.items.add(item);
+        }
     }
 
     /**
-     * @param message
-     *            message to send to the listener
+     * @param message message to send to the listener
      */
     public void sendMessage(String message) {
-	this.listener.sendMessage(message);
+        this.listener.update(message);
     }
 
     /**
      * Handle the start of a player's turn
      */
     public void startTurn() {
-	resetAP();
-	this.listener.startTurn();
+        resetAP();
+        this.listener.startTurn();
     }
 
     /**
      * Handle the end of a player's turn
      */
     public void endTurn() {
-	this.zeroAP();
-	this.listener.endTurn();
+        this.zeroAP();
+        this.listener.endTurn();
     }
 
     /**
      * Handle the player winning
      */
     public void win() {
-	this.listener.win();
+        this.listener.win();
     }
 
     /**
      * Reset the player's AP to the initial value.
      */
     private void resetAP() {
-	this.ap = initialAP();
+        this.ap = initialAP();
     }
-    
+
     /**
      * @author Benjamin Dring
      * Causes the player to issue a look command
      */
-    public void look(){
-    	this.listener.look();
+    public void look() {
+        this.listener.look();
     }
 
     /**
      * Calculates the number of AP a player starts his or her turn with
-     * 
+     *
      * @return The amount of AP at the start of a turn
      */
     private int initialAP() {
-	final int initialAP = Player.defaultAP - Player.apPenaltyPerItem
-		* this.items.size();
+        final int initialAP = Player.defaultAP - Player.apPenaltyPerItem
+                * this.items.size();
 
-	if (initialAP < 0) {
-	    // Better drop some items
-	    return 0;
-	}
+        if (initialAP < 0) {
+            // Better drop some items
+            return 0;
+        }
 
-	return initialAP;
+        return initialAP;
     }
 }

@@ -8,23 +8,23 @@ public class Health extends GameItem {
 
     @Override
     public void processPickUp(GameItemConsumer player) {
-	player.incrementHealth(1);
+        player.incrementHealth(1);
     }
 
     @Override
     public boolean isRetainable() {
-	// Health potion is consumed instantly
-	return false;
+        // Health potion is consumed instantly
+        return false;
     }
 
     @Override
     public char toChar() {
-	return 'H';
+        return 'H';
     }
 
     @Override
     public String toString() {
-	return "health potion";
+        return "health potion";
     }
 
 }
