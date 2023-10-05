@@ -29,12 +29,14 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     private String[] lookReply; //Stores the look reply
     private int currentGold;
     private String name; //The players name
+
     private boolean hasArmour;
     private boolean isFinalWindow; //Used to determine how object should die
 
     //stats labels
     private JLabel currentGoldLabel;
     private JLabel goalLabel;
+
     //Label to tell the user if they have the sword
     private JLabel swordLabel;
 
@@ -214,7 +216,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @return JLabel
      */
-    protected JLabel getCurrentGoldLabel() {
+    public JLabel getCurrentGoldLabel() {
         return this.currentGoldLabel;
     }
 
@@ -223,7 +225,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @return JLabel
      */
-    protected JLabel getGoalLabel() {
+    public JLabel getGoalLabel() {
         return this.goalLabel;
     }
 
@@ -363,7 +365,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
         this.dispose();
         if (this.isFinalWindow) {
             //Exits the program
-            System.exit(0);
+            System.exit(42);
         }
     }
 
@@ -445,4 +447,11 @@ public abstract class PlayerGUI extends MessageFeedGUI {
         }
     }
 
+    public boolean isHasArmour() {
+        return hasArmour;
+    }
+
+    public JLabel getSwordLabel() {
+        return swordLabel;
+    }
 }
