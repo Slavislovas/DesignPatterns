@@ -19,6 +19,7 @@ public abstract class MessageFeedGUI extends JFrame implements ClientListener {
 
     protected Container canvas;
     private JPanel messageFeed; //The message feed JPanel
+
     private JTextArea messageFeedText; //The TextArea contained in the JPanel
     private GridBagConstraints gbc; //Attributed Constraints
 
@@ -70,6 +71,10 @@ public abstract class MessageFeedGUI extends JFrame implements ClientListener {
      */
     protected JPanel getMessageFeed() {
         return messageFeed;
+    }
+
+    public JTextArea getMessageFeedText() {
+        return messageFeedText;
     }
 
     /**

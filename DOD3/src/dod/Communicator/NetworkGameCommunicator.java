@@ -111,6 +111,10 @@ public class NetworkGameCommunicator extends GameCommunicator {
 
     }
 
+    public Socket getServer() {
+        return server;
+    }
+
     /**
      * Adds a message as a new line to the look reply
      *

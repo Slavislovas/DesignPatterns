@@ -27,6 +27,10 @@ public abstract class GameCommunicator {
         this.client = client;
     }
 
+    public ClientListener getClient(){
+        return this.client;
+    }
+
     /**
      * Sends a give message as a command to the game
      *
