@@ -11,7 +11,7 @@ import dod.game.Location;
  *
  * @author Benjamin Dring
  */
-public class ObjectiveBot extends PathFindingBot {
+public class ObjectiveBotStrategy extends PathFindingBot {
 
     /**
      * The constructor for the objective bot it sets up it's decision making processes and
@@ -19,12 +19,17 @@ public class ObjectiveBot extends PathFindingBot {
      *
      * @param comm GameComunicator The communicator to the Game Logic Class
      */
-    public ObjectiveBot(GameCommunicator comm) {
+    public ObjectiveBotStrategy(GameCommunicator comm) {
         super(comm);
     }
 
     @Override
-    protected String getAction() {
+    public void performAction() {
+        getComm().sendMessageToGame(getAction());
+    }
+
+    @Override
+    public String getAction() {
         //gets the player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
@@ -64,5 +69,4 @@ public class ObjectiveBot extends PathFindingBot {
         //If all else fails it moves randomly
         return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
     }
-
 }

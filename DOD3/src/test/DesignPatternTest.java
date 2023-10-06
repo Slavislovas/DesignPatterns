@@ -2,12 +2,9 @@ package test;
 
 import com.ginsberg.junit.exit.ExpectSystemExitWithStatus;
 import dod.Communicator.LocalGameCommunicator;
-import dod.Communicator.NetworkGameCommunicator;
 import dod.GUI.HumanPlayerGUI;
-import dod.GUI.MessageFeedGUI;
 import dod.GUI.PlayerGUI;
 import dod.LocalUser;
-import dod.NetworkUser;
 import dod.abstractfactory.AbstractFactory;
 import dod.factory.Creator;
 import dod.factory.MapCreator;
@@ -39,7 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DesignPatternTest {
     Creator mapCreator;

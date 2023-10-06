@@ -7,7 +7,7 @@ import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
 
-public class FriendlyBot extends PlayerFindingBot {
+public class FriendlyBotStrategy extends PlayerFindingBot {
     private boolean hasArmour;
 
     /**
@@ -16,13 +16,18 @@ public class FriendlyBot extends PlayerFindingBot {
      *
      * @param comm GameComunicator The communicator to the Game Logic Class
      */
-    public FriendlyBot(GameCommunicator comm) {
+    public FriendlyBotStrategy(GameCommunicator comm) {
         super(comm);
         this.hasArmour = false;
     }
 
     @Override
-    protected String getAction() {
+    public void performAction() {
+        getComm().sendMessageToGame(getAction());
+    }
+
+    @Override
+    public String getAction() {
         //Gets the player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
@@ -92,5 +97,4 @@ public class FriendlyBot extends PlayerFindingBot {
         //If all else fails move randomly
         return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
     }
-
 }

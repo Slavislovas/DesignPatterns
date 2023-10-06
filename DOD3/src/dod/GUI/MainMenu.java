@@ -24,9 +24,15 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import dod.BotLogic.AggressiveBotStrategy;
+import dod.BotLogic.Bot;
+import dod.BotLogic.FriendlyBotStrategy;
+import dod.BotLogic.ObjectiveBotStrategy;
+import dod.BotLogic.RandomBotStrategy;
+import dod.Communicator.GameCommunicator;
+import dod.Communicator.LocalGameCommunicator;
+import dod.Communicator.NetworkGameCommunicator;
 import dod.Server;
-import dod.BotLogic.*;
-import dod.Communicator.*;
 import dod.game.GameLogic;
 
 
@@ -485,13 +491,13 @@ public class MainMenu extends JFrame {
                 Bot bot;
                 //Bot Type Radio buttons determines the dynamic type of bot
                 if (randomBotButton.isSelected()) {
-                    bot = new RandomBot(comm);
+                    bot = new RandomBotStrategy(comm);
                 } else if (objectiveBotButton.isSelected()) {
-                    bot = new ObjectiveBot(comm);
+                    bot = new ObjectiveBotStrategy(comm);
                 } else if (aggresiveBotButton.isSelected()) {
-                    bot = new AggressiveBot(comm);
+                    bot = new AggressiveBotStrategy(comm);
                 } else if (friendlyBotButton.isSelected()) {
-                    bot = new FriendlyBot(comm);
+                    bot = new FriendlyBotStrategy(comm);
                 } else {
                     //If none of them are selected display error
                     JOptionPane.showMessageDialog(null, "Please select a bot AI");

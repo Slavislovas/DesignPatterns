@@ -12,7 +12,7 @@ import dod.game.Location;
  *
  * @author Benjamin Dring
  */
-public class AggressiveBot extends PlayerFindingBot {
+public class AggressiveBotStrategy extends PlayerFindingBot {
     private boolean hasSword;
 
     /**
@@ -21,13 +21,18 @@ public class AggressiveBot extends PlayerFindingBot {
      *
      * @param comm GameComunicator The communicator to the Game Logic Class
      */
-    public AggressiveBot(GameCommunicator comm) {
+    public AggressiveBotStrategy(GameCommunicator comm) {
         super(comm);
         this.hasSword = false;
     }
 
     @Override
-    protected String getAction() {
+    public void performAction() {
+        getComm().sendMessageToGame(getAction());
+    }
+
+    @Override
+    public String getAction() {
         //Gets player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
@@ -87,8 +92,5 @@ public class AggressiveBot extends PlayerFindingBot {
         }
         //If all else fails then move randomly
         return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
-
-
     }
-
 }

@@ -31,7 +31,7 @@ public abstract class PathFindingBot extends Bot {
                     ArrayList<CompassDirection> nextPath = pathFindTo(new Location(col, row));
                     if (shortestPath == null) {
                         shortestPath = nextPath;
-                    } else if ((shortestPath.size() > nextPath.size()) && (nextPath.size() > 0)) {
+                    } else if ((shortestPath.size() > nextPath.size()) && (!nextPath.isEmpty())) {
                         shortestPath = nextPath;
                     }
                 }
@@ -124,7 +124,7 @@ public abstract class PathFindingBot extends Bot {
         //implied else
 
         //Now that we have mapped these step counters we can construct out path which will be in the form ArrayList<CompassDirection>
-        ArrayList<CompassDirection> path = new ArrayList<CompassDirection>(); //The path we need to take
+        ArrayList<CompassDirection> path = new ArrayList<>(); //The path we need to take
 
         //We will now start from the player's position and follow the smallest numbers we can find to get to our destination
         Location currentPositionInPath = new Location(playerLocation.getRow(), playerLocation.getCol()); //This is a copy not a reference
@@ -169,7 +169,6 @@ public abstract class PathFindingBot extends Bot {
             }
 
             if (isNextInPath(westCords, stepCounterMap, lookReply, minimunNearbyCounter, nearbyDirectionFound)) {
-                nearbyDirectionFound = true;
                 minimunNearbyCounter = stepCounterMap[westCords.getRow()][westCords.getCol()];
                 nextMovement = CompassDirection.WEST;
                 currentPositionInPath = westCords;
@@ -190,10 +189,8 @@ public abstract class PathFindingBot extends Bot {
                 break;
             }
         }
-
         //it then returns the completed path
         return path;
-
     }
 
     /**
@@ -306,5 +303,4 @@ public abstract class PathFindingBot extends Bot {
         //By default it is invalid
         return validPathAnalysis.Invalid;
     }
-
 }

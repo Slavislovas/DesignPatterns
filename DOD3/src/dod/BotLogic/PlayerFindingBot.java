@@ -25,7 +25,7 @@ public abstract class PlayerFindingBot extends PathFindingBot {
      * @return ArrayList<CompassDirection )
      */
     protected ArrayList<CompassDirection> getSurroundingPlayerDirections(Location location) {
-        ArrayList<CompassDirection> surroundingPlayerDirections = new ArrayList<CompassDirection>();
+        ArrayList<CompassDirection> surroundingPlayerDirections = new ArrayList<>();
 
         //Each direction
         Location northCords = location.atCompassDirection(CompassDirection.NORTH);
@@ -134,5 +134,4 @@ public abstract class PlayerFindingBot extends PathFindingBot {
             }
         }
     }
-
 }
