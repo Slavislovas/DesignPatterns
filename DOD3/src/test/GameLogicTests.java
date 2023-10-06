@@ -32,15 +32,12 @@ public class GameLogicTests {
     Tile exitTile = new Tile(Tile.TileType.EXIT);
     String firstUserReceivedErrorMessage;
     String secondUserReceivedErrorMessage;
-    //using abstract User class because command processing for LocalUser and NetworkUser is done here
-    //all actions need to be done by this user
     User user1 = new User(gameLogic) {
         @Override
         public void update(String message) {
             firstUserReceivedErrorMessage = message;
         }
     };;
-    //needed to test interactions between users
     User user2 = new User(gameLogic) {
         @Override
         public void update(String message) {
