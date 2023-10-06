@@ -766,4 +766,20 @@ public class GameLogic {
         }
         this.gameStarted = true;
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Player getPlayerByIndex(int index){
+        return playerList.get(index);
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public boolean isPlayerWon() {
+        return playerWon;
+    }
 }

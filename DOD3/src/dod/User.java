@@ -106,7 +106,7 @@ public abstract class User implements PlayerListener {
      *
      * @param commandString the string containing the command and any argument
      */
-    protected final void processCommand(String commandString) {
+    public final void processCommand(String commandString) {
 
 
         // converts to uppercase
