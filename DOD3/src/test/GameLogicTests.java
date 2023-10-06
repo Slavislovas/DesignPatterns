@@ -1,6 +1,8 @@
 package test;
 
 import dod.User;
+import dod.game.CommandException;
+import dod.game.CompassDirection;
 import dod.game.GameLogic;
 import dod.game.Location;
 import dod.game.Player;
@@ -21,16 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class UserTest {
+public class GameLogicTests {
     @InjectMocks
     GameLogic gameLogic = new GameLogic("DOD3/defaultMap");
     @Spy
     Map map = gameLogic.getMap();
     Tile floorTile = new Tile(Tile.TileType.FLOOR);
     Tile exitTile = new Tile(Tile.TileType.EXIT);
-    String moveIntoWallErrorMessage = "FAIL can't move into a wall";
-    String movieIntoPlayerErrorMessage = "FAIL can't move into a player";
-    String moveNeedsDirectionErrorMessage = "FAIL MOVE needs a direction";
     String firstUserReceivedErrorMessage;
     String secondUserReceivedErrorMessage;
     //using abstract User class because command processing for LocalUser and NetworkUser is done here
@@ -52,7 +51,7 @@ public class UserTest {
     Player player1 = gameLogic.getPlayer();
     Player player2 = gameLogic.getPlayerByIndex(1);
 
-    public UserTest() throws FileNotFoundException, ParseException {
+    public GameLogicTests() throws FileNotFoundException, ParseException {
     }
 
     @BeforeEach
@@ -63,142 +62,127 @@ public class UserTest {
 
 
     @Test
-    void processCommand_moveNorth_success(){
+    void clientMove_moveNorth_success() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         Player player = gameLogic.getPlayer();
         Location prevLocation = player.getLocation();
         gameLogic.startGame();
-        user1.processCommand("MOVE N");
+        gameLogic.clientMove(CompassDirection.NORTH);
         assertEquals(prevLocation.getRow() - 1, gameLogic.getPlayer().getLocation().getRow());
     }
 
     @Test
-    void processCommand_moveEast_success(){
+    void clientMove_moveEast_success() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         Location prevLocation = player1.getLocation();
         gameLogic.startGame();
-        user1.processCommand("MOVE E");
+        gameLogic.clientMove(CompassDirection.EAST);
         assertEquals(prevLocation.getCol() + 1, gameLogic.getPlayer().getLocation().getCol());
     }
 
     @Test
-    void processCommand_moveSouth_success(){
+    void clientMove_moveSouth_success() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         Location prevLocation = player1.getLocation();
         gameLogic.startGame();
-        user1.processCommand("MOVE S");
+        gameLogic.clientMove(CompassDirection.SOUTH);
         assertEquals(prevLocation.getRow() + 1, gameLogic.getPlayer().getLocation().getRow());
     }
 
     @Test
-    void processCommand_moveWest_success(){
+    void clientMove_moveWest_success() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         Location prevLocation = player1.getLocation();
         gameLogic.startGame();
-        user1.processCommand("MOVE W");
+        gameLogic.clientMove(CompassDirection.WEST);
         assertEquals(prevLocation.getCol() - 1, gameLogic.getPlayer().getLocation().getCol());
     }
 
     @Test
-    void processCommand_moveNorth_fail_walkIntoWall(){
+    void clientMove_moveNorth_fail_walkIntoWall(){
         Mockito.doReturn(false).when(map).insideMap(any());
         gameLogic.startGame();
-        user1.processCommand("MOVE N");
-        assertEquals(moveIntoWallErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () ->  gameLogic.clientMove(CompassDirection.NORTH));
     }
 
     @Test
-    void processCommand_moveNorth_fail_walkIntoPlayer(){
+    void clientMove_moveNorth_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
         gameLogic.startGame();
-        user1.processCommand("MOVE N");
-        assertEquals(movieIntoPlayerErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.NORTH));
     }
 
     @Test
-    void processCommand_moveEast_fail_walkIntoWall(){
+    void clientMove_moveEast_fail_walkIntoWall(){
         Mockito.doReturn(false).when(map).insideMap(any());
         gameLogic.startGame();
-        user1.processCommand("MOVE E");
-        assertEquals(moveIntoWallErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.EAST));
     }
 
     @Test
-    void processCommand_moveEast_fail_walkIntoPlayer(){
+    void clientMove_moveEast_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         player2.setLocation(new Location(player1.getLocation().getCol() + 1, player1.getLocation().getRow()));
         gameLogic.startGame();
-        user1.processCommand("MOVE E");
-        assertEquals(movieIntoPlayerErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.EAST));
     }
 
     @Test
-    void processCommand_moveSouth_fail_walkIntoWall(){
+    void clientMove_moveSouth_fail_walkIntoWall(){
         Mockito.doReturn(false).when(map).insideMap(any());
         gameLogic.startGame();
-        user1.processCommand("MOVE S");
-        assertEquals(moveIntoWallErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.SOUTH));
     }
 
     @Test
-    void processCommand_moveSouth_fail_walkIntoPlayer(){
+    void clientMove_moveSouth_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 1));
         gameLogic.startGame();
-        user1.processCommand("MOVE S");
-        assertEquals(movieIntoPlayerErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.SOUTH));
     }
 
     @Test
-    void processCommand_moveWest_fail_walkIntoWall(){
+    void clientMove_moveWest_fail_walkIntoWall(){
         Mockito.doReturn(false).when(map).insideMap(any());
         gameLogic.startGame();
-        user1.processCommand("MOVE W");
-        assertEquals(moveIntoWallErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.WEST));
     }
 
     @Test
-    void processCommand_moveWest_fail_walkIntoPlayer(){
+    void clientMove_moveWest_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         player2.setLocation(new Location(player1.getLocation().getCol() - 1, player1.getLocation().getRow()));
         gameLogic.startGame();
-        user1.processCommand("MOVE W");
-        assertEquals(movieIntoPlayerErrorMessage, firstUserReceivedErrorMessage);
+        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.WEST));
     }
 
     @Test
-    void processCommand_moveOnExitTile_playerWins(){
+    void clientMove_moveOnExitTile_playerWins() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(exitTile).when(map).getMapCell(any());
         assertFalse(gameLogic.isPlayerWon());
         player1.addGold(map.getGoal());
         gameLogic.startGame();
-        user1.processCommand("MOVE N");
+        gameLogic.clientMove(CompassDirection.NORTH);
         assertTrue(gameLogic.isPlayerWon());
     }
 
     @Test
-    void processCommand_moveOnExitTile_playerDoesNotWin(){
+    void clientMove_moveOnExitTile_playerDoesNotWin() throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(exitTile).when(map).getMapCell(any());
         gameLogic.startGame();
-        user1.processCommand("MOVE N");
+        gameLogic.clientMove(CompassDirection.NORTH);
         assertFalse(gameLogic.isPlayerWon());
-    }
-
-    @Test
-    void processCommand_move_fail_noDirectionSpecified(){
-        gameLogic.startGame();
-        user1.processCommand("MOVE");
-        assertEquals(moveNeedsDirectionErrorMessage, firstUserReceivedErrorMessage);
     }
 }
