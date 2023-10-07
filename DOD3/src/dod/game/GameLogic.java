@@ -771,6 +771,10 @@ public class GameLogic {
         return player;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public Player getPlayerByIndex(int index){
         return playerList.get(index);
     }
@@ -781,5 +785,9 @@ public class GameLogic {
 
     public boolean isPlayerWon() {
         return playerWon;
+    }
+
+    public void setPlayerWon(boolean playerWon) {
+        this.playerWon = playerWon;
     }
 }
