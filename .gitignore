@@ -130,3 +130,8 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+
+out/
+DOD3/bin
+DOD3/out
+bin/

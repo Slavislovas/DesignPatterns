@@ -1,16 +1,16 @@
 package dod.game.maps;
 
+import dod.abstractfactory.AbstractFactory;
+import dod.game.Location;
+import dod.game.Tile;
+import dod.game.items.gold.Gold;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import dod.abstractfactory.AbstractFactory;
-import dod.game.Location;
-import dod.game.Tile;
-import dod.game.items.gold.Gold;
 
 /**
  * Class containing the map used by the game engine. Allows for reading in ASCII
@@ -31,12 +31,12 @@ public abstract class Map {
     private int goal;
 
     // The lines containing the name and goal, and rest of the map
-    private static final int NAMELINE = 0;
-    private static final int GOALLINE = 1;
-    private static final int MAPBEGINLINE = 2;
+    public static final int NAMELINE = 0;
+    public static final int GOALLINE = 1;
+    public static final int MAPBEGINLINE = 2;
 
     // Minimum number of lines
-    private static final int MINLINES = 3;
+    public static final int MINLINES = 3;
 
 
     /**
@@ -47,7 +47,14 @@ public abstract class Map {
      * @throws FileNotFoundException
      */
     public Map(String filename) throws ParseException, FileNotFoundException {
-        final List<String> lines = readFile(filename);
+        loadMap(loadMapLines(filename));
+    }
+
+    private List<String> loadMapLines(String filename)  throws ParseException, FileNotFoundException {
+       return readFile(filename);
+    }
+
+    private void loadMap(List<String> lines) throws ParseException, FileNotFoundException {
         // Good programmers always check this...
         if (lines.size() < MINLINES) {
             throw new ParseException(
@@ -153,7 +160,7 @@ public abstract class Map {
      * @return A List of lines in the file
      * @throws FileNotFoundException
      */
-    private List<String> readFile(String filename) throws FileNotFoundException {
+    public List<String> readFile(String filename) throws FileNotFoundException {
         Scanner scanner = null;
 
         final List<String> lines = new ArrayList<String>();
@@ -181,7 +188,7 @@ public abstract class Map {
      * @throws ParseException
      * @throws IllegalStateException
      */
-    private void readMap(List<String> lines) throws ParseException,
+    public void readMap(List<String> lines) throws ParseException,
             IllegalStateException {
         // Read the rest of the map
         final int mapWidth = lines.get(MAPBEGINLINE).length();
@@ -218,7 +225,7 @@ public abstract class Map {
      * @param firstLine the first line of the map file
      * @throws ParseException
      */
-    private void parseMapName(String firstLine) throws ParseException {
+    public void parseMapName(String firstLine) throws ParseException {
         this.name = getStringAfterTag(firstLine, "name", NAMELINE);
     }
 
@@ -229,7 +236,7 @@ public abstract class Map {
      * @param secondLine the second line of the map file
      * @throws ParseException
      */
-    private void parseMapGoal(String secondLine) throws ParseException {
+    public void parseMapGoal(String secondLine) throws ParseException {
         final String goalString = getStringAfterTag(secondLine, "win", GOALLINE);
 
         try {

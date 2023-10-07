@@ -6,6 +6,7 @@ import java.util.Random;
 import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import dod.singleton.Settings;
 
 /**
  * Represents a bot that will play the game.
@@ -140,11 +141,7 @@ public abstract class Bot extends Thread {
      */
     protected CompassDirection getRandomNonBlockDirection(Location location) {
         //All directions are addes to an array list
-        ArrayList<CompassDirection> possibleDirections = new ArrayList<CompassDirection>();
-        possibleDirections.add(CompassDirection.NORTH);
-        possibleDirections.add(CompassDirection.SOUTH);
-        possibleDirections.add(CompassDirection.EAST);
-        possibleDirections.add(CompassDirection.WEST);
+        ArrayList<CompassDirection> possibleDirections = new ArrayList<CompassDirection>(Settings.getInstance().getPossibleDirections());
 
         //for each direction check if the location in that direction will block a player
         for (int index = 0; index < possibleDirections.size(); ) {

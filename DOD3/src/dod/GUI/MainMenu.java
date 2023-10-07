@@ -151,6 +151,7 @@ public class MainMenu extends JFrame {
                     //Game and Communicator is made
                     GameLogic game = new GameLogic(mapTextField.getText()); //Map name is taken from the text field
                     //Bot Selection Menu is displayed
+                    name = nameTextField.getText();
                     displayBotSelectionMenu(new LocalGameCommunicator(game), nameTextField.getText(), false); //Name is taken from the text field
                     //Game is started
                     game.startGame();
@@ -172,9 +173,12 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent a) {
                 try {
+//                    getInstance("mapFile");
+//                    getInstance("");
                     //Game and Communicator is made
                     GameLogic game = new GameLogic(mapTextField.getText()); //Map name is taken from the text field
                     //GUI is displayed
+                    name = nameTextField.getText();
                     displayGameGUI(new HumanPlayerGUI(new LocalGameCommunicator(game), nameTextField.getText(), true)); //Name is taken from the text field
                     //Game is started
                     game.startGame();
@@ -386,6 +390,12 @@ public class MainMenu extends JFrame {
         updateMenu();
     }
 
+    public static String name = "";
+
+    public static String getPlayerName() {
+        return MainMenu.name;
+    }
+
     /**
      * Displays the Menu for joining the game
      *
@@ -409,6 +419,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Bot Selection menu is displayed
+                name = nameTextField.getText();
                 displayBotSelectionMenu(comm, nameTextField.getText(), isServer);
             }
         });
@@ -417,6 +428,7 @@ public class MainMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Human GUI is displayed
+                name = nameTextField.getText();
                 displayGameGUI(new HumanPlayerGUI(comm, nameTextField.getText(), !isServer));
             }
         });
