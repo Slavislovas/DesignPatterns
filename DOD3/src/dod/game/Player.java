@@ -74,6 +74,10 @@ public class Player implements GameItemConsumer {
         return this.name;
     }
 
+    public PlayerListener getListener(){
+        return this.listener;
+    }
+
     /**
      * Sets the name of the player
      *
@@ -263,7 +267,7 @@ public class Player implements GameItemConsumer {
      * @param message message to send to the listener
      */
     public void sendMessage(String message) {
-        this.listener.update(message);
+        this.listener.update("test: "+message);
     }
 
     /**
