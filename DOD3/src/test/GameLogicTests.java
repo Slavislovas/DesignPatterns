@@ -43,13 +43,13 @@ public class GameLogicTests {
         public void update(String message) {
             firstUserReceivedMessage = message;
         }
-    };;
+    };
     User user2 = new User(gameLogic) {
         @Override
         public void update(String message) {
             secondUserReceivedMessage = message;
         }
-    };;
+    };
 
     Player player1 = gameLogic.getPlayer();
     Player player2 = gameLogic.getPlayerByIndex(1);

@@ -37,7 +37,7 @@ public class GameLogic {
     private Player player;
 
     //The following three variables have been implemented by Benjamin Dring
-    public static ArrayList<Player> playerList = new ArrayList<Player>(); //This is the list of all players
+    public ArrayList<Player> playerList = new ArrayList<Player>(); //This is the list of all players
     int currentPlayerIndex; //The index in playerList of the current player
     private boolean turnSwitch; //Used to lock the class from being accessed during transfer of turns
 
