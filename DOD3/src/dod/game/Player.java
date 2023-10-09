@@ -329,4 +329,8 @@ public class Player implements GameItemConsumer {
 
         return initialAP;
     }
+
+    public void clearItems() {
+        this.items.clear();
+    }
 }

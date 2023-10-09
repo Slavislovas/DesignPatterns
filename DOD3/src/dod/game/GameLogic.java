@@ -48,6 +48,8 @@ public class GameLogic {
     private AbstractFactory gameItemFactory;
     private Subject subject = new Subject();
 
+    private Random rand;
+
     /**
      * Constructor that specifies the map which the game should be played on.
      *
@@ -59,6 +61,7 @@ public class GameLogic {
         this.map = new MapCreator().factoryMethod(mapFile);
         this.serverListener = null;
         this.gameItemFactory = map.getAbstractFactory();
+        this.rand = new Random();
         setUpAttributes();
 
         // Check if there is enough gold to win
@@ -319,7 +322,6 @@ public class GameLogic {
 
         Player victimPlayer = playerList.get(victimUserID);
         //We randomly decide if it hits
-        Random rand = new Random();
         if (rand.nextInt(5) < 3) //3 of 4 chance is a hit as 5 is exclusive
         {
             //if it hits we get the victim player from the list
@@ -814,5 +816,13 @@ public class GameLogic {
 
     public void setPlayerWon(boolean playerWon) {
         this.playerWon = playerWon;
+    }
+
+    public Random getRand() {
+        return rand;
+    }
+
+    public void setRand(Random rand){
+        this.rand = rand;
     }
 }
