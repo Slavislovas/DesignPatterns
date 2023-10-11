@@ -3,8 +3,8 @@ package dod.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import dod.builder.FistBuilder;
-import dod.builder.SwordBuilder;
+import dod.builder.FistWeaponBuilder;
+import dod.builder.SwordWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
@@ -68,7 +68,7 @@ public class Player implements GameItemConsumer {
 
         this.listener = listener;
 
-        WeaponDirector weaponDirector = new WeaponDirector(new FistBuilder());
+        WeaponDirector weaponDirector = new WeaponDirector(new FistWeaponBuilder());
         this.weapon = weaponDirector.build();
 
         // Reset the player's AP
@@ -271,11 +271,6 @@ public class Player implements GameItemConsumer {
         if (item.isRetainable()) {
             this.items.add(item);
         }
-
-        if (item instanceof Sword){
-            WeaponDirector weaponDirector = new WeaponDirector(new SwordBuilder());
-            this.weapon = weaponDirector.build();
-        }
     }
 
     /**
@@ -349,10 +344,12 @@ public class Player implements GameItemConsumer {
         this.items.clear();
     }
 
+    @Override
     public void setWeapon(Weapon weapon) {
         this.weapon = weapon;
     }
 
+    @Override
     public Weapon getWeapon() {
         return this.weapon;
     }

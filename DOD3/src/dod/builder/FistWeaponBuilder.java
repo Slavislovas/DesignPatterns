@@ -1,9 +1,9 @@
 package dod.builder;
 
-public class FistBuilder implements WeaponBuilder {
+public class FistWeaponBuilder implements WeaponBuilder {
     private final Weapon weapon;
 
-    public FistBuilder(){
+    public FistWeaponBuilder(){
         weapon = new Weapon();
     }
 
