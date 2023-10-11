@@ -146,7 +146,7 @@ public abstract class Bot extends Thread implements BotStrategy {
         //for each direction check if the location in that direction will block a player
         for (int index = 0; index < possibleDirections.size(); ) {
             CompassDirection direction = possibleDirections.get(index);
-            if (doesBlock(location.atCompassDirection(direction))) {
+            if (doesBlock(location.atCompassDirection(direction, 1))) {
                 //If it does block then remove it
                 possibleDirections.remove(index);
             } else {

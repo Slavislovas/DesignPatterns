@@ -136,10 +136,10 @@ public abstract class PathFindingBot extends Bot {
             CompassDirection nextMovement = null; //This holds the next movement we under take
 
             //We then get the locations for each of the positions around the current position in the path
-            Location northCords = currentPositionInPath.atCompassDirection(CompassDirection.NORTH);
-            Location southCords = currentPositionInPath.atCompassDirection(CompassDirection.SOUTH);
-            Location eastCords = currentPositionInPath.atCompassDirection(CompassDirection.EAST);
-            Location westCords = currentPositionInPath.atCompassDirection(CompassDirection.WEST);
+            Location northCords = currentPositionInPath.atCompassDirection(CompassDirection.NORTH, 1);
+            Location southCords = currentPositionInPath.atCompassDirection(CompassDirection.SOUTH, 1);
+            Location eastCords = currentPositionInPath.atCompassDirection(CompassDirection.EAST, 1);
+            Location westCords = currentPositionInPath.atCompassDirection(CompassDirection.WEST, 1);
 
             //isNextInPath checks if those coordinates are a good idea to follow, it checks if it's counter is mapped
             //and if it has a smaller counter number than we have found so far, multiple directions can pass hence
@@ -237,10 +237,10 @@ public abstract class PathFindingBot extends Bot {
      */
     private Location[] getSurroundingTiles(Location cords) {
         Location[] surroundingTiles = new Location[4];
-        surroundingTiles[0] = cords.atCompassDirection(CompassDirection.NORTH);
-        surroundingTiles[1] = cords.atCompassDirection(CompassDirection.SOUTH);
-        surroundingTiles[2] = cords.atCompassDirection(CompassDirection.EAST);
-        surroundingTiles[3] = cords.atCompassDirection(CompassDirection.WEST);
+        surroundingTiles[0] = cords.atCompassDirection(CompassDirection.NORTH, 1);
+        surroundingTiles[1] = cords.atCompassDirection(CompassDirection.SOUTH, 1);
+        surroundingTiles[2] = cords.atCompassDirection(CompassDirection.EAST, 1);
+        surroundingTiles[3] = cords.atCompassDirection(CompassDirection.WEST, 1);
         return surroundingTiles;
     }
 

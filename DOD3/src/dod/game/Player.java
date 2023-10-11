@@ -3,8 +3,13 @@ package dod.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import dod.builder.FistBuilder;
+import dod.builder.SwordBuilder;
+import dod.builder.Weapon;
+import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
+import dod.game.items.sword.Sword;
 
 /**
  * Class representing a player
@@ -31,6 +36,8 @@ public class Player implements GameItemConsumer {
     // Player attribute value things
     private int hp = 3;
     private int ap = 0;
+
+    private Weapon weapon;
 
     // Items the player has
     List<GameItem> items;
@@ -60,6 +67,9 @@ public class Player implements GameItemConsumer {
         this.items = new ArrayList<GameItem>();
 
         this.listener = listener;
+
+        WeaponDirector weaponDirector = new WeaponDirector(new FistBuilder());
+        this.weapon = weaponDirector.build();
 
         // Reset the player's AP
         resetAP();
@@ -261,13 +271,18 @@ public class Player implements GameItemConsumer {
         if (item.isRetainable()) {
             this.items.add(item);
         }
+
+        if (item instanceof Sword){
+            WeaponDirector weaponDirector = new WeaponDirector(new SwordBuilder());
+            this.weapon = weaponDirector.build();
+        }
     }
 
     /**
      * @param message message to send to the listener
      */
     public void sendMessage(String message) {
-        this.listener.update("test: "+message);
+        this.listener.update(message);
     }
 
     /**
@@ -332,5 +347,13 @@ public class Player implements GameItemConsumer {
 
     public void clearItems() {
         this.items.clear();
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public Weapon getWeapon() {
+        return this.weapon;
     }
 }
