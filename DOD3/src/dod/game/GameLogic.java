@@ -8,14 +8,12 @@ import java.util.Random;
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
-import dod.builder.FistBuilder;
-import dod.builder.SwordBuilder;
+import dod.builder.SwordWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
 import dod.decorator.AdminPlayer;
 import dod.decorator.SuperVipPlayer;
 import dod.decorator.VipPlayer;
-import dod.factory.Creator;
 import dod.factory.MapCreator;
 import dod.game.items.armour.Armour;
 import dod.game.items.GameItem;
@@ -442,8 +440,6 @@ public class GameLogic {
         if (item instanceof Armour) {
             this.player.sendMessage("You equip Armour");
         } else if (item instanceof Sword) {
-            WeaponDirector weaponDirector = new WeaponDirector(new SwordBuilder());
-            this.player.setWeapon(weaponDirector.build());
             this.player.sendMessage("You equip Sword");
         }
 

@@ -1,5 +1,7 @@
 package dod.game.items;
 
+import dod.builder.Weapon;
+
 /**
  * An interface implemented by anything that can "consume an item". This allows
  * the item to act on the player, e.g. giving the player gold, hp and taking
@@ -29,5 +31,8 @@ public interface GameItemConsumer {
     public abstract void zeroAP();
 
     public abstract void addToAP(int value);
+
+    Weapon getWeapon();
+    void setWeapon(Weapon weapon);
 
 }

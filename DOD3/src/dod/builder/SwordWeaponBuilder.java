@@ -1,11 +1,9 @@
 package dod.builder;
 
-import java.util.Objects;
+public class SwordWeaponBuilder implements WeaponBuilder{
+    private final Weapon weapon;
 
-public class SwordBuilder implements WeaponBuilder{
-    private Weapon weapon;
-
-    public SwordBuilder(){
+    public SwordWeaponBuilder(){
         this.weapon = new Weapon();
     }
 
