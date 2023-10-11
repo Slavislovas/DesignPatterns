@@ -262,7 +262,7 @@ public class GameLogic {
         assertPlayerAP();
 
         // Work out where the move would take the player
-        final Location location = this.player.getLocation().atCompassDirection(direction, 1);
+        final Location location = this.player.getLocation().atCompassDirection(direction);
 
         // Ensure that the movement is within the bounds of the map and not
         // into a wall
@@ -369,7 +369,7 @@ public class GameLogic {
      */
     public void clientGift(CompassDirection direction) throws CommandException {
         //Gets the location of the given direction
-        final Location location = this.player.getLocation().atCompassDirection(direction, 1);
+        final Location location = this.player.getLocation().atCompassDirection(direction);
 
         //gets the User ID (playerListIndex) of the player if its -1 then there is no player so we throw an exception
         int recieverUserID = getUserIDOfPlayerOnTile(location);
