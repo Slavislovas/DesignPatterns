@@ -259,11 +259,6 @@ public abstract class Bot extends Thread implements BotStrategy {
         }
     }
 
-    /**
-     * Sends a command to the game
-     */
-    public abstract void performAction();
-
     public GameCommunicator getComm() {
         return comm;
     }

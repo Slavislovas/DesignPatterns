@@ -28,18 +28,13 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
 
     @Override
     public void performAction() {
-        getComm().sendMessageToGame(getAction());
-    }
-
-    @Override
-    public String getAction() {
         //Gets player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
         //If it's standing on the sword and doesn't already have it, it then picks it up
         if ((tile == 'S') && (!hasSword)) {
             this.hasSword = true;
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         //Gets players around the bot
@@ -49,7 +44,7 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         if (numberOfNearbyPlayers > 0) {
             //If there is a player around then attack one at random
             short randomNumber = (short) (new Random()).nextInt(numberOfNearbyPlayers);
-            return "ATTACK " + getDirectionCharacter(surroundingPlayerDirections.get(randomNumber));
+            getComm().sendMessageToGame("ATTACK " + getDirectionCharacter(surroundingPlayerDirections.get(randomNumber)));
         }
 
         //Otherwise get the shortest path to a player
@@ -57,17 +52,17 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
 
         if (playerPath != null) {
             //If a path is found move in it
-            return "MOVE " + getDirectionCharacter(playerPath.get(0));
+            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(playerPath.get(0)));
         }
         //Otherwise if it is standing on a lantern and doesn't already have one pick it up
         if ((tile == 'L') && (!hasLantern)) {
             this.hasLantern = true;
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
         //Otherwise if it is standing on gold and doesn't already have the required gold pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
             this.pickupGold();
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         //If there is no one to attack act objectively and pick a target tile
@@ -81,16 +76,16 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         ArrayList<CompassDirection> goldPath = getShortestPathToTile(targetTile);
         if (goldPath != null) {
             //If it can get to the target tile move towards it
-            return "MOVE " + getDirectionCharacter(goldPath.get(0));
+            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(goldPath.get(0)));
         }
         //Otherwise if it doesn't have the lantern try to find one
         else if (!hasLantern) {
             ArrayList<CompassDirection> lanternPath = getShortestPathToTile('L');
             if (lanternPath != null) {
-                return "MOVE " + getDirectionCharacter(lanternPath.get(0));
+                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(lanternPath.get(0)));
             }
         }
         //If all else fails then move randomly
-        return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
+        getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation())));
     }
 }

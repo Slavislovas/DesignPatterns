@@ -22,28 +22,23 @@ public class RandomBotStrategy extends Bot {
 
     @Override
     public void performAction() {
-        getComm().sendMessageToGame(getAction());
-    }
-
-    @Override
-    public String getAction() {
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
 
         //If the user is standing on gold and it needs it then it wants to pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
             this.pickupGold();
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         //Otherwise we move randomly
         else {
             try {
                 //Forms a move command
-                return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(playerLocation));
+                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(playerLocation)));
             } catch (NullPointerException e) {
                 //If there are no directions just end the turn
-                return "ENDTURN";
+                getComm().sendMessageToGame("ENDTURN");
             }
         }
     }
