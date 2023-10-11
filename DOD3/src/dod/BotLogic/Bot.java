@@ -6,6 +6,7 @@ import java.util.Random;
 import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import dod.strategy.BotStrategy;
 import dod.singleton.Settings;
 
 /**
@@ -14,7 +15,7 @@ import dod.singleton.Settings;
  *
  * @author Benjamin Dring
  */
-public abstract class Bot extends Thread {
+public abstract class Bot extends Thread implements BotStrategy {
     private GameCommunicator comm; //The game communicator
     protected char[][] lookReply; //Stores the look reply in a two dimensional char array
 
@@ -102,7 +103,6 @@ public abstract class Bot extends Thread {
             }
         } catch (InterruptedException e) {
             //If interrupted just stop
-            return;
         }
     }
 
@@ -141,7 +141,7 @@ public abstract class Bot extends Thread {
      */
     protected CompassDirection getRandomNonBlockDirection(Location location) {
         //All directions are addes to an array list
-        ArrayList<CompassDirection> possibleDirections = new ArrayList<CompassDirection>(Settings.getInstance().getPossibleDirections());
+        ArrayList<CompassDirection> possibleDirections = new ArrayList<>(Settings.getInstance().getPossibleDirections());
 
         //for each direction check if the location in that direction will block a player
         for (int index = 0; index < possibleDirections.size(); ) {
@@ -259,17 +259,7 @@ public abstract class Bot extends Thread {
         }
     }
 
-    /**
-     * Sends a command to the game
-     */
-    private void performAction() {
-        this.comm.sendMessageToGame(getAction());
+    public GameCommunicator getComm() {
+        return comm;
     }
-
-    /**
-     * Gets the command decided by the bot
-     *
-     * @return String the command
-     */
-    abstract protected String getAction();
 }

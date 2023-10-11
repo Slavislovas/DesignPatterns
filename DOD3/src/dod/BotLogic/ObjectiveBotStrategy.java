@@ -11,7 +11,7 @@ import dod.game.Location;
  *
  * @author Benjamin Dring
  */
-public class ObjectiveBot extends PathFindingBot {
+public class ObjectiveBotStrategy extends PathFindingBot {
 
     /**
      * The constructor for the objective bot it sets up it's decision making processes and
@@ -19,24 +19,24 @@ public class ObjectiveBot extends PathFindingBot {
      *
      * @param comm GameComunicator The communicator to the Game Logic Class
      */
-    public ObjectiveBot(GameCommunicator comm) {
+    public ObjectiveBotStrategy(GameCommunicator comm) {
         super(comm);
     }
 
     @Override
-    protected String getAction() {
+    public void performAction() {
         //gets the player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
         //If it's on gold
         if ((tile == 'G') && (!hasRequiredGold())) {
             this.pickupGold();
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
         //If its standing on a lantern and doesn't already have one it picks it up
         else if ((tile == 'L') && (!hasLantern)) {
             this.hasLantern = true;
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         char targetTile;
@@ -51,18 +51,17 @@ public class ObjectiveBot extends PathFindingBot {
         ArrayList<CompassDirection> goldPath = getShortestPathToTile(targetTile);
         if (goldPath != null) {
             //If a path has been found it moves the first direction in that path
-            return "MOVE " + getDirectionCharacter(goldPath.get(0));
+            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(goldPath.get(0)));
         }
         //If the target tile is not in sight it looks for a lantern instead
         else if (!hasLantern) {
             ArrayList<CompassDirection> lanternPath = getShortestPathToTile('L');
             if (lanternPath != null) {
                 //if a lantern path is found then take the first step to it
-                return "MOVE " + getDirectionCharacter(lanternPath.get(0));
+                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(lanternPath.get(0)));
             }
         }
         //If all else fails it moves randomly
-        return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
+        getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation())));
     }
-
 }

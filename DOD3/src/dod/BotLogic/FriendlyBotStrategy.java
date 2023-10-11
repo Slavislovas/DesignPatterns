@@ -7,7 +7,7 @@ import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
 
-public class FriendlyBot extends PlayerFindingBot {
+public class FriendlyBotStrategy extends PlayerFindingBot {
     private boolean hasArmour;
 
     /**
@@ -16,13 +16,13 @@ public class FriendlyBot extends PlayerFindingBot {
      *
      * @param comm GameComunicator The communicator to the Game Logic Class
      */
-    public FriendlyBot(GameCommunicator comm) {
+    public FriendlyBotStrategy(GameCommunicator comm) {
         super(comm);
         this.hasArmour = false;
     }
 
     @Override
-    protected String getAction() {
+    public void performAction() {
         //Gets the player location and tile
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
@@ -30,7 +30,7 @@ public class FriendlyBot extends PlayerFindingBot {
         //If it's standing on armour pick it up
         if ((tile == 'A') && (!hasArmour)) {
             this.hasArmour = true;
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         //It then tries to give gold away
@@ -44,7 +44,7 @@ public class FriendlyBot extends PlayerFindingBot {
                 //If there is a nearby player then give gold to a player at random
                 short randomNumber = (short) (new Random()).nextInt(numberOfNearbyPlayers);
                 this.currentGold -= 1;
-                return "GIFT " + getDirectionCharacter(surroundingPlayerDirections.get(randomNumber));
+                getComm().sendMessageToGame("GIFT " + getDirectionCharacter(surroundingPlayerDirections.get(randomNumber)));
             }
 
             //Otherwise it finds the nearest player
@@ -52,19 +52,19 @@ public class FriendlyBot extends PlayerFindingBot {
 
             if (playerPath != null) {
                 //If there is a visible player then the bot moves towards them
-                return "MOVE " + getDirectionCharacter(playerPath.get(0));
+                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(playerPath.get(0)));
             }
         }
 
         //Otherwise it picks up the lantern to maximise its player finding ability
         if ((tile == 'L') && (!hasLantern)) {
             this.hasLantern = true;
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
         //Otherwise Pickup gold even if we have the right amount so it can give it away
         if ((tile == 'G')) {
             this.pickupGold();
-            return "PICKUP";
+            getComm().sendMessageToGame("PICKUP");
         }
 
         //If there is no one to give gold to or we do not have enough gold act objectively by using a target tile
@@ -79,18 +79,17 @@ public class FriendlyBot extends PlayerFindingBot {
         ArrayList<CompassDirection> goldPath = getShortestPathToTile(targetTile);
         if (goldPath != null) {
             //If we find our path follow it
-            return "MOVE " + getDirectionCharacter(goldPath.get(0));
+            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(goldPath.get(0)));
         }
         //Otherwise go for the lantern if we do not already have it
         else if (!hasLantern) {
             ArrayList<CompassDirection> lanternPath = getShortestPathToTile('L');
             if (lanternPath != null) {
                 //If a lantern path is found follow it
-                return "MOVE " + getDirectionCharacter(lanternPath.get(0));
+                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(lanternPath.get(0)));
             }
         }
         //If all else fails move randomly
-        return "MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation()));
+        getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation())));
     }
-
 }

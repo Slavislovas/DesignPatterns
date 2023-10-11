@@ -438,7 +438,7 @@ public class GameLogic {
         }
 
         advanceTurn();
-        subject.notifyObservers(String.format("Player %s picked up an item", this.player.getName()));
+        subject.notifyObservers(String.format("Player %s picked up %s", this.player.getName(), item));
     }
 
     /**
