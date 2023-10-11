@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dod.GUI.ClientListener;
+import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
+import dod.decorator.AdminPlayer;
+import dod.decorator.SuperVipPlayer;
+import dod.decorator.VipPlayer;
 import dod.factory.Creator;
 import dod.factory.MapCreator;
 import dod.game.items.armour.Armour;
@@ -14,6 +18,7 @@ import dod.game.items.GameItem;
 import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
 import dod.observer.Subject;
+import dod.singleton.Settings;
 
 /**
  * This class controls the game logic and other such magic.
@@ -32,7 +37,7 @@ public class GameLogic {
     private Player player;
 
     //The following three variables have been implemented by Benjamin Dring
-    private ArrayList<Player> playerList; //This is the list of all players
+    public ArrayList<Player> playerList = new ArrayList<Player>(); //This is the list of all players
     int currentPlayerIndex; //The index in playerList of the current player
     private boolean turnSwitch; //Used to lock the class from being accessed during transfer of turns
 
@@ -42,6 +47,8 @@ public class GameLogic {
 
     private AbstractFactory gameItemFactory;
     private Subject subject = new Subject();
+
+    private Random rand;
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -54,6 +61,7 @@ public class GameLogic {
         this.map = new MapCreator().factoryMethod(mapFile);
         this.serverListener = null;
         this.gameItemFactory = map.getAbstractFactory();
+        this.rand = new Random();
         setUpAttributes();
 
         // Check if there is enough gold to win
@@ -84,7 +92,6 @@ public class GameLogic {
     private void setUpAttributes() {
         this.playerWon = false;
         this.gameOver = false;
-        this.playerList = new ArrayList<Player>();
         this.currentPlayerIndex = 0;
         this.turnSwitch = false;
         this.gameStarted = false;
@@ -100,10 +107,30 @@ public class GameLogic {
      * @return int the UserID which is equivalent to the list index
      */
     public int addPlayer(PlayerListener listener) {
+        Settings settings = Settings.getInstance();
+        String playerName = MainMenu.getPlayerName();
+        //        GameLogic.playerList.get(listener.ge/**/)
 
+        //  if(settings.getUserRole(listener.ge))
         //creates the player
-        playerList.add(new Player("Player 0", generateRandomStartLocation(),
-                listener));
+
+        Player player = new Player("Player 0", generateRandomStartLocation(),
+                listener);
+
+
+        if (settings.getUserRole(playerName) == "vip") {
+            player = new VipPlayer("Player 0", generateRandomStartLocation(),
+                    listener);
+        }
+        if (settings.getUserRole(playerName) == "supervip") {
+            player = new SuperVipPlayer("Player 0", generateRandomStartLocation(),
+                    listener);
+        }
+        if (settings.getUserRole(playerName) == "admin") {
+            player = new AdminPlayer("Player 0", generateRandomStartLocation(),
+                    listener);
+        }
+        playerList.add(player);
 
         //If this is the only player then set it as the current player
         if (playerList.size() == 1) {
@@ -295,7 +322,6 @@ public class GameLogic {
 
         Player victimPlayer = playerList.get(victimUserID);
         //We randomly decide if it hits
-        Random rand = new Random();
         if (rand.nextInt(5) < 3) //3 of 4 chance is a hit as 5 is exclusive
         {
             //if it hits we get the victim player from the list
@@ -425,6 +451,7 @@ public class GameLogic {
      * @param message The message to be shouted
      */
     public void clientShout(String message, int speakerID) {
+        System.out.println("1.   | "+playerList.get(speakerID).getName());
         message = "[" + playerList.get(speakerID).getName() + "] " + message;
         sendToAll(message);
     }
@@ -771,6 +798,10 @@ public class GameLogic {
         return player;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public Player getPlayerByIndex(int index){
         return playerList.get(index);
     }
@@ -781,5 +812,17 @@ public class GameLogic {
 
     public boolean isPlayerWon() {
         return playerWon;
+    }
+
+    public void setPlayerWon(boolean playerWon) {
+        this.playerWon = playerWon;
+    }
+
+    public Random getRand() {
+        return rand;
+    }
+
+    public void setRand(Random rand){
+        this.rand = rand;
     }
 }

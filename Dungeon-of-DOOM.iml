@@ -7,7 +7,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="library" name="lib" level="project" />
+=======
+    <orderEntry type="library" exported="" name="junit.jupiter" level="project" />
+    <orderEntry type="library" exported="" name="ginsberg.junit5.system.exit" level="project" />
+    <orderEntry type="library" exported="" name="mockito.junit.jupiter" level="project" />
+    <orderEntry type="library" exported="" name="apiguardian-api-1.1.2 (2)" level="project" />
+    <orderEntry type="library" name="apiguardian-api-1.1.2" level="project" />
+>>>>>>> main
   </component>
   <component name="SonarLintModuleSettings">
     <option name="uniqueId" value="87e7fa41-7d67-421b-961f-7af73e743efc" />
