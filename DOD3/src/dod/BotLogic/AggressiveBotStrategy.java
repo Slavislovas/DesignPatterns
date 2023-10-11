@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dod.Communicator.GameCommunicator;
+import dod.command.Command;
+import dod.command.PickUpCommand;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class represents the Aggressive Bot it will tend to attack players to win.
  *
  * @author Benjamin Dring
  */
+@Getter
+@Setter
 public class AggressiveBotStrategy extends PlayerFindingBot {
-    private boolean hasSword;
+    private Command command;
 
     /**
      * The constructor for the aggressive bot it sets up it's decision making processes and
@@ -33,8 +39,8 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         char tile = getTile(playerLocation);
         //If it's standing on the sword and doesn't already have it, it then picks it up
         if ((tile == 'S') && (!hasSword)) {
-            this.hasSword = true;
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'S'));
+            command.execute();
         }
 
         //Gets players around the bot
@@ -56,13 +62,13 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         }
         //Otherwise if it is standing on a lantern and doesn't already have one pick it up
         if ((tile == 'L') && (!hasLantern)) {
-            this.hasLantern = true;
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'L'));
+            command.execute();
         }
         //Otherwise if it is standing on gold and doesn't already have the required gold pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
-            this.pickupGold();
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'G'));
+            command.execute();
         }
 
         //If there is no one to attack act objectively and pick a target tile

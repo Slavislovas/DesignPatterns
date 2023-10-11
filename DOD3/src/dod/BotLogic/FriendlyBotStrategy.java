@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dod.Communicator.GameCommunicator;
+import dod.command.Command;
+import dod.command.PickUpCommand;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class FriendlyBotStrategy extends PlayerFindingBot {
-    private boolean hasArmour;
+    private Command command;
 
     /**
      * The constructor for the friendly bot it sets up it's decision making processes and
@@ -29,8 +35,8 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
 
         //If it's standing on armour pick it up
         if ((tile == 'A') && (!hasArmour)) {
-            this.hasArmour = true;
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'A'));
+            command.execute();
         }
 
         //It then tries to give gold away
@@ -58,13 +64,13 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
 
         //Otherwise it picks up the lantern to maximise its player finding ability
         if ((tile == 'L') && (!hasLantern)) {
-            this.hasLantern = true;
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'L'));
+            command.execute();
         }
         //Otherwise Pickup gold even if we have the right amount so it can give it away
         if ((tile == 'G')) {
-            this.pickupGold();
-            getComm().sendMessageToGame("PICKUP");
+            setCommand(new PickUpCommand(getComm(), this, 'G'));
+            command.execute();
         }
 
         //If there is no one to give gold to or we do not have enough gold act objectively by using a target tile

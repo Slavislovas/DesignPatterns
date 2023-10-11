@@ -8,6 +8,8 @@ import dod.game.CompassDirection;
 import dod.game.Location;
 import dod.strategy.BotStrategy;
 import dod.singleton.Settings;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a bot that will play the game.
@@ -15,6 +17,8 @@ import dod.singleton.Settings;
  *
  * @author Benjamin Dring
  */
+@Getter
+@Setter
 public abstract class Bot extends Thread implements BotStrategy {
     private GameCommunicator comm; //The game communicator
     protected char[][] lookReply; //Stores the look reply in a two dimensional char array
@@ -23,6 +27,8 @@ public abstract class Bot extends Thread implements BotStrategy {
     protected int goal;
     protected int currentGold;
     protected boolean hasLantern;
+    protected boolean hasArmour;
+    protected boolean hasSword;
     private boolean myTurn;
     private boolean gameOver;
 
@@ -139,7 +145,7 @@ public abstract class Bot extends Thread implements BotStrategy {
      * @param location Location the location to check
      * @return CompassDirection the direction to move in, null is returned if none is available
      */
-    protected CompassDirection getRandomNonBlockDirection(Location location) {
+    public CompassDirection getRandomNonBlockDirection(Location location) {
         //All directions are addes to an array list
         ArrayList<CompassDirection> possibleDirections = new ArrayList<>(Settings.getInstance().getPossibleDirections());
 
@@ -168,21 +174,12 @@ public abstract class Bot extends Thread implements BotStrategy {
     }
 
     /**
-     * Gets the player's location
-     *
-     * @return Location the player's location on the look reply
-     */
-    protected Location getPlayerLocation() {
-        return this.playerLocation;
-    }
-
-    /**
      * Converts a compass direction to a string that can be sent to the game
      *
      * @param direction CompassDirection the CompassDirection to be converted
      * @return String The direction character
      */
-    protected String getDirectionCharacter(CompassDirection direction) {
+    public String getDirectionCharacter(CompassDirection direction) {
         return direction.toString();
     }
 
@@ -200,7 +197,7 @@ public abstract class Bot extends Thread implements BotStrategy {
     /**
      * Increments the gold counter
      */
-    protected void pickupGold() {
+    public void pickupGold() {
         currentGold++;
     }
 
@@ -257,9 +254,5 @@ public abstract class Bot extends Thread implements BotStrategy {
             }
             return lookMap;
         }
-    }
-
-    public GameCommunicator getComm() {
-        return comm;
     }
 }
