@@ -1,15 +1,10 @@
 package dod.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dod.builder.FistBuilder;
-import dod.builder.SwordBuilder;
-import dod.builder.Weapon;
-import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
-import dod.game.items.sword.Sword;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class representing a player
