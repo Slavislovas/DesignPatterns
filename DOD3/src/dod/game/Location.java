@@ -56,6 +56,25 @@ public class Location {
      * @return the location immediately at the compass direction to the current
      * location
      */
+    public Location atCompassDirection(CompassDirection direction, int range) {
+        switch (direction) {
+            case NORTH:
+                return atOffset(0, -range);
+
+            case EAST:
+                return atOffset(range, 0);
+
+            case SOUTH:
+                return atOffset(0, range);
+
+            case WEST:
+                return atOffset(-range, 0);
+
+            default:
+                throw new RuntimeException("invalid compass direction");
+        }
+    }
+
     public Location atCompassDirection(CompassDirection direction) {
         switch (direction) {
             case NORTH:

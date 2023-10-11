@@ -349,7 +349,7 @@ public class GameLogicTests {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
-        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
+        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 2));
         gameLogic.clientAttack(CompassDirection.NORTH);
         assertEquals(initialPlayer2Health - 2, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -360,7 +360,7 @@ public class GameLogicTests {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
-        player2.setLocation(new Location(player1.getLocation().getCol() + 1, player1.getLocation().getRow()));
+        player2.setLocation(new Location(player1.getLocation().getCol() + 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.EAST);
         assertEquals(initialPlayer2Health - 2, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -371,7 +371,7 @@ public class GameLogicTests {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
-        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 1));
+        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 2));
         gameLogic.clientAttack(CompassDirection.SOUTH);
         assertEquals(initialPlayer2Health - 2, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -382,7 +382,7 @@ public class GameLogicTests {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
-        player2.setLocation(new Location(player1.getLocation().getCol() - 1, player1.getLocation().getRow()));
+        player2.setLocation(new Location(player1.getLocation().getCol() - 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.WEST);
         assertEquals(initialPlayer2Health - 2, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -438,7 +438,7 @@ public class GameLogicTests {
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
         player2.giveItem(map.getAbstractFactory().createArmour());
-        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
+        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 2));
         gameLogic.clientAttack(CompassDirection.NORTH);
         assertEquals(initialPlayer2Health - 1, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -450,7 +450,7 @@ public class GameLogicTests {
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
         player2.giveItem(map.getAbstractFactory().createArmour());
-        player2.setLocation(new Location(player1.getLocation().getCol() + 1, player1.getLocation().getRow()));
+        player2.setLocation(new Location(player1.getLocation().getCol() + 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.EAST);
         assertEquals(initialPlayer2Health - 1, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -462,7 +462,7 @@ public class GameLogicTests {
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
         player2.giveItem(map.getAbstractFactory().createArmour());
-        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 1));
+        player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 2));
         gameLogic.clientAttack(CompassDirection.SOUTH);
         assertEquals(initialPlayer2Health - 1, player2.getHp());
         assertEquals(0, player1.remainingAp());
@@ -474,7 +474,7 @@ public class GameLogicTests {
         int initialPlayer2Health = player2.getHp();
         player1.giveItem(map.getAbstractFactory().createSword());
         player2.giveItem(map.getAbstractFactory().createArmour());
-        player2.setLocation(new Location(player1.getLocation().getCol() - 1, player1.getLocation().getRow()));
+        player2.setLocation(new Location(player1.getLocation().getCol() - 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.WEST);
         assertEquals(initialPlayer2Health - 1, player2.getHp());
         assertEquals(0, player1.remainingAp());

@@ -8,6 +8,10 @@ import java.util.Random;
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
+import dod.builder.FistBuilder;
+import dod.builder.SwordBuilder;
+import dod.builder.Weapon;
+import dod.builder.WeaponDirector;
 import dod.decorator.AdminPlayer;
 import dod.decorator.SuperVipPlayer;
 import dod.decorator.VipPlayer;
@@ -258,8 +262,7 @@ public class GameLogic {
         assertPlayerAP();
 
         // Work out where the move would take the player
-        final Location location = this.player.getLocation().atCompassDirection(
-                direction);
+        final Location location = this.player.getLocation().atCompassDirection(direction);
 
         // Ensure that the movement is within the bounds of the map and not
         // into a wall
@@ -307,36 +310,29 @@ public class GameLogic {
         ensureNoWinner();
         assertPlayerAP();
 
-        //The following remaining code from this method was implemented by Benjamin Dring
-        //Gets the location of the given direction
-        final Location location = this.player.getLocation().atCompassDirection(direction);
-
-        //gets the User ID (playerListIndex) of the player if its -1 then there is no player so we throw an exception
-        int victimUserID = getUserIDOfPlayerOnTile(location);
-        if (victimUserID < 0) {
+        Weapon playerWeapon = this.player.getWeapon();
+        int victimUserId = findPlayerIdInDirectionAndRange(direction, playerWeapon.getRange());
+        if (victimUserId < 0) {
             throw new CommandException("There is no player there.");
         }
 
         //AP is zeroed
         this.player.zeroAP();
 
-        Player victimPlayer = playerList.get(victimUserID);
+        Player victimPlayer = playerList.get(victimUserId);
         //We randomly decide if it hits
         if (rand.nextInt(5) < 3) //3 of 4 chance is a hit as 5 is exclusive
         {
             //if it hits we get the victim player from the list
-            short damage = 1;
-            if (this.player.hasItem(gameItemFactory.createSword())) {
-                //add one for attacker having sword
-                damage++;
-            }
+            int damage = playerWeapon.getDamage();
             if (victimPlayer.hasItem(gameItemFactory.createArmour())) {
                 //minus one for victim having armour
                 damage--;
             }
             //Damage player and display message to attacker
             victimPlayer.damage(damage);
-            this.player.sendMessage("You hit your target for " + damage + " hp.");
+            this.player.sendMessage("You hit your target for " + damage + " hp with weapon " + playerWeapon.getType().name());
+            victimPlayer.sendMessage("A player hit you for " + damage + " hp with weapon " + playerWeapon.getType().name());
         } else {
             advanceTurn();
             victimPlayer.sendMessage("A player tried and failed to hit you");
@@ -351,6 +347,18 @@ public class GameLogic {
         }
         advanceTurn();
         subject.notifyObservers(String.format("Player %s attacked in direction %s", this.player.getName(), direction));
+    }
+
+    private int findPlayerIdInDirectionAndRange(CompassDirection direction, int range) {
+        Location location;
+        for(int i = 1; i <= range; i++) {
+            location = this.player.getLocation().atCompassDirection(direction, i);
+            int victimId = getUserIDOfPlayerOnTile(location);
+            if (victimId != -1){
+                return victimId;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -434,6 +442,8 @@ public class GameLogic {
         if (item instanceof Armour) {
             this.player.sendMessage("You equip Armour");
         } else if (item instanceof Sword) {
+            WeaponDirector weaponDirector = new WeaponDirector(new SwordBuilder());
+            this.player.setWeapon(weaponDirector.build());
             this.player.sendMessage("You equip Sword");
         }
 
