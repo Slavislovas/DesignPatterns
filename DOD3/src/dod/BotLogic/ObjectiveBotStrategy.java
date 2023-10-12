@@ -1,10 +1,13 @@
 package dod.BotLogic;
 
-import java.util.ArrayList;
-
+import dod.command.Command;
+import dod.command.MoveCommand;
+import dod.command.PickUpCommand;
 import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
+
+import java.util.ArrayList;
 
 /**
  * Represents an objective Bot which is purely driven to complete the game by gathering gold.
@@ -12,6 +15,7 @@ import dod.game.Location;
  * @author Benjamin Dring
  */
 public class ObjectiveBotStrategy extends PathFindingBot {
+    private Command command;
 
     /**
      * The constructor for the objective bot it sets up it's decision making processes and
@@ -21,6 +25,7 @@ public class ObjectiveBotStrategy extends PathFindingBot {
      */
     public ObjectiveBotStrategy(GameCommunicator comm) {
         super(comm);
+        this.hasLantern = false;
     }
 
     @Override
@@ -30,13 +35,13 @@ public class ObjectiveBotStrategy extends PathFindingBot {
         char tile = getTile(playerLocation);
         //If it's on gold
         if ((tile == 'G') && (!hasRequiredGold())) {
-            this.pickupGold();
-            getComm().sendMessageToGame("PICKUP");
+            command = new PickUpCommand(getComm(), this, 'G');
+            this.getCommandInvoker().executeCommand(command);
         }
         //If its standing on a lantern and doesn't already have one it picks it up
         else if ((tile == 'L') && (!hasLantern)) {
-            this.hasLantern = true;
-            getComm().sendMessageToGame("PICKUP");
+            command = new PickUpCommand(getComm(), this, 'L');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         char targetTile;
@@ -48,20 +53,21 @@ public class ObjectiveBotStrategy extends PathFindingBot {
         }
 
         //It then gets the shortest path to its target tile
-        ArrayList<CompassDirection> goldPath = getShortestPathToTile(targetTile);
-        if (goldPath != null) {
-            //If a path has been found it moves the first direction in that path
-            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(goldPath.get(0)));
+        ArrayList<CompassDirection> targetDirection = getShortestPathToTile(targetTile);
+        if (targetDirection != null) {
+            command = new MoveCommand(getComm(), this, targetTile, targetDirection.get(0));
+            this.getCommandInvoker().executeCommand(command);
         }
         //If the target tile is not in sight it looks for a lantern instead
         else if (!hasLantern) {
-            ArrayList<CompassDirection> lanternPath = getShortestPathToTile('L');
-            if (lanternPath != null) {
-                //if a lantern path is found then take the first step to it
-                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(lanternPath.get(0)));
+            ArrayList<CompassDirection> lanternDirection = getShortestPathToTile('L');
+            if (lanternDirection != null) {
+                command = new MoveCommand(getComm(), this, 'L', lanternDirection.get(0));
+                this.getCommandInvoker().executeCommand(command);
             }
         }
         //If all else fails it moves randomly
-        getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation())));
+        command = new MoveCommand(getComm(), this, 'R', null);
+        this.getCommandInvoker().executeCommand(command);
     }
 }

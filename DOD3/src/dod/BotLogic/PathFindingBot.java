@@ -23,7 +23,7 @@ public abstract class PathFindingBot extends Bot {
         super(comm);
     }
 
-    protected ArrayList<CompassDirection> getShortestPathToTile(char tile) {
+    public ArrayList<CompassDirection> getShortestPathToTile(char tile) {
         ArrayList<CompassDirection> shortestPath = null;
         for (int row = 0; row < this.lookReply.length; row++) {
             for (int col = 0; col < this.lookReply[0].length; col++) {

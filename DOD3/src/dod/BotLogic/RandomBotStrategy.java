@@ -1,6 +1,10 @@
 package dod.BotLogic;
 
 import dod.Communicator.GameCommunicator;
+import dod.command.Command;
+import dod.command.EndTurnCommand;
+import dod.command.MoveCommand;
+import dod.command.PickUpCommand;
 import dod.game.Location;
 
 /**
@@ -9,6 +13,7 @@ import dod.game.Location;
  * @author Benjamin Dring
  */
 public class RandomBotStrategy extends Bot {
+    private Command command;
 
     /**
      * The constructor for the random bot it sets up it's decision making processes and
@@ -27,18 +32,19 @@ public class RandomBotStrategy extends Bot {
 
         //If the user is standing on gold and it needs it then it wants to pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
-            this.pickupGold();
-            getComm().sendMessageToGame("PICKUP");
+            command = new PickUpCommand(getComm(), this, 'G');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         //Otherwise we move randomly
         else {
             try {
                 //Forms a move command
-                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(playerLocation)));
+                command = new MoveCommand(getComm(), this, 'R', null);
+                this.getCommandInvoker().executeCommand(command);
             } catch (NullPointerException e) {
-                //If there are no directions just end the turn
-                getComm().sendMessageToGame("ENDTURN");
+                command = new EndTurnCommand(getComm());
+                this.getCommandInvoker().executeCommand(command);
             }
         }
     }

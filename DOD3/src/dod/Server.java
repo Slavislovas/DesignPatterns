@@ -34,7 +34,6 @@ public class Server extends Thread {
      */
     @Override
     public void run() {
-
         try {
             //Server is created
             server = new ServerSocket(port);
@@ -60,7 +59,5 @@ public class Server extends Thread {
             JOptionPane.showMessageDialog(null, "Server cannot be started - exiting program");
             System.exit(0);
         }
-
-
     }
 }

@@ -21,12 +21,16 @@ import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
 import dod.observer.Subject;
 import dod.singleton.Settings;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class controls the game logic and other such magic.
  * <p>
  * This has been modified by Benjamin Dring. It's important to note that all player threads have the same object of this class.
  */
+@Getter
+@Setter
 public class GameLogic {
     Map map;
 
@@ -764,30 +768,12 @@ public class GameLogic {
     }
 
     /**
-     * Checks to see if the game is over
-     *
-     * @return Boolean True indicates the game is over
-     */
-    public boolean isGameOver() {
-        return this.gameOver;
-    }
-
-    /**
      * Performs the look reply to every player
      */
     public void lookAll() {
         for (Player player : playerList) {
             player.look();
         }
-    }
-
-    /**
-     * Checks to see if the game has started
-     *
-     * @return Boolean indicates if the game has started
-     */
-    public boolean hasGameStarted() {
-        return this.gameStarted;
     }
 
     /**
@@ -800,35 +786,7 @@ public class GameLogic {
         this.gameStarted = true;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public Player getPlayerByIndex(int index){
         return playerList.get(index);
-    }
-
-    public Map getMap() {
-        return map;
-    }
-
-    public boolean isPlayerWon() {
-        return playerWon;
-    }
-
-    public void setPlayerWon(boolean playerWon) {
-        this.playerWon = playerWon;
-    }
-
-    public Random getRand() {
-        return rand;
-    }
-
-    public void setRand(Random rand){
-        this.rand = rand;
     }
 }
