@@ -153,7 +153,7 @@ public abstract class User implements PlayerListener {
                 goalSent = true;
                 update("GOAL " + this.game.getGoal());
             }
-            if ((game.isPlayerTurn(userID)) && (game.hasGameStarted())) {
+            if ((game.isPlayerTurn(userID)) && (game.isGameStarted())) {
                 //If it is the players turn then we need to send a message to the user
                 startTurn();
             }
@@ -182,7 +182,7 @@ public abstract class User implements PlayerListener {
          * @author Benjamin Dring
          * Makes sure that it is currently the user's turn if it isn't it throws an exception
          */
-        else if (!game.hasGameStarted()) {
+        else if (!game.isGameStarted()) {
             throw new CommandException("Game has not started");
         } else if (!game.isPlayerTurn(userID)) {
             throw new CommandException("It is not your turn");

@@ -21,7 +21,8 @@ public class MoveCommand implements Command {
     public void execute() {
         if (movementObjective == 'R') {
             moveRandomly();
-        } else if (movementObjective == 'G' || movementObjective == 'E' || movementObjective == 'L') {
+        } else if (movementObjective == 'G' || movementObjective == 'E'
+                || movementObjective == 'L' || movementObjective == 'P') {
             moveTowardObjective();
         }
     }

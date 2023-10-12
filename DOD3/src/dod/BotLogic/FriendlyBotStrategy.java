@@ -1,18 +1,15 @@
 package dod.BotLogic;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import dod.Communicator.GameCommunicator;
 import dod.command.Command;
+import dod.command.GiftCommand;
+import dod.command.MoveCommand;
 import dod.command.PickUpCommand;
 import dod.game.CompassDirection;
 import dod.game.Location;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class FriendlyBotStrategy extends PlayerFindingBot {
     private Command command;
 
@@ -35,8 +32,8 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
 
         //If it's standing on armour pick it up
         if ((tile == 'A') && (!hasArmour)) {
-            setCommand(new PickUpCommand(getComm(), this, 'A'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'A');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         //It then tries to give gold away
@@ -44,13 +41,11 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
         if (this.currentGold > 0) {
             //Gets surrounding players
             ArrayList<CompassDirection> surroundingPlayerDirections = getSurroundingPlayerDirections(playerLocation);
-            short numberOfNearbyPlayers = (short) surroundingPlayerDirections.size();
 
-            if (numberOfNearbyPlayers > 0) {
+            if (!surroundingPlayerDirections.isEmpty()) {
                 //If there is a nearby player then give gold to a player at random
-                short randomNumber = (short) (new Random()).nextInt(numberOfNearbyPlayers);
-                this.currentGold -= 1;
-                getComm().sendMessageToGame("GIFT " + getDirectionCharacter(surroundingPlayerDirections.get(randomNumber)));
+                command = new GiftCommand(getComm(), this, surroundingPlayerDirections);
+                this.getCommandInvoker().executeCommand(command);
             }
 
             //Otherwise it finds the nearest player
@@ -58,19 +53,20 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
 
             if (playerPath != null) {
                 //If there is a visible player then the bot moves towards them
-                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(playerPath.get(0)));
+                command = new MoveCommand(getComm(), this, 'P', playerPath.get(0));
+                this.getCommandInvoker().executeCommand(command);
             }
         }
 
         //Otherwise it picks up the lantern to maximise its player finding ability
         if ((tile == 'L') && (!hasLantern)) {
-            setCommand(new PickUpCommand(getComm(), this, 'L'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'L');
+            this.getCommandInvoker().executeCommand(command);
         }
         //Otherwise Pickup gold even if we have the right amount so it can give it away
         if ((tile == 'G')) {
-            setCommand(new PickUpCommand(getComm(), this, 'G'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'G');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         //If there is no one to give gold to or we do not have enough gold act objectively by using a target tile
@@ -82,20 +78,23 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
         }
 
         //Gets the shortest path to the target tile
-        ArrayList<CompassDirection> goldPath = getShortestPathToTile(targetTile);
-        if (goldPath != null) {
+        ArrayList<CompassDirection> targetDirection = getShortestPathToTile(targetTile);
+        if (targetDirection != null) {
             //If we find our path follow it
-            getComm().sendMessageToGame("MOVE " + getDirectionCharacter(goldPath.get(0)));
+            command = new MoveCommand(getComm(), this, targetTile, targetDirection.get(0));
+            this.getCommandInvoker().executeCommand(command);
         }
         //Otherwise go for the lantern if we do not already have it
         else if (!hasLantern) {
-            ArrayList<CompassDirection> lanternPath = getShortestPathToTile('L');
-            if (lanternPath != null) {
+            ArrayList<CompassDirection> lanternDirection = getShortestPathToTile('L');
+            if (lanternDirection != null) {
                 //If a lantern path is found follow it
-                getComm().sendMessageToGame("MOVE " + getDirectionCharacter(lanternPath.get(0)));
+                command = new MoveCommand(getComm(), this, 'L', lanternDirection.get(0));
+                this.getCommandInvoker().executeCommand(command);
             }
         }
         //If all else fails move randomly
-        getComm().sendMessageToGame("MOVE " + getDirectionCharacter(getRandomNonBlockDirection(getPlayerLocation())));
+        command = new MoveCommand(getComm(), this, 'R', null);
+        this.getCommandInvoker().executeCommand(command);
     }
 }

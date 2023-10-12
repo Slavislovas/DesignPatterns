@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import dod.Communicator.GameCommunicator;
+import dod.command.CommandInvoker;
 import dod.game.CompassDirection;
 import dod.game.Location;
 import dod.strategy.BotStrategy;
@@ -34,6 +35,7 @@ public abstract class Bot extends Thread implements BotStrategy {
 
     private boolean updatedLook; //Indicates if the look has been updated
     private Location playerLocation; //Player location in the dungeon
+    private CommandInvoker commandInvoker;
 
     /**
      * Sets up the bot for decision making
@@ -50,6 +52,7 @@ public abstract class Bot extends Thread implements BotStrategy {
         this.gameOver = false;
         this.updatedLook = false;
         this.playerLocation = null;
+        this.commandInvoker = new CommandInvoker();
     }
 
     /**

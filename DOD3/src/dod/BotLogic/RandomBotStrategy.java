@@ -6,14 +6,12 @@ import dod.command.EndTurnCommand;
 import dod.command.MoveCommand;
 import dod.command.PickUpCommand;
 import dod.game.Location;
-import lombok.Setter;
 
 /**
  * One of the Bot Logic Classes, this bot moves randomly and picks up items if it needs it.
  *
  * @author Benjamin Dring
  */
-@Setter
 public class RandomBotStrategy extends Bot {
     private Command command;
 
@@ -34,19 +32,19 @@ public class RandomBotStrategy extends Bot {
 
         //If the user is standing on gold and it needs it then it wants to pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
-            setCommand(new PickUpCommand(getComm(), this, 'G'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'G');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         //Otherwise we move randomly
         else {
             try {
                 //Forms a move command
-                setCommand(new MoveCommand(getComm(), this, 'R', null));
-                command.execute();
+                command = new MoveCommand(getComm(), this, 'R', null);
+                this.getCommandInvoker().executeCommand(command);
             } catch (NullPointerException e) {
-                setCommand(new EndTurnCommand(getComm()));
-                command.execute();
+                command = new EndTurnCommand(getComm());
+                this.getCommandInvoker().executeCommand(command);
             }
         }
     }

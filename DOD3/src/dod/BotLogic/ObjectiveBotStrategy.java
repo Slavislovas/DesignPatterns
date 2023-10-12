@@ -6,7 +6,6 @@ import dod.command.PickUpCommand;
 import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
-import lombok.Setter;
 
 import java.util.ArrayList;
 
@@ -15,7 +14,6 @@ import java.util.ArrayList;
  *
  * @author Benjamin Dring
  */
-@Setter
 public class ObjectiveBotStrategy extends PathFindingBot {
     private Command command;
 
@@ -37,13 +35,13 @@ public class ObjectiveBotStrategy extends PathFindingBot {
         char tile = getTile(playerLocation);
         //If it's on gold
         if ((tile == 'G') && (!hasRequiredGold())) {
-            setCommand(new PickUpCommand(getComm(), this, 'G'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'G');
+            this.getCommandInvoker().executeCommand(command);
         }
         //If its standing on a lantern and doesn't already have one it picks it up
         else if ((tile == 'L') && (!hasLantern)) {
-            setCommand(new PickUpCommand(getComm(), this, 'L'));
-            command.execute();
+            command = new PickUpCommand(getComm(), this, 'L');
+            this.getCommandInvoker().executeCommand(command);
         }
 
         char targetTile;
@@ -57,19 +55,19 @@ public class ObjectiveBotStrategy extends PathFindingBot {
         //It then gets the shortest path to its target tile
         ArrayList<CompassDirection> targetDirection = getShortestPathToTile(targetTile);
         if (targetDirection != null) {
-            setCommand(new MoveCommand(getComm(), this, targetTile, targetDirection.get(0)));
-            command.execute();
+            command = new MoveCommand(getComm(), this, targetTile, targetDirection.get(0));
+            this.getCommandInvoker().executeCommand(command);
         }
         //If the target tile is not in sight it looks for a lantern instead
         else if (!hasLantern) {
             ArrayList<CompassDirection> lanternDirection = getShortestPathToTile('L');
             if (lanternDirection != null) {
-                setCommand(new MoveCommand(getComm(), this, 'L', lanternDirection.get(0)));
-                command.execute();
+                command = new MoveCommand(getComm(), this, 'L', lanternDirection.get(0));
+                this.getCommandInvoker().executeCommand(command);
             }
         }
         //If all else fails it moves randomly
-        setCommand(new MoveCommand(getComm(), this, 'R', null));
-        command.execute();
+        command = new MoveCommand(getComm(), this, 'R', null);
+        this.getCommandInvoker().executeCommand(command);
     }
 }
