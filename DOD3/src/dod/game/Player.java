@@ -10,6 +10,8 @@ import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
 import dod.game.items.sword.Sword;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Class representing a player
@@ -18,6 +20,8 @@ import dod.game.items.sword.Sword;
  * in your coursework implementation, they are the game's internal
  * representation of a player, not used by the client side code.
  */
+@Getter
+@Setter
 public class Player implements GameItemConsumer {
     private String name;
 
@@ -76,19 +80,6 @@ public class Player implements GameItemConsumer {
     }
 
     /**
-     * Returns the name of the player
-     *
-     * @return The name of the player
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    public PlayerListener getListener(){
-        return this.listener;
-    }
-
-    /**
      * Sets the name of the player
      *
      * @param name The new name of the player
@@ -101,31 +92,6 @@ public class Player implements GameItemConsumer {
 
         this.name = name;
         this.defaultName = false;
-    }
-
-    /**
-     * Returns the current location of the player
-     *
-     * @return player's location
-     */
-    public Location getLocation() {
-        return this.location;
-    }
-
-    /**
-     * Sets the player to a new location
-     *
-     * @param location the player's new location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * @return The amount of gold the player has
-     */
-    public int getGold() {
-        return this.gold;
     }
 
     /**
@@ -150,13 +116,6 @@ public class Player implements GameItemConsumer {
 
     public void kill() {
         this.hp = 0;
-    }
-
-    /**
-     * @return The amount of HP the player has
-     */
-    public int getHp() {
-        return this.hp;
     }
 
     /**
