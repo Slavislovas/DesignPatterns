@@ -117,7 +117,7 @@ public class GameLogic {
     public int addPlayer(PlayerListener listener) {
         String playerName = MainMenu.getPlayerName();
 
-        Player player = new Player("Player 0", generateRandomStartLocation(),
+        Player player = new Player(playerName, generateRandomStartLocation(),
                 listener);
 
         if (settings.getUserRole(playerName) == "vip") {
@@ -348,7 +348,7 @@ public class GameLogic {
             victimPlayer.sendMessage("DIE You were killed by a player");
         }
         advanceTurn();
-        subject.notifyObservers(String.format("Player %s attacked in direction %s", this.player.getName(), direction));
+        subject.notifyObservers(String.format("%s attacked in direction %s", this.player.getName(), direction));
     }
 
     private int findPlayerIdInDirectionAndRange(CompassDirection direction, int range) {
@@ -407,7 +407,7 @@ public class GameLogic {
             this.player.sendMessage("DIE YOU GAVE UP THE GAME");
         }
         lookAll();
-        subject.notifyObservers(String.format("Player %s gifted gold", this.player.getName()));
+        subject.notifyObservers(String.format("%s gifted gold", this.player.getName()));
 	}
 
     /**
@@ -448,7 +448,7 @@ public class GameLogic {
         }
 
         advanceTurn();
-        subject.notifyObservers(String.format("Player %s picked up %s", this.player.getName(), item));
+        subject.notifyObservers(String.format("%s picked up %s", this.player.getName(), item));
     }
 
     /**
@@ -652,7 +652,7 @@ public class GameLogic {
             this.gameOver = true;
 
             lookAll();
-            subject.notifyObservers(String.format("Game has finished! Player %s has won", this.player.getName()));
+            subject.notifyObservers(String.format("Game has finished! %s has won", this.player.getName()));
 
             this.player.win();
 
@@ -660,10 +660,12 @@ public class GameLogic {
             //Now newTurn is called instead for dead players and when there is no Ap left
             if (this.player.isDead()) {
                 map.dropGold(this.player.getLocation());
+                subject.notifyObservers(String.format("%s is dead!", this.player.getName()));
                 newTurn();
                 lookAll();
             }
             if (this.player.remainingAp() == 0) {
+                subject.notifyObservers(String.format("%s has no turns!", this.player.getName()));
                 newTurn();
             }
         }
