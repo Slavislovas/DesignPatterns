@@ -23,6 +23,10 @@ public abstract class PathFindingBot extends Bot {
         super(comm);
     }
 
+    public PathFindingBot(GameCommunicator comm, PathFindingBot target) {
+        super(comm, target);
+    }
+
     public ArrayList<CompassDirection> getShortestPathToTile(char tile) {
         ArrayList<CompassDirection> shortestPath = null;
         for (int row = 0; row < this.lookReply.length; row++) {

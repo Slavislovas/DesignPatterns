@@ -24,6 +24,16 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
         this.hasArmour = false;
     }
 
+    public FriendlyBotStrategy(GameCommunicator comm, FriendlyBotStrategy target) {
+        super(comm, target);
+        if (target != null) {
+            this.command = target.command;
+        }
+    }
+
+    @Override
+    public Bot Clone(GameCommunicator comm) { return new FriendlyBotStrategy(comm, this); }
+
     @Override
     public void performAction() {
         //Gets the player location and tile

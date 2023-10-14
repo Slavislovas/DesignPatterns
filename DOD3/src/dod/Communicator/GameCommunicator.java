@@ -1,6 +1,7 @@
 package dod.Communicator;
 
 import dod.GUI.ClientListener;
+import dod.game.GameLogic;
 
 /**
  * A Generic game communicator class that gives functionality to communicate to a game.
@@ -37,5 +38,7 @@ public abstract class GameCommunicator {
      * @param message String the message to be sent
      */
     abstract public void sendMessageToGame(String message);
+
+    public abstract GameLogic GetGameLogic();
 
 }

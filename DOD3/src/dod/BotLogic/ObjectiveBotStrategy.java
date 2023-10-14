@@ -28,6 +28,16 @@ public class ObjectiveBotStrategy extends PathFindingBot {
         this.hasLantern = false;
     }
 
+    public ObjectiveBotStrategy(GameCommunicator comm, ObjectiveBotStrategy target) {
+        super(comm, target);
+        if (target != null) {
+            this.command = target.command;
+        }
+    }
+
+    @Override
+    public Bot Clone(GameCommunicator comm) { return new ObjectiveBotStrategy(comm, this); }
+
     @Override
     public void performAction() {
         //gets the player location and tile

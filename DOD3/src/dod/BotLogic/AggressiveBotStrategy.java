@@ -29,6 +29,16 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         this.hasSword = false;
     }
 
+    public AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
+        super(comm, target);
+        if (target != null) {
+            this.command = target.command;
+        }
+    }
+
+    @Override
+    public Bot Clone(GameCommunicator comm) { return new AggressiveBotStrategy(comm, this); }
+
     @Override
     public void performAction() {
         //Gets player location and tile

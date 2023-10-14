@@ -18,6 +18,10 @@ public abstract class PlayerFindingBot extends PathFindingBot {
         super(comm);
     }
 
+    public PlayerFindingBot(GameCommunicator comm, PlayerFindingBot target) {
+        super(comm, target);
+    }
+
     /**
      * Gets the surrounding tiles containing a player
      *
