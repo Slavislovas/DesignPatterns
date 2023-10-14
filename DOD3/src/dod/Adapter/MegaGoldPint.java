@@ -13,8 +13,15 @@ public class MegaGoldPint {
         return false;
     }
 
-
     public String toStringGold() {
         return "Mega gold pint";
+    }
+
+    public boolean isWalletGold() {
+        return false;
+    }
+
+    public boolean isBigGold() {
+        return true;
     }
 }

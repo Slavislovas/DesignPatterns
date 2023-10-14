@@ -71,7 +71,7 @@ public abstract class User implements PlayerListener {
      */
     @Override
     public void hpChange(int value) {
-        update("HITMOD " + value);
+        update("HP INCREASED BY " + value);
     }
 
     /**

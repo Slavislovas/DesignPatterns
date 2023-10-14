@@ -1,10 +1,25 @@
 package dod.decorator;
 
-public interface PlayerDecorator {
+import dod.game.Player;
 
-    int getGold();
+public abstract class PlayerDecorator extends Player {
+    protected Player player;
 
-    int getHp();
+    public PlayerDecorator(Player player) {
+        super(player.getName(), player.getLocation(), player.getListener());
+        this.player = player;
+    }
 
-    void sendMessage(String message);
+    public void addGold(int gold) {
+        player.addGold(gold);
+    }
+
+    public void incrementHealth(int hp) {
+        player.incrementHealth(hp);
+    }
+
+    public void sendMessage(String message) {
+        player.sendMessage(message);
+    }
 }
+

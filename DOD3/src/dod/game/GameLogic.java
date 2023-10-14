@@ -1,28 +1,28 @@
 package dod.game;
 
-import java.io.FileNotFoundException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Random;
-
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
 import dod.builder.SwordWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
-import dod.decorator.AdminPlayer;
-import dod.decorator.SuperVipPlayer;
-import dod.decorator.VipPlayer;
+import dod.decorator.GoldDecorator;
+import dod.decorator.HealthDecorator;
+import dod.decorator.MessageDecorator;
 import dod.factory.MapCreator;
-import dod.game.items.armour.Armour;
 import dod.game.items.GameItem;
+import dod.game.items.armour.Armour;
 import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
 import dod.observer.Subject;
 import dod.singleton.Settings;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class controls the game logic and other such magic.
@@ -55,6 +55,8 @@ public class GameLogic {
     private Subject subject = new Subject();
 
     private Random rand;
+
+    private Settings settings = Settings.getInstance();
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -113,29 +115,27 @@ public class GameLogic {
      * @return int the UserID which is equivalent to the list index
      */
     public int addPlayer(PlayerListener listener) {
-        Settings settings = Settings.getInstance();
         String playerName = MainMenu.getPlayerName();
-        //        GameLogic.playerList.get(listener.ge/**/)
-
-        //  if(settings.getUserRole(listener.ge))
-        //creates the player
 
         Player player = new Player("Player 0", generateRandomStartLocation(),
                 listener);
 
-
         if (settings.getUserRole(playerName) == "vip") {
-            player = new VipPlayer("Player 0", generateRandomStartLocation(),
-                    listener);
+            System.out.println("VIP DECOR");
+            player = new GoldDecorator(player);
         }
         if (settings.getUserRole(playerName) == "supervip") {
-            player = new SuperVipPlayer("Player 0", generateRandomStartLocation(),
-                    listener);
+            System.out.println("SUPERVIP DECOR");
+            player = new HealthDecorator(player);
+            player = new GoldDecorator(player);
         }
         if (settings.getUserRole(playerName) == "admin") {
-            player = new AdminPlayer("Player 0", generateRandomStartLocation(),
-                    listener);
+            System.out.println("ADMIN DECOR");
+            player = new HealthDecorator(player);
+            player = new MessageDecorator(player);
+            player = new GoldDecorator(player);
         }
+
         playerList.add(player);
 
         //If this is the only player then set it as the current player
