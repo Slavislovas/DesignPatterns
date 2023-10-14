@@ -11,6 +11,7 @@ public class EndTurnCommand implements Command {
 
     @Override
     public void execute() {
+        System.out.println("Executing end turn command");
         comm.sendMessageToGame("ENDTURN");
     }
 }
