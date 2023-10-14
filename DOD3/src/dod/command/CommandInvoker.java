@@ -7,7 +7,6 @@ public class CommandInvoker {
 
     public void executeCommand(Command command) {
         System.out.println("Received command which needs to be executed: ");
-        System.out.println(command.toString());
         command.execute();
         commandHistory.add(command);
     }
