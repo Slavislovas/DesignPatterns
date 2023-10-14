@@ -14,9 +14,9 @@ public class Settings {
     private Settings() {
         userRoles = new HashMap<>();
         // Initial roles
-        userRoles.put("test1", "vip");
-        userRoles.put("test2", "supervip");
-        userRoles.put("test3", "admin");
+        userRoles.put("TEST1", "vip");
+        userRoles.put("TEST2", "supervip");
+        userRoles.put("TEST3", "admin");
 
         possibleDirections.add(CompassDirection.NORTH);
         possibleDirections.add(CompassDirection.SOUTH);
@@ -26,9 +26,16 @@ public class Settings {
 
     public static synchronized Settings getInstance() {
         if (instance == null) {
+            System.out.println("-- NEW SINGLETON CREATED");
             instance = new Settings();
+        } else {
+            System.out.println("-- SAME SINGLETON RETURNED");
         }
         return instance;
+    }
+
+    public int getTextBoxSize() {
+        return 15;
     }
 
     public String getUserRole(String name) {

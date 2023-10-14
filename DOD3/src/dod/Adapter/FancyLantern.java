@@ -13,4 +13,8 @@ public class FancyLantern {
     public String toStringLantern() {
         return "Fancy lantern";
     }
+
+    public boolean isDurableLantern() {
+        return true;
+    }
 }

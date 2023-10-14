@@ -1,16 +1,16 @@
 package dod.BotLogic;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import dod.Communicator.GameCommunicator;
 import dod.command.CommandInvoker;
 import dod.game.CompassDirection;
 import dod.game.Location;
-import dod.strategy.BotStrategy;
 import dod.singleton.Settings;
 import lombok.Getter;
 import lombok.Setter;
+import dod.strategy.BotStrategy;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Represents a bot that will play the game.
@@ -36,6 +36,8 @@ public abstract class Bot extends Thread implements BotStrategy {
     private boolean updatedLook; //Indicates if the look has been updated
     private Location playerLocation; //Player location in the dungeon
     private CommandInvoker commandInvoker;
+
+    Settings settings = Settings.getInstance();
 
     /**
      * Sets up the bot for decision making
@@ -150,7 +152,7 @@ public abstract class Bot extends Thread implements BotStrategy {
      */
     public CompassDirection getRandomNonBlockDirection(Location location) {
         //All directions are addes to an array list
-        ArrayList<CompassDirection> possibleDirections = new ArrayList<>(Settings.getInstance().getPossibleDirections());
+        ArrayList<CompassDirection> possibleDirections = new ArrayList<>(settings.getPossibleDirections());
 
         //for each direction check if the location in that direction will block a player
         for (int index = 0; index < possibleDirections.size(); ) {

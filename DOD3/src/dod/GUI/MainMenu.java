@@ -1,39 +1,21 @@
 package dod.GUI;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import dod.BotLogic.*;
+import dod.Communicator.GameCommunicator;
+import dod.Communicator.LocalGameCommunicator;
+import dod.Communicator.NetworkGameCommunicator;
+import dod.Server;
+import dod.game.GameLogic;
+import dod.singleton.Settings;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-
-import dod.BotLogic.AggressiveBotStrategy;
-import dod.BotLogic.Bot;
-import dod.BotLogic.FriendlyBotStrategy;
-import dod.BotLogic.ObjectiveBotStrategy;
-import dod.BotLogic.RandomBotStrategy;
-import dod.Communicator.GameCommunicator;
-import dod.Communicator.LocalGameCommunicator;
-import dod.Communicator.NetworkGameCommunicator;
-import dod.Server;
-import dod.game.GameLogic;
 
 
 /**
@@ -45,8 +27,8 @@ public class MainMenu extends JFrame {
     private static final long serialVersionUID = 2304527111075624043L;
 
     private Container canvas;
-    private final short textBoxSize = 15; //the set text box side
 
+    private Settings settings = Settings.getInstance();
     /**
      * Constructor of the class that sets up the JFrame Container
      */
@@ -597,7 +579,7 @@ public class MainMenu extends JFrame {
      */
     private JTextField getNewTextField(String defaultText) {
         //Uses standardised text box size
-        JTextField textField = new JTextField(textBoxSize);
+        JTextField textField = new JTextField(settings.getTextBoxSize());
         textField.setText(defaultText);
         return textField;
     }
