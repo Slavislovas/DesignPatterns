@@ -567,7 +567,7 @@ public class MainMenu extends JFrame {
      */
     private void updateMenu() {
         //Update functions are called
-        this.show();
+        this.setVisible(true);
         canvas.repaint();
     }
 

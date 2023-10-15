@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import dod.GUI.ClientListener;
+import dod.game.GameLogic;
 
 /**
  * A GameCommunicator that provides functionality for communicating to a server game over a network
@@ -73,6 +74,9 @@ public class NetworkGameCommunicator extends GameCommunicator {
             }
         }
     }
+
+    @Override
+    public GameLogic GetGameLogic() { return null; }
 
     /**
      * Listens to the game and relays any messages to the client listener

@@ -4,6 +4,7 @@ import dod.Communicator.GameCommunicator;
 import dod.command.CommandInvoker;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import dod.prototypePattern.ICloneable;
 import dod.singleton.Settings;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ import java.util.Random;
  */
 @Getter
 @Setter
-public abstract class Bot extends Thread implements BotStrategy {
+public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot> {
     private GameCommunicator comm; //The game communicator
     protected char[][] lookReply; //Stores the look reply in a two dimensional char array
 
@@ -55,6 +56,26 @@ public abstract class Bot extends Thread implements BotStrategy {
         this.updatedLook = false;
         this.playerLocation = null;
         this.commandInvoker = new CommandInvoker();
+    }
+
+    public Bot(GameCommunicator comm, Bot target) {
+        if (comm != null)
+            this.comm = comm;
+
+        if (target != null) {
+            this.lookReply = target.lookReply;
+            this.goal = target.goal;
+            this.currentGold = target.currentGold;
+            this.hasLantern = target.hasLantern;
+            this.hasArmour = target.hasArmour;
+            this.hasSword = target.hasSword;
+            this.myTurn = target.myTurn;
+            this.gameOver = target.gameOver;
+            this.updatedLook = target.updatedLook;
+            this.playerLocation = target.playerLocation;
+            this.commandInvoker = target.commandInvoker;
+            this.settings = target.settings;
+        }
     }
 
     /**
@@ -132,6 +153,10 @@ public abstract class Bot extends Thread implements BotStrategy {
      */
     protected boolean hasRequiredGold() {
         return (this.currentGold >= this.goal);
+    }
+
+    protected int goldLeftToCollect() {
+        return this.goal - this.currentGold;
     }
 
     /**

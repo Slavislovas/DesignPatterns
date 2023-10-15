@@ -29,6 +29,9 @@ public class LocalGameCommunicator extends GameCommunicator {
         user.sendCommand(message);
     }
 
+    @Override
+    public GameLogic GetGameLogic() { return this.user.getGame();  }
+
     /**
      * Message function that sends a message to the client listener object
      *

@@ -1,6 +1,8 @@
 package dod.BotLogic;
 
 import dod.Communicator.GameCommunicator;
+import dod.Communicator.LocalGameCommunicator;
+import dod.GUI.BotPlayerGUI;
 import dod.command.Command;
 import dod.command.EndTurnCommand;
 import dod.command.MoveCommand;
@@ -25,6 +27,16 @@ public class RandomBotStrategy extends Bot {
         super(comm);
     }
 
+    public RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {
+        super(comm, target);
+        if (target != null) {
+            this.command = target.command;
+        }
+    }
+
+    @Override
+    public Bot Clone(GameCommunicator comm) { return new RandomBotStrategy(comm, this); }
+
     @Override
     public void performAction() {
         Location playerLocation = getPlayerLocation();
@@ -32,6 +44,13 @@ public class RandomBotStrategy extends Bot {
 
         //If the user is standing on gold and it needs it then it wants to pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {
+            if (goldLeftToCollect() <= 2) {
+                var gameLogic = getComm().GetGameLogic();
+                if (gameLogic != null) {
+                    var localGameCommunicator = new LocalGameCommunicator(gameLogic);
+                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, new RandomBotStrategy(localGameCommunicator, this));
+                }
+            }
             command = new PickUpCommand(getComm(), this, 'G');
             this.getCommandInvoker().executeCommand(command);
         }

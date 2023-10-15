@@ -4,6 +4,7 @@ import dod.game.CommandException;
 import dod.game.CompassDirection;
 import dod.game.GameLogic;
 import dod.game.PlayerListener;
+import lombok.Getter;
 
 /**
  * Represents a generic user and has methods that is common for both local and network users.
@@ -12,6 +13,8 @@ import dod.game.PlayerListener;
  *
  * @author Benjamin Dring
  */
+
+@Getter
 public abstract class User implements PlayerListener {
     // The game which the command line user will operate on.
     // This is protected to enforce the use of "processCommand".
