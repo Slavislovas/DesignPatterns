@@ -14,21 +14,25 @@ import java.util.Random;
 public class DefaultMapGameItemFactory extends AbstractFactory {
     @Override
     public GameItem createHealth() {
+        System.out.println("AbstractFactory: creating WeakHealth");
         return new WeakHealth();
     }
 
     @Override
     public GameItem createArmour() {
+        System.out.println("AbstractFactory: creating LightArmour");
         return new LightArmour();
     }
 
     @Override
     public GameItem createSword() {
+        System.out.println("AbstractFactory: creating WeakSword");
         return new WeakSword();
     }
 
     @Override
     public GameItem createLantern() {
+        System.out.println("AbstractFactory: creating WeakLantern");
         Random random = new Random();
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
@@ -41,6 +45,7 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
 
     @Override
     public GameItem createGold() {
+        System.out.println("AbstractFactory: creating SmallGold");
         Random random = new Random();
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
@@ -49,6 +54,5 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
         } else { // 99% chance to get MediumGold
             return new SmallGold();
         }
-
     }
 }
