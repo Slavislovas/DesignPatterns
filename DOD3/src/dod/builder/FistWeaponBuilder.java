@@ -27,6 +27,7 @@ public class FistWeaponBuilder implements WeaponBuilder {
 
     @Override
     public Weapon build() {
+        System.out.println("Builder: fist weapon built");
         return weapon;
     }
 }
