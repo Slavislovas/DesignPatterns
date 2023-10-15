@@ -485,12 +485,16 @@ public class MainMenu extends JFrame {
                 Bot bot;
                 //Bot Type Radio buttons determines the dynamic type of bot
                 if (randomBotButton.isSelected()) {
+                    System.out.println("Random bot selected");
                     bot = new RandomBotStrategy(comm);
                 } else if (objectiveBotButton.isSelected()) {
+                    System.out.println("Objective bot selected");
                     bot = new ObjectiveBotStrategy(comm);
                 } else if (aggresiveBotButton.isSelected()) {
+                    System.out.println("Aggressive bot selected");
                     bot = new AggressiveBotStrategy(comm);
                 } else if (friendlyBotButton.isSelected()) {
+                    System.out.println("Friendly bot selected");
                     bot = new FriendlyBotStrategy(comm);
                 } else {
                     //If none of them are selected display error
