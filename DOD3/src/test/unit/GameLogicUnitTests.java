@@ -1,4 +1,4 @@
-package test;
+package test.unit;
 
 import dod.User;
 import dod.game.CommandException;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class GameLogicTests {
+public class GameLogicUnitTests {
     @InjectMocks
     GameLogic gameLogic = new GameLogic("DOD3/defaultMap");
     @Spy
@@ -57,7 +57,7 @@ public class GameLogicTests {
     int player1InitialAp = player1.getAp();
     int player2InitialAp = player2.getAp();
 
-    public GameLogicTests() throws FileNotFoundException, ParseException {
+    public GameLogicUnitTests() throws FileNotFoundException, ParseException {
     }
 
     @BeforeEach
