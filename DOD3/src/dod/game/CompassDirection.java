@@ -4,7 +4,7 @@ package dod.game;
  * An enum to handle the different compass Directions
  */
 public enum CompassDirection {
-    NORTH('N'), EAST('E'), SOUTH('S'), WEST('W');
+    NORTH('N'), EAST('E'), SOUTH('S'), WEST('W'), NORTH_EAST('X');
 
     // This and the constructor handle text to enum conversion
     private char text;

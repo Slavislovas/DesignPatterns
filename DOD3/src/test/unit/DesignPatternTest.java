@@ -1,4 +1,4 @@
-package test;
+package test.unit;
 
 import com.ginsberg.junit.exit.ExpectSystemExitWithStatus;
 import dod.Communicator.LocalGameCommunicator;
