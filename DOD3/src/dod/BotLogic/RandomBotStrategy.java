@@ -33,7 +33,7 @@ public class RandomBotStrategy extends Bot {
         this.strategy = this;
     }
 
-    public RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {
+    private RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;
@@ -64,7 +64,7 @@ public class RandomBotStrategy extends Bot {
                 var gameLogic = getComm().GetGameLogic();
                 if (gameLogic != null) {
                     var localGameCommunicator = new LocalGameCommunicator(gameLogic);
-                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, new RandomBotStrategy(localGameCommunicator, this));
+                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, this.Clone(localGameCommunicator));
                 }
             }
             command = new PickUpCommand(getComm(), this, 'G');

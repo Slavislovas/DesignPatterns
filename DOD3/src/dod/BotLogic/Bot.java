@@ -61,7 +61,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
         this.commandInvoker = new CommandInvoker();
     }
 
-    public Bot(GameCommunicator comm, Bot target) {
+    protected Bot(GameCommunicator comm, Bot target) {
         if (comm != null)
             this.comm = comm;
 
