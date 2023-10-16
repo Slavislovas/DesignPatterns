@@ -41,7 +41,7 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
         this.settings = bot.settings;
     }
 
-    public FriendlyBotStrategy(GameCommunicator comm, FriendlyBotStrategy target) {
+    private FriendlyBotStrategy(GameCommunicator comm, FriendlyBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;

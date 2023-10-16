@@ -18,7 +18,7 @@ public abstract class PlayerFindingBot extends PathFindingBot {
         super(comm);
     }
 
-    public PlayerFindingBot(GameCommunicator comm, PlayerFindingBot target) {
+    protected PlayerFindingBot(GameCommunicator comm, PlayerFindingBot target) {
         super(comm, target);
     }
 

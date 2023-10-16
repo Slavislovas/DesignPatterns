@@ -46,7 +46,7 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         this.settings = bot.settings;
     }
 
-    public AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
+    private AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;

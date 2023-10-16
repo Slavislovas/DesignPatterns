@@ -23,7 +23,7 @@ public abstract class PathFindingBot extends Bot {
         super(comm);
     }
 
-    public PathFindingBot(GameCommunicator comm, PathFindingBot target) {
+    protected PathFindingBot(GameCommunicator comm, PathFindingBot target) {
         super(comm, target);
     }
 
