@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import dod.Communicator.GameCommunicator;
+import lombok.Getter;
 
 /**
  * Represents the Dungeon of Dooom 3 GUI for the Human Player.
@@ -18,6 +19,7 @@ import dod.Communicator.GameCommunicator;
  *
  * @author Benjamin Dring
  */
+@Getter
 public class HumanPlayerGUI extends PlayerGUI {
     private static final long serialVersionUID = -9146521400683926566L;
 

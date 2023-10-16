@@ -2,12 +2,14 @@ package dod.Communicator;
 
 import dod.LocalUser;
 import dod.game.GameLogic;
+import lombok.Getter;
 
 /**
  * A GameCommunicator object that communicates to the game locally through localUser
  *
  * @author Benjamin Dring
  */
+@Getter
 public class LocalGameCommunicator extends GameCommunicator {
     private LocalUser user; //The localuser object
 
