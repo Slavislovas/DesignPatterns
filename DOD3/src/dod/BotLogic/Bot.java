@@ -55,6 +55,9 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
         this.gameOver = false;
         this.updatedLook = false;
         this.playerLocation = null;
+        this.hasSword = false;
+        this.hasArmour = false;
+        this.hasLantern = false;
         this.commandInvoker = new CommandInvoker();
     }
 

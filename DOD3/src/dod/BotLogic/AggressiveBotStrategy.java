@@ -26,7 +26,24 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
      */
     public AggressiveBotStrategy(GameCommunicator comm) {
         super(comm);
-        this.hasSword = false;
+        System.out.println("Creating Bot with Aggressive Strategy");
+    }
+
+    public AggressiveBotStrategy(GameCommunicator comm, Bot bot) {
+        super(comm);
+        System.out.println("Creating Bot with Aggressive Strategy");
+        this.lookReply = bot.lookReply;
+        this.goal = bot.goal;
+        this.currentGold = bot.currentGold;
+        this.hasLantern = bot.hasLantern;
+        this.hasArmour = bot.hasArmour;
+        this.hasSword = bot.hasSword;
+        this.setMyTurn(bot.isMyTurn());
+        this.setGameOver(bot.isGameOver());
+        this.setUpdatedLook(bot.isUpdatedLook());
+        this.setPlayerLocation(bot.getPlayerLocation());
+        this.setCommandInvoker(bot.getCommandInvoker());
+        this.settings = bot.settings;
     }
 
     public AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
