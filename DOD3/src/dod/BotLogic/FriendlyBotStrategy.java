@@ -21,6 +21,7 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
      */
     public FriendlyBotStrategy(GameCommunicator comm) {
         super(comm);
+        setBotStrategy(this);
         System.out.println("Creating Bot with Friendly Strategy");
     }
 
@@ -38,6 +39,7 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
         this.setUpdatedLook(bot.isUpdatedLook());
         this.setPlayerLocation(bot.getPlayerLocation());
         this.setCommandInvoker(bot.getCommandInvoker());
+        this.setBotStrategy(bot.getBotStrategy());
         this.settings = bot.settings;
     }
 
