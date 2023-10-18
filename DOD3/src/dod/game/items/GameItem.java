@@ -1,5 +1,7 @@
 package dod.game.items;
 
+import dod.bridgePattern.IItemType;
+
 /**
  * A class to represent the items on the map.
  * <p>
@@ -9,6 +11,15 @@ package dod.game.items;
  */
 
 public abstract class GameItem {
+
+    protected IItemType itemType;
+
+    public GameItem() { }
+
+    public GameItem(IItemType type) {
+        itemType = type;
+    }
+
     /**
      * Process the action of picking up an item.
      *

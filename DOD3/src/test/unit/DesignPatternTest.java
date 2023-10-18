@@ -6,24 +6,12 @@ import dod.GUI.HumanPlayerGUI;
 import dod.GUI.PlayerGUI;
 import dod.LocalUser;
 import dod.abstractfactory.AbstractFactory;
+import dod.bridgePattern.IItemType;
+import dod.bridgePattern.SmallItem;
 import dod.factory.Creator;
 import dod.factory.MapCreator;
 import dod.game.GameLogic;
-import dod.game.items.armour.HeavyArmour;
-import dod.game.items.armour.LightArmour;
-import dod.game.items.armour.MediumArmour;
-import dod.game.items.gold.LargeGold;
-import dod.game.items.gold.MediumGold;
-import dod.game.items.gold.SmallGold;
-import dod.game.items.health.MediumHealth;
-import dod.game.items.health.StrongHealth;
-import dod.game.items.health.WeakHealth;
-import dod.game.items.lantern.MediumLantern;
-import dod.game.items.lantern.StrongLantern;
-import dod.game.items.lantern.WeakLantern;
-import dod.game.items.sword.MediumSword;
-import dod.game.items.sword.StrongSword;
-import dod.game.items.sword.WeakSword;
+import dod.game.items.gold.Gold;
 import dod.game.maps.DefaultMap;
 import dod.game.maps.Map;
 import dod.game.maps.sMap;
@@ -35,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,33 +73,33 @@ class DesignPatternTest {
     void abstractFactory_defaultMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/defaultMap");
         AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
-        assertTrue(defaultMapGameItemFactory.createGold() instanceof SmallGold);
-        assertTrue(defaultMapGameItemFactory.createArmour() instanceof LightArmour);
-        assertTrue(defaultMapGameItemFactory.createSword() instanceof WeakSword);
-        assertTrue(defaultMapGameItemFactory.createHealth() instanceof WeakHealth);
-        assertTrue(defaultMapGameItemFactory.createLantern() instanceof WeakLantern);
+        assertEquals("Small gold pile", defaultMapGameItemFactory.createGold().toString());
+        assertEquals("Small armour", defaultMapGameItemFactory.createArmour().toString());
+        assertEquals("Small sword", defaultMapGameItemFactory.createSword().toString());
+        assertEquals("Small health potion", defaultMapGameItemFactory.createHealth().toString());
+        assertEquals("Small lantern", defaultMapGameItemFactory.createLantern().toString());
     }
 
     @Test
     void abstractFactory_SMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/sMap");
         AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
-        assertTrue(defaultMapGameItemFactory.createGold() instanceof MediumGold);
-        assertTrue(defaultMapGameItemFactory.createArmour() instanceof MediumArmour);
-        assertTrue(defaultMapGameItemFactory.createSword() instanceof MediumSword);
-        assertTrue(defaultMapGameItemFactory.createHealth() instanceof MediumHealth);
-        assertTrue(defaultMapGameItemFactory.createLantern() instanceof MediumLantern);
+        assertEquals("Medium gold pile", defaultMapGameItemFactory.createGold().toString());
+        assertEquals("Medium armour", defaultMapGameItemFactory.createArmour().toString());
+        assertEquals("Medium sword", defaultMapGameItemFactory.createSword().toString());
+        assertEquals("Medium health potion", defaultMapGameItemFactory.createHealth().toString());
+        assertEquals("Medium lantern", defaultMapGameItemFactory.createLantern().toString());
     }
 
     @Test
     void abstractFactory_VSMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/vsMap");
         AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
-        assertTrue(defaultMapGameItemFactory.createGold() instanceof LargeGold);
-        assertTrue(defaultMapGameItemFactory.createArmour() instanceof HeavyArmour);
-        assertTrue(defaultMapGameItemFactory.createSword() instanceof StrongSword);
-        assertTrue(defaultMapGameItemFactory.createHealth() instanceof StrongHealth);
-        assertTrue(defaultMapGameItemFactory.createLantern() instanceof StrongLantern);
+        assertEquals("Large gold pile", defaultMapGameItemFactory.createGold().toString());
+        assertEquals("Large armour", defaultMapGameItemFactory.createArmour().toString());
+        assertEquals("Large sword", defaultMapGameItemFactory.createSword().toString());
+        assertEquals("Large health potion", defaultMapGameItemFactory.createHealth().toString());
+        assertEquals("Large lantern", defaultMapGameItemFactory.createLantern().toString());
     }
 
     @Test

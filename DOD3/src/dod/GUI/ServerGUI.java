@@ -65,7 +65,7 @@ public class ServerGUI extends MessageFeedGUI implements ActionListener {
         this.setSize(525, 600);
         this.setTitle("Server Control");
         //Display components
-        this.show();
+        this.setVisible(true);
     }
 
     @Override

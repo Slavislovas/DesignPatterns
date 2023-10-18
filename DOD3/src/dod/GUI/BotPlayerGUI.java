@@ -64,7 +64,7 @@ public class BotPlayerGUI extends PlayerGUI {
         canvas.add(getMessenger());
 
         this.setSize(1500, 750);
-        this.show();
+        this.setVisible(true);
     }
 
     /**
