@@ -224,7 +224,7 @@ public abstract class User implements PlayerListener {
 
         } else if (command.equals("GIFT")) {
             if (arg == null) {
-                throw new CommandException("ATTACK needs a direction");
+                throw new CommandException("GIFT needs a direction");
             }
 
             this.game.clientGift(getDirection(arg));
