@@ -5,91 +5,78 @@ import dod.Communicator.GameCommunicator;
 import dod.Communicator.LocalGameCommunicator;
 import dod.Communicator.NetworkGameCommunicator;
 import dod.Server;
+import dod.facadePattern.*;
+import dod.facadePattern.Canvas;
+import dod.facadePattern.TextField;
 import dod.game.GameLogic;
 import dod.singleton.Settings;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serial;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 
 
 /**
- * A GUI class that displays the Selection Menus that allows the user to set up their desired session of Dungeon of Dooom 3
+ * A GUI class that displays the Selection Menus that allows the user to set up their desired session of Dungeon of Doom 3
  *
  * @author Benjamin Dring
  */
 public class MainMenu extends JFrame {
+
+    @Serial
     private static final long serialVersionUID = 2304527111075624043L;
 
-    private Container canvas;
+    private final IUiElementFacade uiElementFacade;
 
-    private Settings settings = Settings.getInstance();
+    private final Canvas canvas;
+
+    private final Settings settings = Settings.getInstance();
     /**
      * Constructor of the class that sets up the JFrame Container
      */
     public MainMenu() {
-        canvas = getContentPane();
-        canvas.setLayout(new GridBagLayout()); //All menus use the grid bag layout
-        canvas.setBackground(Color.BLACK); //Starts off with a black background
+        uiElementFacade = new UiElementFacade();
+        canvas = uiElementFacade.CreateCanvas(getContentPane());
+        canvas.setCanvasLayout(LayoutTypes.GridBag); //All menus use the grid bag layout
+        canvas.setCanvasBackground(Color.BLACK); //Starts off with a black background
     }
 
     /**
-     * Displays the Title Menu and gives all buttons the the required functionality
+     * Displays the Title Menu and gives all buttons the required functionality
      */
     public void displayTitleMenu() {
         this.setSize(1000, 300); //first menu is larger than the others
-        canvas.removeAll(); //removes any previous components
-        this.setTitle("DUNGEON OF DOOOM");
-        GridBagConstraints gbc = getNewgbc();
+        canvas.removeAllElements(); //removes any previous components
+        this.setTitle("DUNGEON OF DOOM");
 
-        //The two buttons are stored in a Grid Layout JPanel
-        JPanel startButtons = new JPanel();
-        startButtons.setLayout(new GridLayout(1, 2));
+        var fill = GridBagConstraints.NONE;
+        var insets = new Insets(5, 5, 5, 5);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        //The two buttons are stored in a Grid Layout Panel
+        var startButtons = uiElementFacade.CreatePanel();
+        startButtons.setPanelLayout(LayoutTypes.Grid, 1, 2);
+
         //Create and Add multiplayer button
-        JButton networkButton = new JButton("Multiplayer");
-        networkButton.setToolTipText("Play over a network");
-        networkButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                displayNetworkGameMenu();
-            }
-        });
-        startButtons.add(networkButton);
+        var networkButton = uiElementFacade.CreateButton("Multiplayer", "Play over a network", actionListener -> displayNetworkGameMenu());
+        startButtons.addButton(networkButton, 0, 1, fill, insets);
 
         //Create and Add Single button
-        gbc.gridx = 1;
-        JButton localButton = new JButton("Single Player");
-        localButton.setToolTipText("Play locally");
-        localButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                displayLocalSettingsMenu();
-            }
-        });
-        startButtons.add(localButton);
+        var localButton = uiElementFacade.CreateButton("Single Player", "Play locally", actionListener -> displayLocalSettingsMenu());
+        startButtons.addButton(localButton, 1, 1, fill, insets);
 
 
         //Add the buttons panel to the container
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        canvas.add(startButtons, gbc);
+        canvas.addPanel(startButtons, 0, 1, fill, insets);
 
-        //Creates and adds the title picture JLabel to the container
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        JLabel titlePicture = new JLabel();
+        //Creates and adds the title picture Label to the container
+        var titlePicture = uiElementFacade.CreateLabel(null);
         ImageIcon imageIcon = new ImageIcon(getClass().getResource("Title.png"), "");
-        titlePicture.setIcon(imageIcon);
-        canvas.add(titlePicture, gbc);
+        titlePicture.setLabelIcon(imageIcon);
+        canvas.addLabel(titlePicture, 0, 0, 1, fill, insets);
 
         //Update container
         updateMenu();
@@ -99,88 +86,68 @@ public class MainMenu extends JFrame {
      * Displays the Menu for single player mode
      */
     private void displayLocalSettingsMenu() {
-        //Colour is reset, menu is resized and title is changed
+        //Color is reset, menu is resized and title is changed
         this.setSize(450, 300);
-        canvas.setBackground(null);
+        canvas.setCanvasBackground(null);
         this.setTitle("Local Settings");
         //Previous parts are removed
-        canvas.removeAll();
-        GridBagConstraints gbc = getNewgbc();
+        canvas.removeAllElements();
 
         //Text "Map Name" is added
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        JLabel mapLabel = new JLabel("Map Name");
-        canvas.add(mapLabel, gbc);
+        var mapLabel = uiElementFacade.CreateLabel("Map Name");
+        canvas.addLabel(mapLabel, 0, 0);
 
         //Text field for map name is added defaultMap is entered automatically
-        gbc.gridx = 1;
-        final JTextField mapTextField = getNewTextField("DOD3/defaultMap");
-        canvas.add(mapTextField, gbc);
+        final var mapTextField = getNewTextField("DOD3/defaultMap");
+        canvas.addTextField(mapTextField, 1, 0);
 
         //Text "Name" is added
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        JLabel nameLabel = new JLabel("Name");
-        canvas.add(nameLabel, gbc);
+        var nameLabel = uiElementFacade.CreateLabel("Name");
+        canvas.addLabel(nameLabel, 0, 1);
 
         //Text Field for the players name is added it is blank by default
-        gbc.gridx = 1;
-        final JTextField nameTextField = getNewTextField("");
-        canvas.add(nameTextField, gbc);
+        final var nameTextField = getNewTextField("");
+        canvas.addTextField(nameTextField, 1, 1);
 
         //Create the Bot Button
-        gbc.gridy = 2;
-        JButton botButton = new JButton("Play as Bot");
-        botButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                try {
-                    //Game and Communicator is made
-                    GameLogic game = new GameLogic(mapTextField.getText()); //Map name is taken from the text field
-                    //Bot Selection Menu is displayed
-                    name = nameTextField.getText();
-                    displayBotSelectionMenu(new LocalGameCommunicator(game), nameTextField.getText(), false); //Name is taken from the text field
-                    //Game is started
-                    game.startGame();
-                    //Catch statements send error message using JOptionPanes, they are located here so the user may enter in the details again
-                } catch (FileNotFoundException e) {
-                    JOptionPane.showMessageDialog(null, "Map File not Found");
-                } catch (ParseException e) {
-                    JOptionPane.showMessageDialog(null, "Map File is corrupted or misformated");
-                }
+        var botButton = uiElementFacade.CreateButton("Play as Bot", null, actionListener -> {
+            try {
+                //Game and Communicator is made
+                GameLogic game = new GameLogic(mapTextField.toString()); //Map name is taken from the text field
+                //Bot Selection Menu is displayed
+                name = nameTextField.toString();
+                displayBotSelectionMenu(new LocalGameCommunicator(game), nameTextField.toString(), false); //Name is taken from the text field
+                //Game is started
+                game.startGame();
+                //Catch statements send error message using JOptionPanes, they are located here so the user may enter the details again
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Map File not Found");
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(null, "Map File is corrupted or formatted incorrectly");
             }
         });
         //Add the Bot Button
-        canvas.add(botButton, gbc);
+        canvas.addButton(botButton, 1, 2);
 
         //Create the Human Button
-        gbc.gridx = 0;
-        JButton humanButton = new JButton("Play as Human");
-        humanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                try {
-//                    getInstance("mapFile");
-//                    getInstance("");
-                    //Game and Communicator is made
-                    GameLogic game = new GameLogic(mapTextField.getText()); //Map name is taken from the text field
-                    //GUI is displayed
-                    name = nameTextField.getText();
-                    displayGameGUI(new HumanPlayerGUI(new LocalGameCommunicator(game), nameTextField.getText(), true)); //Name is taken from the text field
-                    //Game is started
-                    game.startGame();
-                    //Catch statements send error message using JOptionPanes, they are located here so the user may enter in the details again
-                } catch (FileNotFoundException e) {
-                    JOptionPane.showMessageDialog(null, "Map File not Found");
-                } catch (ParseException e) {
-                    JOptionPane.showMessageDialog(null, "Map File is corrupted or misformated");
-                }
-
+        var humanButton = uiElementFacade.CreateButton("Play as Human", null, actionListener -> {
+            try {
+                //Game and Communicator is made
+                GameLogic game = new GameLogic(mapTextField.toString()); //Map name is taken from the text field
+                //GUI is displayed
+                name = nameTextField.toString();
+                displayGameGUI(new HumanPlayerGUI(new LocalGameCommunicator(game), nameTextField.toString(), true)); //Name is taken from the text field
+                //Game is started
+                game.startGame();
+                //Catch statements send error message using JOptionPanes, they are located here so the user may enter the details again
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Map File not Found");
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(null, "Map File is corrupted or formatted incorrectly");
             }
         });
         //Human Button is added
-        canvas.add(humanButton, gbc);
+        canvas.addButton(humanButton, 0, 2);
 
         //Update the menu
         updateMenu();
@@ -191,40 +158,26 @@ public class MainMenu extends JFrame {
      */
     private void displayNetworkGameMenu() {
         //Background is reset and screen is resized and title is changed
-        canvas.setBackground(null);
+        canvas.setCanvasBackground(null);
         this.setSize(450, 300);
         this.setTitle("Network game");
         //Previous components are removed
-        canvas.removeAll();
-        GridBagConstraints gbc = getNewgbc();
+        canvas.removeAllElements();
 
         //Host Button is Created
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        JButton hostButton = new JButton("Host Game");
-        hostButton.setToolTipText("Host the Game over a network");
-        hostButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                //New menu is displayed
-                displayStartServerMenu();
-            }
+        var hostButton = uiElementFacade.CreateButton("Host Game", "Host the Game over a network", actionListener -> {
+            //New menu is displayed
+            displayStartServerMenu();
         });
         //Host Button is Added
-        canvas.add(hostButton, gbc);
+        canvas.addButton(hostButton, 0, 0);
         //Join Button is Created
-        gbc.gridy = 1;
-        JButton joinButton = new JButton("Join Game");
-        joinButton.setToolTipText("Join a Game over a network");
-        joinButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent a) {
-                //New menu is displayed
-                displayJoinServerMenu();
-            }
+        var joinButton = uiElementFacade.CreateButton("Join Game", "Join a Game over a network", actionListener -> {
+            //New menu is displayed
+            displayJoinServerMenu();
         });
         //Join Button is Added
-        canvas.add(joinButton, gbc);
+        canvas.addButton(joinButton, 0, 1);
 
         //Menu is updated
         updateMenu();
@@ -235,144 +188,114 @@ public class MainMenu extends JFrame {
      */
     private void displayStartServerMenu() {
         //Previous components are removed
-        canvas.removeAll();
+        canvas.removeAllElements();
         //Title is set
         this.setTitle("Start Server");
-        GridBagConstraints gbc = getNewgbc();
 
-        JLabel portLabel = new JLabel("Port"); //Port Text
-        final JTextField portTextField = getNewTextField(""); //Text field for the Port Number
-        final JLabel mapLabel = new JLabel("Map Name"); //"Map Name" text
-        final JTextField mapTextField = getNewTextField("DOD3/defaultMap"); //Text field for the Map name
-        final JCheckBox localPlayCheckBox = new JCheckBox("Play on Server"); //Check box to indicate if the user wants to play on the server
-        final JButton startButton = new JButton("Start Server"); //Button to start the server
+        var portLabel = uiElementFacade.CreateLabel("Port"); //Port Text
+        final var portTextField = getNewTextField(""); //Text field for the Port Number
+        final var mapLabel = uiElementFacade.CreateLabel("Map Name"); //"Map Name" text
+        final var mapTextField = getNewTextField("DOD3/defaultMap"); //Text field for the Map name
+        final var localPlayCheckBox = uiElementFacade.CreateCheckBox("Play on Server"); //Check box to indicate if the user wants to play on the server
 
-        //The start function
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                //Port is converted
-                int port = convertStringToPortNumber(portTextField.getText());
+        //Button to start the server
+        final var startButton = uiElementFacade.CreateButton("Start Server", null, actionListener -> {
+            //Port is converted
+            int port = convertStringToPortNumber(portTextField.toString());
 
-                //If port is less than 0 then we show an error message and nothing more is happened
-                if ((port < 0) || (port >= 65535)) {
-                    JOptionPane.showMessageDialog(null, "Invalid Port"); //error message
-                    return;
+            //If port is less than 0 then we show an error message and nothing more is happened
+            if ((port < 0) || (port >= 65535)) {
+                JOptionPane.showMessageDialog(null, "Invalid Port"); //error message
+                return;
+            }
+
+            try {
+                //Server is created using the map name from the field and the converted port number and the created game is returned
+                //This also opens the Server GUI
+                GameLogic game = startServerGUI(mapTextField.toString(), port);
+                //If the user wants to play on the server then a LocalGameCommunicator is made and the user plays on the game locally
+                //The next menu is then displayed asking details of the player
+                if (localPlayCheckBox.isCheckBoxSelected()) {
+                    displayPlayNetworkGameMenu(new LocalGameCommunicator(game), true);
+                } else {
+                    //Otherwise the menu is simply hidden as it is no longer needed
+                    hideMenu();
                 }
-
-                try {
-                    //Server is created using the map name from the field and the converted port number and the created game is returned
-                    //This also opens the Server GUI
-                    GameLogic game = startServerGUI(mapTextField.getText(), port);
-                    //If the user wants to play on the server then a LocalGameCommunicator is made and the user plays on the game locally
-                    //The next menu is then displayed asking details of the player
-                    if (localPlayCheckBox.isSelected()) {
-                        displayPlayNetworkGameMenu(new LocalGameCommunicator(game), true);
-                    } else {
-                        //Otherwise the menu is simply hidden as it is no longer needed
-                        hideMenu();
-                    }
-                }
-                //Catch statements send error message using JOptionPanes, they are located here so the user may enter in the details again
-                catch (FileNotFoundException e) {
-                    JOptionPane.showMessageDialog(null, "Map File not Found");
-                } catch (ParseException e) {
-                    JOptionPane.showMessageDialog(null, "Map File is corrupted or misformated");
-                }
+            }
+            //Catch statements send error message using JOptionPanes, they are located here so the user may enter the details again
+            catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "Map File not Found");
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(null, "Map File is corrupted or formatted incorrectly");
             }
         });
 
         //The components are then added to the container in the designed format
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        canvas.add(portLabel, gbc);
+        canvas.addLabel(portLabel, 0, 0);
 
-        gbc.gridx = 1;
-        canvas.add(portTextField, gbc);
+        canvas.addTextField(portTextField, 1, 0);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        canvas.add(mapLabel, gbc);
+        canvas.addLabel(mapLabel, 0, 1);
 
-        gbc.gridx = 1;
-        canvas.add(mapTextField, gbc);
+        canvas.addTextField(mapTextField, 1, 0);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        canvas.add(localPlayCheckBox, gbc);
+        canvas.addCheckBox(localPlayCheckBox, 0, 2, 2);
 
-        gbc.gridwidth = 0;
-        gbc.gridy = 3;
-        canvas.add(startButton, gbc);
+        canvas.addButton(startButton, 0, 3, 0);
 
         //Menu is updated
         updateMenu();
     }
 
     /**
-     * The Join Menu to allow the user to join a Dungeon of Dooom 3 Server
+     * The Join Menu to allow the user to join a Dungeon of Doom 3 Server
      */
     private void displayJoinServerMenu() {
         //Components are removed
-        canvas.removeAll();
+        canvas.removeAllElements();
         //Title is set
         this.setTitle("Join Server");
-        GridBagConstraints gbc = getNewgbc();
 
-        JLabel ipAddressLabel = new JLabel("IP Address"); //"IP Address" Text
-        final JTextField ipAddressTextField = getNewTextField(""); //Text Field for the user to enter in the IP Address
-        JLabel portLabel = new JLabel("Port"); //"Port" Text
-        final JTextField portTextField = getNewTextField(""); //Text field for the user to enter in the Port Number
-        //Creating the Join Button
-        JButton joinButton = new JButton("Join Server");
-        joinButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                //The port is converted from the text field
-                int port = convertStringToPortNumber(portTextField.getText());
+        var ipAddressLabel = uiElementFacade.CreateLabel("IP Address"); //"IP Address" Text
+        final var ipAddressTextField = getNewTextField(""); //Text Field for the user to enter the IP Address
+        var portLabel = uiElementFacade.CreateLabel("Port"); //"Port" Text
+        final var portTextField = getNewTextField(""); //Text field for the user to enter the Port Number
+        //Button to join the server
+        final var joinButton = uiElementFacade.CreateButton("Join Server", null, actionListener -> {
+            //The port is converted from the text field
+            int port = convertStringToPortNumber(portTextField.toString());
 
-                //If the port is invalid display error message and do nothing more
-                if (port < 0) {
-                    JOptionPane.showMessageDialog(null, "Invalid Port");
-                    return;
-                }
+            //If the port is invalid display error message and do nothing more
+            if (port < 0) {
+                JOptionPane.showMessageDialog(null, "Invalid Port");
+                return;
+            }
 
-                try {
-                    //New game communicator id made using the converted port and the ip address in the text field
-                    GameCommunicator comm = new NetworkGameCommunicator(ipAddressTextField.getText(), port);
-                    //If no exception is thrown the next menu is displayed which allows the player to select how they want to play
-                    displayPlayNetworkGameMenu(comm, false);
-                    //Catch statements send error message using JOptionPanes, they are located here so the user may enter in the details again
-                } catch (UnknownHostException e) {
-                    JOptionPane.showMessageDialog(null, "Server not found.");
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(null, "Network Error");
-                }
+            try {
+                //New game communicator id made using the converted port and the ip address in the text field
+                GameCommunicator comm = new NetworkGameCommunicator(ipAddressTextField.toString(), port);
+                //If no exception is thrown the next menu is displayed which allows the player to select how they want to play
+                displayPlayNetworkGameMenu(comm, false);
+                //Catch statements send error message using JOptionPanes, they are located here so the user may enter the details again
+            } catch (UnknownHostException e) {
+                JOptionPane.showMessageDialog(null, "Server not found.");
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Network Error");
             }
         });
 
         //Components are added
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        canvas.add(ipAddressLabel, gbc);
+        canvas.addLabel(ipAddressLabel, 0, 0);
 
-        gbc.gridy = 1;
-        canvas.add(portLabel, gbc);
+        canvas.addLabel(portLabel, 0, 1);
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        canvas.add(ipAddressTextField, gbc);
+        canvas.addTextField(ipAddressTextField, 1, 0);
 
-        gbc.gridy = 1;
-        canvas.add(portTextField, gbc);
+        canvas.addTextField(portTextField, 1, 1);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        canvas.add(joinButton, gbc);
+        canvas.addButton(joinButton, 0, 2, 2);
 
         //Menu is updated
         updateMenu();
@@ -392,50 +315,37 @@ public class MainMenu extends JFrame {
      */
     private void displayPlayNetworkGameMenu(final GameCommunicator comm, final boolean isServer) {
         //Removes all the components from the container
-        canvas.removeAll();
+        canvas.removeAllElements();
         //Set the title
         this.setTitle("Play Game");
-        GridBagConstraints gbc = getNewgbc();
 
-        JLabel nameLabel = new JLabel("Name"); //"Name" text
-        final JTextField nameTextField = getNewTextField(""); //Text Field for the player name
-        JButton botButton = new JButton("Play as Bot"); //Button to play as a Bot
-        JButton humanButton = new JButton("Play as Human"); //Button to play as a human
+        var nameLabel = uiElementFacade.CreateLabel("Name"); //"Name" text
+        final var nameTextField = getNewTextField(""); //Text Field for the player name
 
-        //Add action listener
-        botButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Bot Selection menu is displayed
-                name = nameTextField.getText();
-                displayBotSelectionMenu(comm, nameTextField.getText(), isServer);
-            }
+
+        //Button to play as a Bot
+        final var botButton = uiElementFacade.CreateButton("Play as Bot", null, actionListener -> {
+            //Bot Selection menu is displayed
+            name = nameTextField.toString();
+            displayBotSelectionMenu(comm, nameTextField.toString(), isServer);
         });
 
-        humanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Human GUI is displayed
-                name = nameTextField.getText();
-                displayGameGUI(new HumanPlayerGUI(comm, nameTextField.getText(), !isServer));
-            }
+        //Button to play as a human
+        final var humanButton = uiElementFacade.CreateButton("Play as Human", null, actionListener -> {
+            //Human GUI is displayed
+            name = nameTextField.toString();
+            displayGameGUI(new HumanPlayerGUI(comm, nameTextField.toString(), !isServer));
         });
 
         //Components are added
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        canvas.add(nameLabel, gbc);
+        canvas.addLabel(nameLabel, 0, 0);
 
-        gbc.gridx = 1;
-        canvas.add(nameTextField, gbc);
+        canvas.addTextField(nameTextField, 1, 0);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        canvas.add(botButton, gbc);
+        canvas.addButton(botButton, 0, 1);
 
-        gbc.gridx = 1;
-        canvas.add(humanButton, gbc);
+        canvas.addButton(humanButton, 1, 1);
 
         //Menu is updated
         updateMenu();
@@ -450,80 +360,63 @@ public class MainMenu extends JFrame {
      */
     private void displayBotSelectionMenu(final GameCommunicator comm, final String name, final boolean isServer) {
         //Components are removed
-        canvas.removeAll();
+        canvas.removeAllElements();
         //Title is set
         this.setTitle("Choose your Bot AI");
-        GridBagConstraints gbc = getNewgbc();
 
         //Radio Button for each bot type with a description in the tool tip
-        final JRadioButton randomBotButton = new JRadioButton("Baldrick");
-        randomBotButton.setToolTipText("Likes to run in circles");
-        final JRadioButton objectiveBotButton = new JRadioButton("Wes");
-        objectiveBotButton.setToolTipText("Determined to get out as fast as possible");
-        final JRadioButton aggresiveBotButton = new JRadioButton("Ledeon");
-        aggresiveBotButton.setToolTipText("Not a force to be recokned with");
-        final JRadioButton friendlyBotButton = new JRadioButton("Alison");
-        friendlyBotButton.setToolTipText("Strangley helpful, We're not sure she knows how to win");
+        final var randomBotButton = uiElementFacade.CreateRadioButton("Baldrick");
+        randomBotButton.setRadioButtonToolTipText("Likes to run in circles");
+        final var objectiveBotButton = uiElementFacade.CreateRadioButton("Wes");
+        objectiveBotButton.setRadioButtonToolTipText("Determined to get out as fast as possible");
+        final var aggressiveBotButton = uiElementFacade.CreateRadioButton("Ledeon");
+        aggressiveBotButton.setRadioButtonToolTipText("Not a force to be reckoned with");
+        final var friendlyBotButton = uiElementFacade.CreateRadioButton("Alison");
+        friendlyBotButton.setRadioButtonToolTipText("Strangely helpful, We're not sure she knows how to win");
+
         //Create play button
-        final JButton playButton = new JButton("Play");
-        playButton.setToolTipText("Start Game");
-
-        //All radio buttons are added to the button group
-        ButtonGroup AIBotButtons = new ButtonGroup();
-        AIBotButtons.add(randomBotButton);
-        AIBotButtons.add(objectiveBotButton);
-        AIBotButtons.add(aggresiveBotButton);
-        AIBotButtons.add(friendlyBotButton);
-
-
-        randomBotButton.setSelected(true); //First radio button is selected
-
-        //Add function
-        playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Bot bot;
-                //Bot Type Radio buttons determines the dynamic type of bot
-                if (randomBotButton.isSelected()) {
-                    System.out.println("Random bot selected");
-                    bot = new RandomBotStrategy(comm);
-                } else if (objectiveBotButton.isSelected()) {
-                    System.out.println("Objective bot selected");
-                    bot = new ObjectiveBotStrategy(comm);
-                } else if (aggresiveBotButton.isSelected()) {
-                    System.out.println("Aggressive bot selected");
-                    bot = new AggressiveBotStrategy(comm);
-                } else if (friendlyBotButton.isSelected()) {
-                    System.out.println("Friendly bot selected");
-                    bot = new FriendlyBotStrategy(comm);
-                } else {
-                    //If none of them are selected display error
-                    JOptionPane.showMessageDialog(null, "Please select a bot AI");
-                    return;
-                }
-                //Bot Player is created using the newly created bot and the other parameters passed into this function
-                displayGameGUI(new BotPlayerGUI(comm, name, !isServer, bot));
+        final var playButton = uiElementFacade.CreateButton("Play", "Start Game", actionListener -> {
+            Bot bot;
+            //Bot Type Radio buttons determines the dynamic type of bot
+            if (randomBotButton.isRadioButtonSelected()) {
+                System.out.println("Random bot selected");
+                bot = new RandomBotStrategy(comm);
+            } else if (objectiveBotButton.isRadioButtonSelected()) {
+                System.out.println("Objective bot selected");
+                bot = new ObjectiveBotStrategy(comm);
+            } else if (aggressiveBotButton.isRadioButtonSelected()) {
+                System.out.println("Aggressive bot selected");
+                bot = new AggressiveBotStrategy(comm);
+            } else if (friendlyBotButton.isRadioButtonSelected()) {
+                System.out.println("Friendly bot selected");
+                bot = new FriendlyBotStrategy(comm);
+            } else {
+                //If none of them are selected display error
+                JOptionPane.showMessageDialog(null, "Please select a bot AI");
+                return;
             }
+            //Bot Player is created using the newly created bot and the other parameters passed into this function
+            displayGameGUI(new BotPlayerGUI(comm, name, !isServer, bot));
         });
 
+        //All radio buttons are added to the button group
+        var AIBotButtons = uiElementFacade.CreateButtonGroup();
+        AIBotButtons.addRadioButton(randomBotButton, true);
+        AIBotButtons.addRadioButton(objectiveBotButton, false);
+        AIBotButtons.addRadioButton(aggressiveBotButton, false);
+        AIBotButtons.addRadioButton(friendlyBotButton, false);
+
         //Components are added into the container
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        canvas.add(randomBotButton, gbc);
 
-        gbc.gridx = 1;
-        canvas.add(objectiveBotButton, gbc);
+        canvas.addRadioButton(randomBotButton, 0, 0);
 
-        gbc.gridy = 1;
-        canvas.add(friendlyBotButton, gbc);
+        canvas.addRadioButton(objectiveBotButton, 1, 0);
 
-        gbc.gridx = 0;
-        canvas.add(aggresiveBotButton, gbc);
+        canvas.addRadioButton(friendlyBotButton, 1, 1);
 
-        gbc.gridy = 2;
-        gbc.gridx = 0;
-        gbc.gridwidth = 2;
-        canvas.add(playButton, gbc);
+        canvas.addRadioButton(aggressiveBotButton, 0, 1);
+
+        canvas.addButton(playButton, 0, 2, 2);
 
         //Menu is updated
         updateMenu();
@@ -544,26 +437,13 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * Hides the menu fro view
+     * Hides the menu from view
      */
     private void hideMenu() {
         //All components are removed
-        canvas.removeAll();
+        canvas.removeAllElements();
         //Container is removed
         this.setVisible(false);
-    }
-
-    /**
-     * Creates a standardised GridBagConstraints
-     *
-     * @return GridBagConstraints standardised format for menu GridBagConstraints
-     */
-    private GridBagConstraints getNewgbc() {
-        GridBagConstraints gbc = new GridBagConstraints();
-        //Add padding
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        return gbc;
     }
 
     /**
@@ -572,19 +452,19 @@ public class MainMenu extends JFrame {
     private void updateMenu() {
         //Update functions are called
         this.setVisible(true);
-        canvas.repaint();
+        canvas.repaintCanvas();
     }
 
     /**
      * Gets a new standardised Test Field
      *
      * @param defaultText String the default text to be places in the text field
-     * @return JTextField the standardised text field
+     * @return TextField the standardised text field
      */
-    private JTextField getNewTextField(String defaultText) {
+    private TextField getNewTextField(String defaultText) {
         //Uses standardised text box size
-        JTextField textField = new JTextField(settings.getTextBoxSize());
-        textField.setText(defaultText);
+        var textField = uiElementFacade.CreateTextField(null, settings.getTextBoxSize());
+        textField.setTextFieldText(defaultText);
         return textField;
     }
 
@@ -593,9 +473,9 @@ public class MainMenu extends JFrame {
      *
      * @param mapName String The name of the map file
      * @param port    int The port number
-     * @return GameLogic The game created in the launching of ther server
-     * @throws ParseException
-     * @throws FileNotFoundException
+     * @return GameLogic The game created in the launching of their server
+     * @throws ParseException ParseException throwing
+     * @throws FileNotFoundException FileNotFoundException throwing
      */
     private GameLogic startServerGUI(String mapName, int port) throws ParseException, FileNotFoundException {
         //GUI class is created
@@ -622,8 +502,7 @@ public class MainMenu extends JFrame {
     private int convertStringToPortNumber(String portString) {
         try {
             //String is parsed
-            int port = Integer.parseInt(portString);
-            return port;
+            return Integer.parseInt(portString);
         } catch (NumberFormatException e) {
             //If parse fails then -1 is returned
             return -1;

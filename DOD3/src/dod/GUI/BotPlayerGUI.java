@@ -1,12 +1,10 @@
 package dod.GUI;
 
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-
-import javax.swing.JPanel;
+import java.io.Serial;
 
 import dod.BotLogic.Bot;
 import dod.Communicator.GameCommunicator;
+import dod.facadePattern.LayoutTypes;
 
 /**
  * The GUI for the non-human bot.
@@ -15,9 +13,10 @@ import dod.Communicator.GameCommunicator;
  * @author Benjamin Dring
  */
 public class BotPlayerGUI extends PlayerGUI {
+    @Serial
     private static final long serialVersionUID = 9001606473323883119L;
 
-    private Bot bot; //Logical bot used to decide on next actions
+    private final Bot bot; //Logical bot used to decide on next actions
 
     /**
      * The constructor for setting up the Bot Player GUI
@@ -41,30 +40,30 @@ public class BotPlayerGUI extends PlayerGUI {
      */
     @Override
     public void displayGUI() {
-        canvas.setLayout(new FlowLayout());
+        canvas.setCanvasLayout(LayoutTypes.Flow);
 
-        //JPanel for gold is made
-        JPanel goldPanel = new JPanel();
-        goldPanel.setLayout(new GridLayout(2, 1));
-        goldPanel.add(getCurrentGoldLabel());
-        goldPanel.add(getGoalLabel());
+        // for gold is made
+        var goldPanel = uiElementFacade.CreatePanel();
+        goldPanel.setPanelLayout(LayoutTypes.Grid, 2, 1);
+        goldPanel.addLabel(getCurrentGoldLabel());
+        goldPanel.addLabel(getGoalLabel());
 
-        //JPanel for quit button and sword indicator
-        JPanel quitPanel = new JPanel();
-        quitPanel.setLayout(new GridLayout(2, 1));
-        quitPanel.add(getQuitButton());
-        quitPanel.add(getSwordIndicator());
+        //Panel for quit button and sword indicator
+        var quitPanel = uiElementFacade.CreatePanel();
+        quitPanel.setPanelLayout(LayoutTypes.Grid, 2, 1);
+        quitPanel.addButton(getQuitButton());
+        quitPanel.addLabel(getSwordLabel());
 
-        canvas.add(quitPanel);
+        canvas.addPanel(quitPanel);
 
-        canvas.add(gameBoard);
+        canvas.addPanel(gameBoard);
 
-        canvas.add(goldPanel);
+        canvas.addPanel(goldPanel);
 
-        canvas.add(getMessenger());
+        canvas.addPanel(getMessenger());
 
         this.setSize(1500, 750);
-        this.show();
+        this.setVisible(true);
     }
 
     /**
@@ -89,7 +88,7 @@ public class BotPlayerGUI extends PlayerGUI {
 
     /**
      * Causes the bot thread to eventually terminate.
-     * This is useful as we general want the bot to stop when the GUI is closed.
+     * This is useful as we generally want the bot to stop when the GUI is closed.
      */
     @Override
     protected void die(String message) {
