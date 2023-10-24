@@ -19,8 +19,6 @@ import lombok.Setter;
 @Setter
 public class RandomBotStrategy extends Bot {
     private Command command;
-    private BotStrategy strategy;
-
     /**
      * The constructor for the random bot it sets up it's decision making processes and
      * Prepares communication with the game
@@ -29,15 +27,14 @@ public class RandomBotStrategy extends Bot {
      */
     public RandomBotStrategy(GameCommunicator comm) {
         super(comm);
+        setBotStrategy(this);
         System.out.println("Creating Bot with Random Strategy");
-        this.strategy = this;
     }
 
-    public RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {
+    private RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;
-            this.strategy = target.strategy;
         }
     }
 
@@ -51,20 +48,15 @@ public class RandomBotStrategy extends Bot {
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
 
-        if (isPlayerNearby() && currentGold > goal) {
-            setStrategy(new FriendlyBotStrategy(getComm(), this));
-            strategy.performAction();
-        } else if (isPlayerNearby() && hasSword) {
-            setStrategy(new AggressiveBotStrategy(getComm(), this));
-            strategy.performAction();
-        }
+        changeBotStrategy();
+
         //If the user is standing on gold and it needs it then it wants to pick it up
-        else if ((tile == 'G') && (!hasRequiredGold())) {
+        if ((tile == 'G') && (!hasRequiredGold())) {
             if (goldLeftToCollect() <= 2) {
                 var gameLogic = getComm().GetGameLogic();
                 if (gameLogic != null) {
                     var localGameCommunicator = new LocalGameCommunicator(gameLogic);
-                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, new RandomBotStrategy(localGameCommunicator, this));
+                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, this.Clone(localGameCommunicator));
                 }
             }
             command = new PickUpCommand(getComm(), this, 'G');
@@ -84,23 +76,5 @@ public class RandomBotStrategy extends Bot {
                 this.getCommandInvoker().executeCommand(command);
             }
         }
-    }
-
-    private boolean isPlayerNearby() {
-        Location playerLocation = getPlayerLocation();
-        int proximityDistance = 1;
-
-        for (int row = -proximityDistance; row <= proximityDistance; row++) {
-            for (int col = -proximityDistance; col <= proximityDistance; col++) {
-                Location locationToCheck = new Location(playerLocation.getCol() + col, playerLocation.getRow() + row);
-                char tile = getTile(locationToCheck);
-
-                if (tile == 'P') {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }

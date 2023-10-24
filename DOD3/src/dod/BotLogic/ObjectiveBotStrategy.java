@@ -25,10 +25,11 @@ public class ObjectiveBotStrategy extends PathFindingBot {
      */
     public ObjectiveBotStrategy(GameCommunicator comm) {
         super(comm);
+        setBotStrategy(this);
         System.out.println("Creating Bot with Objective Strategy");
     }
 
-    public ObjectiveBotStrategy(GameCommunicator comm, ObjectiveBotStrategy target) {
+    private ObjectiveBotStrategy(GameCommunicator comm, ObjectiveBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;

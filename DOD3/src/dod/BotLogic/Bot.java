@@ -37,6 +37,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
     private boolean updatedLook; //Indicates if the look has been updated
     private Location playerLocation; //Player location in the dungeon
     private CommandInvoker commandInvoker;
+    private BotStrategy botStrategy;
 
     Settings settings = Settings.getInstance();
 
@@ -61,7 +62,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
         this.commandInvoker = new CommandInvoker();
     }
 
-    public Bot(GameCommunicator comm, Bot target) {
+    protected Bot(GameCommunicator comm, Bot target) {
         if (comm != null)
             this.comm = comm;
 
@@ -287,5 +288,33 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
             }
             return lookMap;
         }
+    }
+
+    public void changeBotStrategy() {
+        if (isPlayerNearby() && currentGold > goal) {
+            setBotStrategy(new FriendlyBotStrategy(getComm(), this));
+            botStrategy.performAction();
+        } else if (isPlayerNearby() && hasSword) {
+            setBotStrategy(new AggressiveBotStrategy(getComm(), this));
+            botStrategy.performAction();
+        }
+    }
+
+    private boolean isPlayerNearby() {
+        Location playerLocation = getPlayerLocation();
+        int proximityDistance = 1;
+
+        for (int row = -proximityDistance; row <= proximityDistance; row++) {
+            for (int col = -proximityDistance; col <= proximityDistance; col++) {
+                Location locationToCheck = new Location(playerLocation.getCol() + col, playerLocation.getRow() + row);
+                char tile = getTile(locationToCheck);
+
+                if (tile == 'P') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

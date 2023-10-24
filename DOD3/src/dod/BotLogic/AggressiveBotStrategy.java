@@ -26,6 +26,7 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
      */
     public AggressiveBotStrategy(GameCommunicator comm) {
         super(comm);
+        setBotStrategy(this);
         System.out.println("Creating Bot with Aggressive Strategy");
     }
 
@@ -43,10 +44,11 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
         this.setUpdatedLook(bot.isUpdatedLook());
         this.setPlayerLocation(bot.getPlayerLocation());
         this.setCommandInvoker(bot.getCommandInvoker());
+        this.setBotStrategy(bot.getBotStrategy());
         this.settings = bot.settings;
     }
 
-    public AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
+    private AggressiveBotStrategy(GameCommunicator comm, AggressiveBotStrategy target) {
         super(comm, target);
         if (target != null) {
             this.command = target.command;
