@@ -1,26 +1,24 @@
 package dod.GUI;
 
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import java.io.Serial;
 
 import dod.Communicator.GameCommunicator;
+import dod.facadePattern.Button;
+import dod.facadePattern.LayoutTypes;
+import dod.facadePattern.Panel;
 import lombok.Getter;
 
 /**
- * Represents the Dungeon of Dooom 3 GUI for the Human Player.
+ * Represents the Dungeon of Doom 3 GUI for the Human Player.
  * The displayGUI() method will completely display the GUI with all of its functionality
  *
  * @author Benjamin Dring
  */
 @Getter
 public class HumanPlayerGUI extends PlayerGUI {
+    @Serial
     private static final long serialVersionUID = -9146521400683926566L;
 
     private Action selectedAction; //Enum for use with controller
@@ -30,7 +28,7 @@ public class HumanPlayerGUI extends PlayerGUI {
      *
      * @param gameCommunicator GameCommunicator The communicator object for the GUI to communicate to the Game
      * @param name             String The user's name to be used in game
-     * @param isFinalWindow    Boolean indicating whether or not this is the last window or not
+     * @param isFinalWindow    Boolean indicating whether this is the last window or not
      */
     public HumanPlayerGUI(GameCommunicator gameCommunicator, String name, boolean isFinalWindow) {
         super(gameCommunicator, name, isFinalWindow);
@@ -43,14 +41,14 @@ public class HumanPlayerGUI extends PlayerGUI {
      */
     @Override
     public void displayGUI() {
-        canvas.setLayout(new FlowLayout()); //Uses flow layout
+        canvas.setCanvasLayout(LayoutTypes.Flow); //Uses flow layout
         //Adds individual components
 
-        canvas.add(gameBoard);
+        canvas.addPanel(gameBoard);
 
-        canvas.add(getController());
+        canvas.addPanel(getController());
 
-        canvas.add(getMessenger());
+        canvas.addPanel(getMessenger());
 
         //Size is set and components are shown
         this.setSize(1800, 750);
@@ -58,26 +56,22 @@ public class HumanPlayerGUI extends PlayerGUI {
     }
 
     /**
-     * Gets the controller JPanel including all of the buttons functionality
+     * Gets the controller JPanel including all the buttons functionality
      *
      * @return JPanel The controller ready to be inserted into a container
      */
-    private JPanel getController() {
-        JPanel controller = new JPanel();
-        controller.setLayout(new GridBagLayout()); //Uses grid bag layout
-        GridBagConstraints gbc = new GridBagConstraints();
+    private Panel getController() {
+        var controller = uiElementFacade.CreatePanel();
+        controller.setPanelLayout(LayoutTypes.GridBag); //Uses grid bag layout
         //Padding is added
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        var fill = GridBagConstraints.NONE;
+        var insets = new Insets(5, 5, 5, 5);
 
         //Controller components are then added
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        controller.add(getDPad(), gbc);
+        controller.addPanel(getDPad(), 0, 0, fill, insets);
 
-        gbc.gridx = 1;
-        controller.add(getActionKeys(), gbc);
+        controller.addPanel(getActionKeys(), 1, 0, fill, insets);
 
         //Controller is returned
         return controller;
@@ -88,87 +82,50 @@ public class HumanPlayerGUI extends PlayerGUI {
      *
      * @return JPanel the D Pad ready to be inserted into a container
      */
-    private JPanel getDPad() {
-        JPanel dpad = new JPanel();
-        dpad.setLayout(new GridBagLayout()); //Uses grid bag layout
-        GridBagConstraints gbc = new GridBagConstraints();
+    private Panel getDPad() {
+        var dpad = uiElementFacade.CreatePanel();
+        dpad.setPanelLayout(LayoutTypes.GridBag); //Uses grid bag layout
 
         //Buttons are created using Images
         //Buttons are then added to JPanel
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        JButton north = getImageButton("North.png");
-        dpad.add(north, gbc);
+        var north = getImageButton("North.png");
+        dpad.addButton(north, 1, 0);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        JButton west = getImageButton("West.png");
-        dpad.add(west, gbc);
+        var west = getImageButton("West.png");
+        dpad.addButton(west, 0, 1);
 
-        gbc.gridx = 1;
-        JButton pickup = getImageButton("PickUp.png");
-        dpad.add(pickup, gbc);
+        var pickup = getImageButton("PickUp.png");
+        dpad.addButton(pickup, 1, 1);
 
-        gbc.gridx = 2;
-        JButton east = getImageButton("East.png");
-        dpad.add(east, gbc);
+        var east = getImageButton("East.png");
+        dpad.addButton(east, 2, 1);
 
         //Goal Label is added
-        gbc.gridy = 2;
-        dpad.add(getGoalLabel(), gbc);
+        dpad.addLabel(getGoalLabel(), 2, 2);
 
-        gbc.gridx = 1;
-        JButton south = getImageButton("South.png");
-        dpad.add(south, gbc);
+        var south = getImageButton("South.png");
+        dpad.addButton(south, 1, 2);
 
         //Current gold label is added
-        gbc.gridx = 0;
-        dpad.add(getCurrentGoldLabel(), gbc);
+        dpad.addLabel(getCurrentGoldLabel(), 0, 2);
 
-        gbc.gridy = 3;
-        dpad.add(getSwordIndicator(), gbc);
+        dpad.addLabel(getSwordLabel(), 0, 3);
 
-        gbc.gridx = 1;
-        dpad.add(getQuitButton(), gbc);
+        dpad.addButton(getQuitButton(), 1, 3);
 
         //Buttons functions are made using different directional characters
         //getActionString() is used to determine the currently selected action
         //String is then sent as a command to the game
-        north.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                gameCommunicator.sendMessageToGame(getActionString() + " N");
-            }
-        });
+        north.addButtonActionListener(actionListener -> gameCommunicator.sendMessageToGame(getActionString() + " N"));
 
-        south.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                gameCommunicator.sendMessageToGame(getActionString() + " S");
-            }
-        });
+        south.addButtonActionListener(actionListener -> gameCommunicator.sendMessageToGame(getActionString() + " S"));
 
-        east.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                gameCommunicator.sendMessageToGame(getActionString() + " E");
-            }
-        });
+        east.addButtonActionListener(actionListener -> gameCommunicator.sendMessageToGame(getActionString() + " E"));
 
-        west.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                gameCommunicator.sendMessageToGame(getActionString() + " W");
-            }
-        });
+        west.addButtonActionListener(actionListener -> gameCommunicator.sendMessageToGame(getActionString() + " W"));
 
         //Simple pickup command
-        pickup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                gameCommunicator.sendMessageToGame("PICKUP");
-            }
-        });
+        pickup.addButtonActionListener(actionListener -> gameCommunicator.sendMessageToGame("PICKUP"));
 
         //DPad is returned
         return dpad;
@@ -179,56 +136,47 @@ public class HumanPlayerGUI extends PlayerGUI {
      *
      * @return JPanel The action keys JPanel ready to be inserted into the Container
      */
-    private JPanel getActionKeys() {
-        JPanel actionKeys = new JPanel();
-        actionKeys.setLayout(new GridLayout(4, 0)); //Uses grid layout of a single column with 4 rows
+    private Panel getActionKeys() {
+        var actionKeys = uiElementFacade.CreatePanel();
+        actionKeys.setPanelLayout(LayoutTypes.Grid, 4, 0); //Uses grid layout of a single column with 4 rows
 
         //Buttons are made using images
         //sFilename indicates selected version
-        final JButton move = getImageButton("sMove.png"); //Move is defaultly selected
-        final JButton attack = getImageButton("Attack.png");
-        final JButton gift = getImageButton("Gift.png");
+        final var move = getImageButton("sMove.png"); //Move is selected by default
+        final var attack = getImageButton("Attack.png");
+        final var gift = getImageButton("Gift.png");
 
         //Button functions are added
-        move.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Selected action is changed
-                selectedAction = Action.Move;
-                setImageButton("sMove.png", move); //Move is selected
-                setImageButton("Attack.png", attack);
-                setImageButton("Gift.png", gift);
-            }
+        move.addButtonActionListener(actionListener -> {
+            //Selected action is changed
+            selectedAction = Action.Move;
+            setImageButton("sMove.png", move); //Move is selected
+            setImageButton("Attack.png", attack);
+            setImageButton("Gift.png", gift);
         });
 
-        attack.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Selected action is changed
-                selectedAction = Action.Attack;
-                setImageButton("Move.png", move);
-                setImageButton("sAttack.png", attack); //Attack is selected
-                setImageButton("Gift.png", gift);
-            }
+        attack.addButtonActionListener(actionListener -> {
+            //Selected action is changed
+            selectedAction = Action.Attack;
+            setImageButton("Move.png", move);
+            setImageButton("sAttack.png", attack); //Attack is selected
+            setImageButton("Gift.png", gift);
         });
 
-        gift.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Selected action is changed
-                selectedAction = Action.Gift;
-                setImageButton("Move.png", move);
-                setImageButton("Attack.png", attack);
-                setImageButton("sGift.png", gift); //Gift is selected
-            }
+        gift.addButtonActionListener(actionListener -> {
+            //Selected action is changed
+            selectedAction = Action.Gift;
+            setImageButton("Move.png", move);
+            setImageButton("Attack.png", attack);
+            setImageButton("sGift.png", gift); //Gift is selected
         });
 
         //Keys are added
 
-        actionKeys.add(move);
-        actionKeys.add(attack);
-        actionKeys.add(gift);
-        actionKeys.add(getEndTurnButton());
+        actionKeys.addButton(move);
+        actionKeys.addButton(attack);
+        actionKeys.addButton(gift);
+        actionKeys.addButton(getEndTurnButton());
 
         //JPanel is returned
         return actionKeys;
@@ -237,19 +185,16 @@ public class HumanPlayerGUI extends PlayerGUI {
     /**
      * Gets the end turn button for ending a players turn
      *
-     * @return JButton The end turn button
+     * @return Button The end turn button
      */
-    private JButton getEndTurnButton() {
+    private Button getEndTurnButton() {
         //Creates a button using the image
-        JButton endTurnButton = getImageButton("EndTurn.png");
-        endTurnButton.setToolTipText("End Turn");
+        var endTurnButton = getImageButton("EndTurn.png");
+        endTurnButton.setButtonToolTipText("End Turn");
         //Adds the function
-        endTurnButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Sends an ENDTURN Command
-                gameCommunicator.sendMessageToGame("ENDTURN");
-            }
+        endTurnButton.addButtonActionListener(actionListener -> {
+            //Sends an ENDTURN Command
+            gameCommunicator.sendMessageToGame("ENDTURN");
         });
         //Button is returned
         return endTurnButton;
@@ -272,14 +217,11 @@ public class HumanPlayerGUI extends PlayerGUI {
     private String getActionString() {
         //Uses simple switch statement
         //returns make breaks unneeded
-        switch (selectedAction) {
-            case Move:
-                return "MOVE";
-            case Attack:
-                return "ATTACK";
-            default: //Defaults to gift
-                return "GIFT";
-        }
+        return switch (selectedAction) {
+            case Move -> "MOVE";
+            case Attack -> "ATTACK";
+            default -> "GIFT"; //Defaults to gift
+        };
     }
 
 

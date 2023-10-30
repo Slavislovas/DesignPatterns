@@ -1,13 +1,11 @@
 package dod.GUI;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
+import dod.facadePattern.*;
+import lombok.Getter;
+
+import java.io.Serial;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 /**
  * Represents a generic abstract GUI which supplies some common GUI functions including a message feed
@@ -15,37 +13,38 @@ import javax.swing.JTextArea;
  * @author Benjamin Dring
  */
 public abstract class MessageFeedGUI extends JFrame implements ClientListener {
+    @Serial
     private static final long serialVersionUID = 663205082653528881L;
 
-    protected Container canvas;
-    private JPanel messageFeed; //The message feed JPanel
+    protected final IUiElementFacade uiElementFacade;
 
-    private JTextArea messageFeedText; //The TextArea contained in the JPanel
-    private GridBagConstraints gbc; //Attributed Constraints
+    protected Canvas canvas;
+    private final Panel messageFeed; //The message feed JPanel
+
+    @Getter
+    private final TextArea messageFeedText; //The TextArea contained in the JPanel
 
     /**
      * The constructor of the class that sets up the Container and the messageFeed
      */
     public MessageFeedGUI() {
-        messageFeed = new JPanel();
+        uiElementFacade = new UiElementFacade();
 
-        //Making the Text Area Scrollable by using a JPanel containg a scrollpane around a JTextArea
-        messageFeedText = new JTextArea("");
-        messageFeedText.setEditable(false);
-        messageFeedText.setLineWrap(true);
-        messageFeedText.setWrapStyleWord(true);
+        messageFeed = uiElementFacade.CreatePanel();
 
-        JScrollPane scrollFeed = new JScrollPane(messageFeedText, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        //Making the Text Area Scrollable by using a JPanel contain a scrollable around a JTextArea
+        messageFeedText = uiElementFacade.CreateTextArea();
+        messageFeedText.setTextAreaEditable(false);
+        messageFeedText.setTextAreaLineWrap(true);
+        messageFeedText.setTextAreaWrapStyleWord(true);
 
-        //prefered size is set
-        scrollFeed.setPreferredSize(new Dimension(400, 500));
+
 
         //Feed is added
-        messageFeed.add(scrollFeed);
-        messageFeed.setOpaque(false);
+        messageFeed.addScrollFeed(messageFeedText, 400, 500);
+        messageFeed.setPanelOpaque(false);
 
-        canvas = getContentPane();
+        canvas = uiElementFacade.CreateCanvas(getContentPane());
     }
 
     /**
@@ -54,14 +53,14 @@ public abstract class MessageFeedGUI extends JFrame implements ClientListener {
      * @param message the message to be displayed
      */
     public void addMessageToFeed(String message) {
-        if (!messageFeedText.getText().equals("")) {
+        if (!messageFeedText.toString().isEmpty()) {
             //Adds two new lines and then the message
-            messageFeedText.append("\n\n" + message);
+            messageFeedText.appendText("\n\n" + message);
         } else {
-            messageFeedText.append(message);
+            messageFeedText.appendText(message);
         }
         //Set scroll to the bottom so new messages can be read
-        messageFeedText.setCaretPosition(messageFeedText.getDocument().getLength());
+        messageFeedText.setTextAreaCaretPosition(messageFeedText.getTextAreaLength());
     }
 
     /**
@@ -69,12 +68,8 @@ public abstract class MessageFeedGUI extends JFrame implements ClientListener {
      *
      * @return JPanel the MessageFeed
      */
-    protected JPanel getMessageFeed() {
+    protected Panel getMessageFeed() {
         return messageFeed;
-    }
-
-    public JTextArea getMessageFeedText() {
-        return messageFeedText;
     }
 
     /**
@@ -87,7 +82,7 @@ public abstract class MessageFeedGUI extends JFrame implements ClientListener {
      */
     @Override
     public void restartGame() {
-        messageFeedText.setText("");
+        messageFeedText.setTextAreaText("");
         addMessageToFeed("Game Reset");
     }
 

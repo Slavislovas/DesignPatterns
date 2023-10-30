@@ -4,9 +4,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serial;
 
-import javax.swing.JButton;
-
+import dod.facadePattern.Button;
+import dod.facadePattern.LayoutTypes;
 import dod.game.GameLogic;
 
 /**
@@ -16,9 +17,10 @@ import dod.game.GameLogic;
  * @author Benjamin Dring
  */
 public class ServerGUI extends MessageFeedGUI implements ActionListener {
+    @Serial
     private static final long serialVersionUID = 4457158873596592971L;
 
-    private JButton serverButton; //The server button
+    private final Button serverButton; //The server button
     private boolean gameStarted;
     private GameLogic game; //The given GameLogic object
 
@@ -27,11 +29,7 @@ public class ServerGUI extends MessageFeedGUI implements ActionListener {
      */
     public ServerGUI() {
         super();
-        serverButton = new JButton("");
-        //Action Listener is done by the class this time
-        serverButton.addActionListener(this);
-        //Make it a start button
-        setStartButtonAttributes();
+        serverButton = uiElementFacade.CreateButton("Start Server", "Start The Server", this);
     }
 
     /**
@@ -49,17 +47,13 @@ public class ServerGUI extends MessageFeedGUI implements ActionListener {
     @Override
     public void displayGUI() {
         //Uses a grid bag layout
-        canvas.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        canvas.setCanvasLayout(LayoutTypes.GridBag);
 
         //Message feed is added from superclass
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        canvas.add(getMessageFeed(), gbc);
+        canvas.addPanel(getMessageFeed(), 0, 0);
 
         //Server buttons ias added
-        gbc.gridy = 1;
-        canvas.add(serverButton, gbc);
+        canvas.addButton(serverButton, 0, 1);
 
         //Container settings are set
         this.setSize(525, 600);
@@ -91,16 +85,16 @@ public class ServerGUI extends MessageFeedGUI implements ActionListener {
      * Sets the button up as a start button
      */
     private void setStartButtonAttributes() {
-        serverButton.setText("Start Server");
-        serverButton.setToolTipText("Start The Server");
+        serverButton.setButtonText("Start Server");
+        serverButton.setButtonToolTipText("Start The Server");
     }
 
     /**
      * Sets the button up as a stop button
      */
     private void setStopButtonAttributes() {
-        serverButton.setText("Stop Server");
-        serverButton.setToolTipText("Stop The Server");
+        serverButton.setButtonText("Stop Server");
+        serverButton.setButtonToolTipText("Stop The Server");
     }
 
     @Override

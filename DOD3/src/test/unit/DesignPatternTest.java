@@ -127,20 +127,20 @@ class DesignPatternTest {
     void observer_localUser_goalMessage_success() {
         subject.registerObserver(new LocalUser(game, localGameCommunicator));
         subject.notifyObservers("GOAL: 5");
-        assertEquals("GOAL: 5", playerGUI.getGoalLabel().getText());
+        assertEquals("GOAL: 5", playerGUI.getGoalLabel().toString());
     }
 
     @Test
     void observer_localUser_treasureModMessage_success() {
         subject.registerObserver(new LocalUser(game, localGameCommunicator));
         subject.notifyObservers("TREASUREMOD 5");
-        assertEquals("GOLD 5", playerGUI.getCurrentGoldLabel().getText());
+        assertEquals("GOLD 5", playerGUI.getCurrentGoldLabel().toString());
     }
 
     @Test
     void observer_localUser_addMessageToFeed_success() {
         subject.registerObserver(new LocalUser(game, localGameCommunicator));
         subject.notifyObservers("[PLEASE LET THIS TEST WORK]");
-        assertTrue(playerGUI.getMessageFeedText().getText().contains("[PLEASE LET THIS TEST WORK]"));
+        assertTrue(playerGUI.getMessageFeedText().toString().contains("[PLEASE LET THIS TEST WORK]"));
     }
 }

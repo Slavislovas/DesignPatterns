@@ -2,43 +2,55 @@ package dod.GUI;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.Serial;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import dod.Communicator.GameCommunicator;
+import dod.facadePattern.*;
 import dod.game.Location;
+import lombok.Getter;
 
 /**
- * A GUI for a generic player is has functionality that provides a message feed and a game board
+ * A GUI for a generic player is having functionality that provides a message feed and a game board
  *
  * @author Benjamin
  */
 public abstract class PlayerGUI extends MessageFeedGUI {
+    @Serial
     private static final long serialVersionUID = 4902461275568435021L;
 
-    private JTextField chatField; //The Text field for talking
-    protected JPanel gameBoard;
+    private final TextField chatField; //The Text field for talking
+    protected Panel gameBoard;
     protected GameCommunicator gameCommunicator; //The communicator for communication to the game
     private String[] lookReply; //Stores the look reply
     private int currentGold;
-    private String name; //The players name
+    private final String name; //The players name
 
+    @Getter
     private boolean hasArmour;
-    private boolean isFinalWindow; //Used to determine how object should die
+    private final boolean isFinalWindow; //Used to determine how object should die
 
+    /**
+     * -- GETTER --
+     *  Gets the Label containing the current gold
+     *
+     */
     //stats labels
-    private JLabel currentGoldLabel;
-    private JLabel goalLabel;
+    @Getter
+    private final Label currentGoldLabel;
+    /**
+     * -- GETTER --
+     *  Gets the Label contain the goal gold to win
+     *
+     */
+    @Getter
+    private final Label goalLabel;
 
     //Label to tell the user if they have the sword
-    private JLabel swordLabel;
+    @Getter
+    private final Label swordLabel;
 
     /**
      * The constructor that sets up the communication and the GUI components
@@ -50,29 +62,29 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     public PlayerGUI(GameCommunicator gameCommunicator, String name, boolean isFinalWindow) {
         super();
         //Sets default values
-        this.chatField = new JTextField(29); //set length
+        this.chatField = uiElementFacade.CreateTextField(null, 29); // set length
         this.gameCommunicator = gameCommunicator;
         //adds itself to gameCommunicator for feedback ability
         //Infinitely deep recursion is solved in two different ways
         //Using threads in the Bot GUI
         //Using the nature of event driven commands in swing in the human GUI
         this.gameCommunicator.addListener(this);
-        this.setTitle("Dungeon of Dooom");
-        this.gameBoard = new JPanel();
+        this.setTitle("Dungeon of Doom");
+        this.gameBoard = uiElementFacade.CreatePanel();
         this.currentGold = 0;
         this.name = name;
         this.hasArmour = false;
         this.isFinalWindow = isFinalWindow;
 
         //Stats labels are set up
-        this.currentGoldLabel = new JLabel("GOLD " + currentGold);
-        this.goalLabel = new JLabel();
+        this.currentGoldLabel = uiElementFacade.CreateLabel("GOLD " + currentGold);
+        this.goalLabel = uiElementFacade.CreateLabel(null);
         //Uses sword indicator image but starts out invisible
         this.swordLabel = getImageLabel("SwordIndicator.png");
-        this.swordLabel.setVisible(false);
+        this.swordLabel.setLabelVisible(false);
 
-        //Gridbag layout is used for gameboard
-        gameBoard.setLayout(new GridBagLayout());
+        //Grid bag layout is used for game-board
+        gameBoard.setPanelLayout(LayoutTypes.GridBag);
     }
 
     /**
@@ -88,18 +100,20 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      */
     private void updateGameBoard() {
         //Removes all components from the game Board
-        this.gameBoard.removeAll();
+        this.gameBoard.removeAllElements();
         GridBagConstraints gbc = new GridBagConstraints();
         //Gets the player location
         Location playerLocation = getPlayerLocation();
 
+        int gridX, gridY;
         //Loop through every character in the look reply
         for (int y = 1; y < lookReply.length - 1; y++) {
-            gbc.gridy = y;
+            gridY = y;
             char[] row = lookReply[y].toCharArray(); //String is taken to a char array
             for (int x = 0; x < row.length; x++) {
-                gbc.gridx = x;
-                JLabel tile;
+                gridX = x;
+                Label tile;
+                assert playerLocation != null;
                 if ((x == playerLocation.getCol()) && (y == playerLocation.getRow())) {
                     //Puts a player in the centre
                     tile = getMatchingLabel(getPlayerCharacter(row[x]));
@@ -108,12 +122,12 @@ public abstract class PlayerGUI extends MessageFeedGUI {
                     tile = getMatchingLabel(row[x]);
                 }
                 //tile is added
-                gameBoard.add(tile, gbc);
+                gameBoard.addLabel(tile, gridX, gridY);
             }
         }
         //Force an update to visibility
-        gameBoard.setVisible(false);
-        gameBoard.setVisible(true);
+        gameBoard.setPanelVisible(false);
+        gameBoard.setPanelVisible(true);
     }
 
     /**
@@ -122,7 +136,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      * @return Location The location of the player
      */
     private Location getPlayerLocation() {
-        if (lookReply.length <= 0) {
+        if (lookReply.length == 0) {
             return null;
         } else {
             int row = (int) Math.ceil((lookReply.length - 2) / 2.0);
@@ -155,122 +169,87 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     }
 
     /**
-     * Gets the messenger JPanel
+     * Gets the messenger Panel
      *
-     * @return JPanel the messanger JPanel
+     * @return Panel the messenger Panel
      */
-    protected JPanel getMessenger() {
-        //JPanel using the grid bag layout
-        JPanel messenger = new JPanel();
-        messenger.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+    protected Panel getMessenger() {
+        //Panel using the grid bag layout
+        var messenger = uiElementFacade.CreatePanel();
+        messenger.setPanelLayout(LayoutTypes.GridBag);
 
         //Adds the message feed from the superclass
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        messenger.add(getMessageFeed(), gbc);
+        messenger.addPanel(getMessageFeed(), 0, 0, 2);
 
         //Adds the text field chat field
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        messenger.add(chatField, gbc);
+        messenger.addTextField(chatField, 0, 1, 1);
 
         //Creation of a send button
-        JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Sends the message and wipes the text field
-                sendChatMessage(chatField.getText());
-                chatField.setText("");
-            }
+        var sendButton = uiElementFacade.CreateButton("Send", null, actionListener -> {
+            //Sends the message and wipes the text field
+            sendChatMessage(chatField.toString());
+            chatField.setTextFieldText("");
         });
-        gbc.gridx = 1;
-        messenger.add(sendButton, gbc);
+
+        messenger.addButton(sendButton, 1, 1, 1);
 
         return messenger;
     }
 
     /**
-     * Gets a quit button with built in functionality
+     * Gets a quit button with built-in functionality
      *
-     * @return JButton The Quit Button
+     * @return Button The Quit Button
      */
-    protected JButton getQuitButton() {
+    protected Button getQuitButton() {
         //uses a set Image
-        JButton quitButton = getImageButton("Quit.png");
-        quitButton.setToolTipText("Quit Game");
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Sends a die message and exits
-                die("DIE You Quit");
-            }
+        var quitButton = getImageButton("Quit.png");
+        quitButton.setButtonToolTipText("Quit Game");
+        quitButton.addButtonActionListener(actionListener -> {
+            // Sends a die message and exits
+            die("DIE You Quit");
         });
         return quitButton;
-    }
-
-    /**
-     * Gets the JLabel containing the current gold
-     *
-     * @return JLabel
-     */
-    public JLabel getCurrentGoldLabel() {
-        return this.currentGoldLabel;
-    }
-
-    /**
-     * Gets the JLabel containg the goal gold to win
-     *
-     * @return JLabel
-     */
-    public JLabel getGoalLabel() {
-        return this.goalLabel;
-    }
-
-    protected JLabel getSwordIndicator() {
-        return this.swordLabel;
     }
 
     /**
      * Gets a button with an image using a given file name
      *
      * @param imageFileName String the Image File Name
-     * @return JButton a button with the associated file name
+     * @return Button a button with the associated file name
      */
-    protected JButton getImageButton(String imageFileName) {
-        JButton button = new JButton();
+    protected Button getImageButton(String imageFileName) {
+        var button = uiElementFacade.CreateButton(null, null, null);
         setImageButton(imageFileName, button);
         //Standardised format to make it visually appealing
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
+        button.setButtonContentAreaFilled(false);
+        button.setButtonBorderPainted(false);
         return button;
     }
 
     /**
-     * Given a button this function will modify it by changing it's image to that of a given file name
+     * Given a button this function will modify it by changing its image to that of a given file name
      *
      * @param imageFileName String The file name of the new image
-     * @param button        JButton The button to receive the new image
+     * @param button Button The button to receive the new image
      */
-    protected void setImageButton(String imageFileName, JButton button) {
+    protected void setImageButton(String imageFileName, Button button) {
         //Image is taken from file
         ImageIcon imageIcon = new ImageIcon(getClass().getResource(imageFileName), "");
-        button.setIcon(imageIcon);
+        button.setButtonIcon(imageIcon);
     }
 
     /**
      * Gets a Label with an image using a given file name
      *
      * @param imageFileName String the Image File Name
-     * @return JLabel a label with the associated file name
+     * @return Label a label with the associated file name
      */
-    protected JLabel getImageLabel(String imageFileName) {
-        JLabel label = new JLabel();
+    protected Label getImageLabel(String imageFileName) {
+        var label = uiElementFacade.CreateLabel(null);
         //Image is taken from file
         ImageIcon imageIcon = new ImageIcon(getClass().getResource(imageFileName), "");
-        label.setIcon(imageIcon);
+        label.setLabelIcon(imageIcon);
         return label;
     }
 
@@ -295,19 +274,19 @@ public abstract class PlayerGUI extends MessageFeedGUI {
             if (message.equals("You equip Armour")) {
                 this.hasArmour = true;
             } else if (message.equals("You equip Sword")) {
-                this.swordLabel.setVisible(true);
+                this.swordLabel.setLabelVisible(true);
             }
             //Updates the goal message if need be
             else if (message.startsWith("GOAL")) {
-                goalLabel.setText(message);
+                goalLabel.setLabelText(message);
             }
             //Updates the current gold message if need be
             else if (message.startsWith("TREASUREMOD ")) {
                 this.currentGold += getGoldChange(message.substring(12).replace(" ", ""));
-                this.currentGoldLabel.setText("GOLD " + currentGold);
+                this.currentGoldLabel.setLabelText("GOLD " + currentGold);
             }
 
-            //Allows subclassses to read the message if it's needed
+            //Allows subclasses to read the message if it's needed
             handelMessage(message);
             //Checks to see if the message is a server of player message and formats it correctly
             if (!message.startsWith("[")) {
@@ -325,9 +304,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @param message String The message that was received
      */
-    protected void handelMessage(String message) {
-        return;
-    }
+    protected void handelMessage(String message) { }
 
     /**
      * Called whenever a look reply is received it is designed to be optionally overridden
@@ -335,9 +312,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @param lookReply String[] The look reply that was received
      */
-    protected void handelLookReply(String[] lookReply) {
-        return;
-    }
+    protected void handelLookReply(String[] lookReply) { }
 
     /**
      * Reads of the gold change as a string and returns it as an integer
@@ -347,8 +322,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      */
     private int getGoldChange(String treasureMod) {
         try {
-            int goldChange = Integer.parseInt(treasureMod);
-            return goldChange;
+            return Integer.parseInt(treasureMod);
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -370,12 +344,12 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     }
 
     /**
-     * Given a character a JLabel with the matching image is returned
+     * Given a character a Label with the matching image is returned
      *
      * @param Tile char The Tile Character
-     * @return JLabel with an image of the matching character, if the character is not recognised a black space is seen instead
+     * @return Label with an image of the matching character, if the character is not recognised a black space is seen instead
      */
-    private JLabel getMatchingLabel(char Tile) {
+    private Label getMatchingLabel(char Tile) {
         String fileName;
         //Case statement for all file names
         switch (Tile) {
@@ -431,7 +405,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
             default:
                 fileName = "BlackSpace";
         }
-        //File Extension is added and the JLabel is formed
+        //File Extension is added and the Label is formed
         return getImageLabel(fileName + ".png");
     }
 
@@ -442,16 +416,9 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      */
     private void sendChatMessage(String message) {
         //It will not send an empty message - only contains spaces
-        if (!message.replace(" ", "").equals("")) {
+        if (!message.replace(" ", "").isEmpty()) {
             gameCommunicator.sendMessageToGame("SHOUT " + message);
         }
     }
 
-    public boolean isHasArmour() {
-        return hasArmour;
-    }
-
-    public JLabel getSwordLabel() {
-        return swordLabel;
-    }
 }
