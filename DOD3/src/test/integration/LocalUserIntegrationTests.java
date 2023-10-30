@@ -68,7 +68,7 @@ public class LocalUserIntegrationTests {
         initialPlayer2Gold = player2.getGold();
         initialPlayer2Hp = player2.getHp();
         initialPlayerLocation = player1.getLocation();
-        humanPlayerGUI.getMessageFeedText().setText("");
+        humanPlayerGUI.getMessageFeedText().setTextAreaText("");
         gameLogic.setPlayer(player1);
         gameLogic.startGame();
         player1.addToAP(100);
@@ -129,7 +129,7 @@ public class LocalUserIntegrationTests {
         assertEquals(initialPlayerAp - 1, player1.remainingAp());
         assertTrue(localUser1.isDidUserWin());
         assertTrue(gameLogic.isPlayerWon());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Game has finished!"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Game has finished!"));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_move_fail_invalidDirection(){
         localUser1.sendCommand("MOVE ASDFASDASD");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("invalid direction"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("invalid direction"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -161,7 +161,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE N");
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
         assertEquals(initialPlayerAp , player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a wall"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a wall"));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE E");
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a wall"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a wall"));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE S");
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a wall"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a wall"));
     }
 
     @Test
@@ -191,7 +191,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE W");
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a wall"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a wall"));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE N");
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a player"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a player"));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE E");
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a player"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a player"));
     }
 
     @Test
@@ -227,7 +227,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE S");
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a player"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a player"));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE W");
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL can't move into a player"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL can't move into a player"));
     }
 
     @Test
@@ -248,19 +248,19 @@ public class LocalUserIntegrationTests {
         localUser1.sendCommand("MOVE");
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerAp, player1.remainingAp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL MOVE needs a direction"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL MOVE needs a direction"));
     }
 
     @Test
     void sendCommand_hello_fail_noArgument(){
         localUser1.sendCommand("HELLO");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL HELLO needs an argument"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL HELLO needs an argument"));
     }
 
     @Test
     void sendCommand_look_fail_argumentPassed(){
         localUser1.sendCommand("LOOK TEST");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL LOOK does not take an argument"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL LOOK does not take an argument"));
     }
 
     @Test
@@ -273,40 +273,40 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_shout_success(){
         localUser1.sendCommand("SHOUT PLEASELETTTHISTESTWORK");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("PLEASELETTTHISTESTWORK"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("PLEASELETTTHISTESTWORK"));
     }
 
     @Test
     void sendCommand_shout_fail_noArgument(){
         localUser1.sendCommand("SHOUT");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL need something to shout"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL need something to shout"));
     }
 
     @Test
     void sendCommand_pickup_fail_gameNotStarted(){
         gameLogic.setGameStarted(false);
         localUser1.sendCommand("PICKUP");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL Game has not started"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL Game has not started"));
     }
 
     @Test
     void sendCommand_pickup_fail_notPlayerTurn(){
         gameLogic.setTurnSwitch(true);
         localUser1.sendCommand("PICKUP");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL It is not your turn"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL It is not your turn"));
     }
 
     @Test
     void sendCommand_pickup_fail_argumentPassed(){
         localUser1.sendCommand("PICKUP TEST");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL PICKUP does not take an argument"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL PICKUP does not take an argument"));
     }
 
     @Test
     void sendCommand_pickup_fail_nothingToPickup(){
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         localUser1.sendCommand("PICKUP");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("nothing to pick up"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("nothing to pick up"));
     }
 
     @Test
@@ -314,7 +314,7 @@ public class LocalUserIntegrationTests {
         Mockito.doReturn(swordTile).when(map).getMapCell(any());
         player1.giveItem(map.getAbstractFactory().createSword());
         localUser1.sendCommand("PICKUP");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("already have item"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("already have item"));
     }
 
     @Test
@@ -338,7 +338,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_attack_fail_noArgument(){
         localUser1.sendCommand("ATTACK");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL ATTACK needs a direction"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL ATTACK needs a direction"));
     }
 
     @Test
@@ -346,13 +346,13 @@ public class LocalUserIntegrationTests {
         Mockito.when(random.nextInt(anyInt())).thenReturn(4);
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
         localUser1.sendCommand("ATTACK N");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("You Missed the target"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("You Missed the target"));
     }
 
     @Test
     void sendCommand_attack_fail_noPlayerThere(){
         localUser1.sendCommand("ATTACK N");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("There is no player there"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("There is no player there"));
     }
 
     @Test
@@ -371,27 +371,27 @@ public class LocalUserIntegrationTests {
         player2.setHp(1);
         localUser1.sendCommand("ATTACK N");
         assertEquals(0, player2.getHp());
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("The player has died"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("The player has died"));
     }
 
 
     @Test
     void sendCommand_gift_fail_noArgument(){
         localUser1.sendCommand("GIFT");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("Server: FAIL GIFT needs a direction"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("Server: FAIL GIFT needs a direction"));
     }
 
     @Test
     void sendCommand_gift_fail_noPlayerThere(){
         localUser1.sendCommand("GIFT N");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("There is no player there."));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("There is no player there."));
     }
 
     @Test
     void sendCommand_gift_fail_noGold(){
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
         localUser1.sendCommand("GIFT N");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("You Have no Gold"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("You Have no Gold"));
     }
 
     @Test
@@ -426,7 +426,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_setPlayerPos_fail_noArgument(){
         localUser1.sendCommand("SETPLAYERPOS");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("need a position"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("need a position"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -434,7 +434,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_setPlayerPos_fail_invalidPosition(){
         localUser1.sendCommand("SETPLAYERPOS -100 -100");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("invalid position"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("invalid position"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -443,7 +443,7 @@ public class LocalUserIntegrationTests {
     void sendCommand_setPlayerPos_fail_notWalkableTile(){
         Mockito.doReturn(wallTile).when(map).getMapCell(any());
         localUser1.sendCommand("SETPLAYERPOS" + " " + (initialPlayerLocation.getCol() + 1) + " " + (initialPlayerLocation.getRow() + 1));
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("cannot walk on this tile"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("cannot walk on this tile"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -451,7 +451,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_setPlayerPos_fail_onlyOneCoordinateSent(){
         localUser1.sendCommand("SETPLAYERPOS" + " " + (initialPlayerLocation.getCol() + 1));
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("need two co-ordinates"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("need two co-ordinates"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -459,7 +459,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_setPlayerPos_fail_coordinatesNotIntegers(){
         localUser1.sendCommand("SETPLAYERPOS AS DD");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("co-ordinates must be integers"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("co-ordinates must be integers"));
         assertEquals(initialPlayerLocation.getCol(), player1.getLocation().getCol());
         assertEquals(initialPlayerLocation.getRow(), player1.getLocation().getRow());
     }
@@ -474,6 +474,6 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_fail_invalidCommand(){
         localUser1.sendCommand("INVALIDCOMMAND");
-        assertTrue(humanPlayerGUI.getMessageFeedText().getText().contains("invalid command"));
+        assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("invalid command"));
     }
 }
