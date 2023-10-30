@@ -2,6 +2,7 @@ package dod.game;
 
 import dod.abstractfactory.AbstractFactory;
 import dod.game.items.GameItem;
+import dod.game.maps.DefaultMap;
 import dod.game.maps.Map;
 
 import java.util.HashMap;
@@ -125,7 +126,7 @@ public class Tile {
     /**
      * Turn a character into a map tile
      *
-     * @param ch the character representing the map tile
+     * @param character the character representing the map tile
      * @return the Tile object corresponding to the character
      */
     public static Tile fromChar(char character, Map map) {

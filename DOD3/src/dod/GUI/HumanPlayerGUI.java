@@ -8,6 +8,7 @@ import dod.Communicator.GameCommunicator;
 import dod.facadePattern.Button;
 import dod.facadePattern.LayoutTypes;
 import dod.facadePattern.Panel;
+import lombok.Getter;
 
 /**
  * Represents the Dungeon of Doom 3 GUI for the Human Player.
@@ -15,6 +16,7 @@ import dod.facadePattern.Panel;
  *
  * @author Benjamin Dring
  */
+@Getter
 public class HumanPlayerGUI extends PlayerGUI {
     @Serial
     private static final long serialVersionUID = -9146521400683926566L;

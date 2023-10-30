@@ -12,6 +12,9 @@ import dod.game.maps.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.Spy;
@@ -20,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,39 +83,26 @@ public class GameLogicUnitTests {
         gameLogic.startGame();
     }
 
-
-    @Test
-    void clientMove_moveNorth_success() throws CommandException {
-        Mockito.doReturn(true).when(map).insideMap(any());
-        Mockito.doReturn(floorTile).when(map).getMapCell(any());
-        gameLogic.clientMove(CompassDirection.NORTH);
+    private static Stream<CompassDirection> compassDirectionStream(){
+        return Stream.of(CompassDirection.NORTH,
+                CompassDirection.EAST,
+                CompassDirection.SOUTH,
+                CompassDirection.WEST);
     }
 
-    @Test
-    void clientMove_moveEast_success() throws CommandException {
+    @ParameterizedTest
+    @MethodSource("compassDirectionStream")
+    void clientMove_success(CompassDirection compassDirection) throws CommandException {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
-        gameLogic.clientMove(CompassDirection.EAST);
+        gameLogic.clientMove(compassDirection);
     }
 
-    @Test
-    void clientMove_moveSouth_success() throws CommandException {
-        Mockito.doReturn(true).when(map).insideMap(any());
-        Mockito.doReturn(floorTile).when(map).getMapCell(any());
-        gameLogic.clientMove(CompassDirection.SOUTH);
-    }
-
-    @Test
-    void clientMove_moveWest_success() throws CommandException {
-        Mockito.doReturn(true).when(map).insideMap(any());
-        Mockito.doReturn(floorTile).when(map).getMapCell(any());
-        gameLogic.clientMove(CompassDirection.WEST);
-    }
-
-    @Test
-    void clientMove_moveNorth_fail_walkIntoWall(){
+    @ParameterizedTest
+    @MethodSource("compassDirectionStream")
+    void clientMove_fail_walkIntoWall(CompassDirection compassDirection) {
         Mockito.doReturn(false).when(map).insideMap(any());
-        assertThrows(CommandException.class, () ->  gameLogic.clientMove(CompassDirection.NORTH));
+        assertThrows(CommandException.class, () ->  gameLogic.clientMove(compassDirection));
     }
 
     @Test
@@ -123,12 +114,6 @@ public class GameLogicUnitTests {
     }
 
     @Test
-    void clientMove_moveEast_fail_walkIntoWall(){
-        Mockito.doReturn(false).when(map).insideMap(any());
-        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.EAST));
-    }
-
-    @Test
     void clientMove_moveEast_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
@@ -137,23 +122,11 @@ public class GameLogicUnitTests {
     }
 
     @Test
-    void clientMove_moveSouth_fail_walkIntoWall(){
-        Mockito.doReturn(false).when(map).insideMap(any());
-        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.SOUTH));
-    }
-
-    @Test
     void clientMove_moveSouth_fail_walkIntoPlayer(){
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(floorTile).when(map).getMapCell(any());
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 1));
         assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.SOUTH));
-    }
-
-    @Test
-    void clientMove_moveWest_fail_walkIntoWall(){
-        Mockito.doReturn(false).when(map).insideMap(any());
-        assertThrows(CommandException.class, () -> gameLogic.clientMove(CompassDirection.WEST));
     }
 
     @Test
@@ -441,24 +414,10 @@ public class GameLogicUnitTests {
         gameLogic.clientAttack(CompassDirection.WEST);
     }
 
-    @Test
-    void clientAttack_attackNorth_fail_noPlayerThere() {
-        assertThrows(CommandException.class, () -> gameLogic.clientAttack(CompassDirection.NORTH));
-    }
-
-    @Test
-    void clientAttack_attackWest_fail_noPlayerThere() {
-        assertThrows(CommandException.class, () -> gameLogic.clientAttack(CompassDirection.WEST));
-    }
-
-    @Test
-    void clientAttack_attackSouth_fail_noPlayerThere() {
-        assertThrows(CommandException.class, () -> gameLogic.clientAttack(CompassDirection.SOUTH));
-    }
-
-    @Test
-    void clientAttack_attackEast_fail_noPlayerThere() {
-        assertThrows(CommandException.class, () -> gameLogic.clientAttack(CompassDirection.EAST));
+    @ParameterizedTest
+    @MethodSource("compassDirectionStream")
+    void clientAttack_fail_noPlayerThere(CompassDirection compassDirection){
+        assertThrows(CommandException.class, () -> gameLogic.clientAttack(compassDirection));
     }
 
     @Test
