@@ -2,32 +2,38 @@ package dod.abstractfactory;
 
 import dod.Adapter.FancyLanternAdapter;
 import dod.Adapter.MegaGoldPintAdapter;
+import dod.bridgePattern.SmallItem;
 import dod.game.items.GameItem;
-import dod.game.items.armour.LightArmour;
-import dod.game.items.gold.SmallGold;
-import dod.game.items.health.WeakHealth;
-import dod.game.items.lantern.WeakLantern;
-import dod.game.items.sword.WeakSword;
+import dod.game.items.armour.Armour;
+import dod.game.items.gold.Gold;
+import dod.game.items.health.Health;
+import dod.game.items.lantern.Lantern;
+import dod.game.items.sword.Sword;
 
 import java.util.Random;
 
 public class DefaultMapGameItemFactory extends AbstractFactory {
+
+    public DefaultMapGameItemFactory() {
+        super(new SmallItem());
+    }
+
     @Override
     public GameItem createHealth() {
         System.out.println("AbstractFactory: creating WeakHealth");
-        return new WeakHealth();
+        return new Health(this.itemType);
     }
 
     @Override
     public GameItem createArmour() {
         System.out.println("AbstractFactory: creating LightArmour");
-        return new LightArmour();
+        return new Armour(this.itemType);
     }
 
     @Override
     public GameItem createSword() {
         System.out.println("AbstractFactory: creating WeakSword");
-        return new WeakSword();
+        return new Sword(this.itemType);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
         if (chance < 1) { // 1% chance to get FancyLanternAdapter
             return new FancyLanternAdapter();
         } else { // 99% chance to get StrongLantern
-            return new WeakLantern();
+            return new Lantern(this.itemType);
         }
     }
 
@@ -52,7 +58,7 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
         if (chance < 1) { // 1% chance to get MegaGoldPintAdapter
             return new MegaGoldPintAdapter();
         } else { // 99% chance to get MediumGold
-            return new SmallGold();
+            return new Gold(this.itemType);
         }
     }
 }

@@ -54,7 +54,7 @@ public class HumanPlayerGUI extends PlayerGUI {
 
         //Size is set and components are shown
         this.setSize(1800, 750);
-        this.show();
+        this.setVisible(true);
     }
 
     /**
