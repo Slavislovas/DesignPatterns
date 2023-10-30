@@ -9,13 +9,20 @@ import dod.game.items.gold.Gold;
 import dod.game.items.health.Health;
 import dod.game.items.lantern.Lantern;
 import dod.game.items.sword.Sword;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Random;
 
+@Getter
+@Setter
 public class DefaultMapGameItemFactory extends AbstractFactory {
+
+    Random random;
 
     public DefaultMapGameItemFactory() {
         super(new SmallItem());
+        random = new Random();
     }
 
     @Override
@@ -39,7 +46,6 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
     @Override
     public GameItem createLantern() {
         System.out.println("AbstractFactory: creating WeakLantern");
-        Random random = new Random();
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
         if (chance < 1) { // 1% chance to get FancyLanternAdapter
@@ -52,7 +58,6 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
     @Override
     public GameItem createGold() {
         System.out.println("AbstractFactory: creating SmallGold");
-        Random random = new Random();
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
         if (chance < 1) { // 1% chance to get MegaGoldPintAdapter

@@ -11,4 +11,9 @@ class ButtonGroupImplementation extends ButtonGroup {
         buttonGroup.add(element.asJRadioButton());
         element.asJRadioButton().setSelected(isSelected);
     }
+
+    @Override
+    public int getRadioButtonCount() {
+        return buttonGroup.getButtonCount();
+    }
 }

@@ -6,6 +6,9 @@ import dod.GUI.HumanPlayerGUI;
 import dod.GUI.PlayerGUI;
 import dod.LocalUser;
 import dod.abstractfactory.AbstractFactory;
+import dod.abstractfactory.DefaultMapGameItemFactory;
+import dod.abstractfactory.SMapGameItemFactory;
+import dod.abstractfactory.VSMapGameItemFactory;
 import dod.bridgePattern.IItemType;
 import dod.bridgePattern.SmallItem;
 import dod.factory.Creator;
@@ -19,11 +22,13 @@ import dod.game.maps.vsMap;
 import dod.observer.Subject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Objects;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -72,7 +77,10 @@ class DesignPatternTest {
     @Test
     void abstractFactory_defaultMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/defaultMap");
-        AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
+        var defaultMapGameItemFactory = (DefaultMapGameItemFactory)defaultMap.getAbstractFactory();
+        defaultMapGameItemFactory.setRandom(Mockito.mock(Random.class));
+        var random = defaultMapGameItemFactory.getRandom();
+        Mockito.when(random.nextInt(100)).thenReturn(1);
         assertEquals("Small gold pile", defaultMapGameItemFactory.createGold().toString());
         assertEquals("Small armour", defaultMapGameItemFactory.createArmour().toString());
         assertEquals("Small sword", defaultMapGameItemFactory.createSword().toString());
@@ -83,23 +91,23 @@ class DesignPatternTest {
     @Test
     void abstractFactory_SMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/sMap");
-        AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
-        assertEquals("Medium gold pile", defaultMapGameItemFactory.createGold().toString());
-        assertEquals("Medium armour", defaultMapGameItemFactory.createArmour().toString());
-        assertEquals("Medium sword", defaultMapGameItemFactory.createSword().toString());
-        assertEquals("Medium health potion", defaultMapGameItemFactory.createHealth().toString());
-        assertEquals("Medium lantern", defaultMapGameItemFactory.createLantern().toString());
+        var sMapGameItemFactory = (SMapGameItemFactory)defaultMap.getAbstractFactory();
+        assertEquals("Medium gold pile", sMapGameItemFactory.createGold().toString());
+        assertEquals("Medium armour", sMapGameItemFactory.createArmour().toString());
+        assertEquals("Medium sword", sMapGameItemFactory.createSword().toString());
+        assertEquals("Medium health potion", sMapGameItemFactory.createHealth().toString());
+        assertEquals("Medium lantern", sMapGameItemFactory.createLantern().toString());
     }
 
     @Test
     void abstractFactory_VSMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/vsMap");
-        AbstractFactory defaultMapGameItemFactory = defaultMap.getAbstractFactory();
-        assertEquals("Large gold pile", defaultMapGameItemFactory.createGold().toString());
-        assertEquals("Large armour", defaultMapGameItemFactory.createArmour().toString());
-        assertEquals("Large sword", defaultMapGameItemFactory.createSword().toString());
-        assertEquals("Large health potion", defaultMapGameItemFactory.createHealth().toString());
-        assertEquals("Large lantern", defaultMapGameItemFactory.createLantern().toString());
+        var vsMapGameItemFactory = (VSMapGameItemFactory)defaultMap.getAbstractFactory();
+        assertEquals("Large gold pile", vsMapGameItemFactory.createGold().toString());
+        assertEquals("Large armour", vsMapGameItemFactory.createArmour().toString());
+        assertEquals("Large sword", vsMapGameItemFactory.createSword().toString());
+        assertEquals("Large health potion", vsMapGameItemFactory.createHealth().toString());
+        assertEquals("Large lantern", vsMapGameItemFactory.createLantern().toString());
     }
 
     @Test

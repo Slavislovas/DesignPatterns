@@ -10,4 +10,8 @@ public abstract class CheckBox {
 
     public abstract boolean isCheckBoxSelected();
 
+    public abstract void setCheckBoxSelected(boolean value);
+
+    public abstract String toString();
+
 }

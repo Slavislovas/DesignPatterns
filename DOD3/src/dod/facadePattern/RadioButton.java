@@ -9,5 +9,11 @@ public abstract class RadioButton {
 
     public abstract void setRadioButtonToolTipText(String text);
 
+    public abstract String getRadioButtonToolTipText();
+
+    public abstract void setRadioButtonSelected(boolean value);
+
     public abstract boolean isRadioButtonSelected();
+
+    public abstract String toString();
 }

@@ -16,4 +16,10 @@ class CheckBoxImplementation extends CheckBox {
 
     @Override
     public boolean isCheckBoxSelected() { return checkBox.isSelected(); }
+
+    @Override
+    public void setCheckBoxSelected(boolean value) { checkBox.setSelected(value); }
+
+    @Override
+    public String toString() { return checkBox.getText(); }
 }

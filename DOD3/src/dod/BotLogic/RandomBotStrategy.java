@@ -48,7 +48,8 @@ public class RandomBotStrategy extends Bot {
         Location playerLocation = getPlayerLocation();
         char tile = getTile(playerLocation);
 
-        changeBotStrategy();
+        if(changeBotStrategy())
+            getBotStrategy().performAction();
 
         //If the user is standing on gold and it needs it then it wants to pick it up
         if ((tile == 'G') && (!hasRequiredGold())) {

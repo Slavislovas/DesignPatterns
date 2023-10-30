@@ -18,5 +18,14 @@ class RadioButtonImplementation extends RadioButton {
     public void setRadioButtonToolTipText(String text) { radioButton.setToolTipText(text); }
 
     @Override
+    public String getRadioButtonToolTipText() { return radioButton.getToolTipText(); }
+
+    @Override
+    public void setRadioButtonSelected(boolean value) { radioButton.setSelected(value); }
+
+    @Override
     public boolean isRadioButtonSelected() { return radioButton.isSelected(); }
+
+    @Override
+    public String toString() { return radioButton.getText(); }
 }

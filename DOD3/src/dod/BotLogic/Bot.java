@@ -155,11 +155,11 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      *
      * @return boolean indicates if the user has the required gold
      */
-    protected boolean hasRequiredGold() {
+    public boolean hasRequiredGold() {
         return (this.currentGold >= this.goal);
     }
 
-    protected int goldLeftToCollect() {
+    public int goldLeftToCollect() {
         return this.goal - this.currentGold;
     }
 
@@ -169,7 +169,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      * @param location Location the tile location
      * @return char The tile character at the given location
      */
-    protected char getTile(Location location) {
+    public char getTile(Location location) {
         return lookReply[location.getRow()][location.getCol()];
     }
 
@@ -223,7 +223,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      * @param location Location the location to check
      * @return boolean that indicates if it blocks a player
      */
-    protected boolean doesBlock(Location location) {
+    public boolean doesBlock(Location location) {
         char tile = getTile(location);
         return ((tile == 'X') || (tile == '#') || (tile == 'P') || (tile == 'Q') || (tile == 'R') || (tile == 'K'));
     }
@@ -239,7 +239,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      * Updates the player location on the look reply
      */
     private void updatePlayerLocation() {
-        if (lookReply.length <= 0) {
+        if (lookReply == null || lookReply.length <= 0) {
             //Can only be done if there is a look reply
             this.playerLocation = null;
         } else {
@@ -290,17 +290,19 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
         }
     }
 
-    public void changeBotStrategy() {
+    public boolean changeBotStrategy() {
+        var strategyChanged = false;
         if (isPlayerNearby() && currentGold > goal) {
             setBotStrategy(new FriendlyBotStrategy(getComm(), this));
-            botStrategy.performAction();
+            strategyChanged = true;
         } else if (isPlayerNearby() && hasSword) {
             setBotStrategy(new AggressiveBotStrategy(getComm(), this));
-            botStrategy.performAction();
+            strategyChanged = true;
         }
+        return strategyChanged;
     }
 
-    private boolean isPlayerNearby() {
+    public boolean isPlayerNearby() {
         Location playerLocation = getPlayerLocation();
         int proximityDistance = 1;
 
