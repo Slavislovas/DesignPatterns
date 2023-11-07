@@ -57,7 +57,23 @@ public class RandomBotStrategy extends Bot {
                 var gameLogic = getComm().GetGameLogic();
                 if (gameLogic != null) {
                     var localGameCommunicator = new LocalGameCommunicator(gameLogic);
-                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, this.Clone(localGameCommunicator));
+                    var clone = this.Clone(localGameCommunicator);
+                    System.out.println("Bot was copied.");
+                    System.out.println("Original bot hash code: " + this.hashCode());
+                    System.out.println("Clone bot hash code: " + clone.hashCode());
+                    System.out.println("Original bot location hash code: " + this.getPlayerLocation().hashCode());
+                    System.out.println("Cloned bot location hash code: " + clone.getPlayerLocation().hashCode());
+                    System.out.println("Original bot current gold: " + this.getCurrentGold());
+                    System.out.println("Cloned bot current gold: " + clone.getCurrentGold());
+                    var originalCurrentGold = this.getCurrentGold();
+
+                    this.setCurrentGold(6);
+                    System.out.println("Original bot current gold: " + this.getCurrentGold());
+                    System.out.println("Cloned bot current gold: " + clone.getCurrentGold());
+
+                    this.setCurrentGold(originalCurrentGold);
+
+                    new BotPlayerGUI(localGameCommunicator, "Random Bot (Clone)", false, clone);
                 }
             }
             command = new PickUpCommand(getComm(), this, 'G');

@@ -67,7 +67,7 @@ public class FriendlyBotStrategy extends PlayerFindingBot {
 
         //It then tries to give gold away
         //Only give if there is gold to give
-        if (this.currentGold > 0) {
+        if (this.getCurrentGold() > 0) {
             //Gets surrounding players
             ArrayList<CompassDirection> surroundingPlayerDirections = getSurroundingPlayerDirections(playerLocation);
 

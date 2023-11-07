@@ -27,7 +27,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
 
     //Game information
     protected int goal;
-    protected int currentGold;
+    protected CurrentGold currentGold;
     protected boolean hasLantern;
     protected boolean hasArmour;
     protected boolean hasSword;
@@ -51,7 +51,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
         this.comm = comm;
         this.lookReply = null;
         this.goal = -1;
-        this.currentGold = 0;
+        this.currentGold = new CurrentGold(0);
         this.myTurn = false;
         this.gameOver = false;
         this.updatedLook = false;
@@ -76,10 +76,18 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
             this.myTurn = target.myTurn;
             this.gameOver = target.gameOver;
             this.updatedLook = target.updatedLook;
-            this.playerLocation = target.playerLocation;
+            this.playerLocation = new Location(target.playerLocation.getRow(), target.playerLocation.getCol());
             this.commandInvoker = target.commandInvoker;
             this.settings = target.settings;
         }
+    }
+
+    public int getCurrentGold() {
+        return currentGold.getValue();
+    }
+
+    public void setCurrentGold(int value) {
+        currentGold.setValue(value);;
     }
 
     /**
@@ -156,11 +164,11 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      * @return boolean indicates if the user has the required gold
      */
     public boolean hasRequiredGold() {
-        return (this.currentGold >= this.goal);
+        return (this.getCurrentGold() >= this.goal);
     }
 
     public int goldLeftToCollect() {
-        return this.goal - this.currentGold;
+        return this.goal - this.getCurrentGold();
     }
 
     /**
@@ -232,7 +240,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
      * Increments the gold counter
      */
     public void pickupGold() {
-        currentGold++;
+        this.setCurrentGold(this.getCurrentGold() + 1);
     }
 
     /**
@@ -292,7 +300,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
 
     public boolean changeBotStrategy() {
         var strategyChanged = false;
-        if (isPlayerNearby() && currentGold > goal) {
+        if (isPlayerNearby() && this.getCurrentGold() > goal) {
             setBotStrategy(new FriendlyBotStrategy(getComm(), this));
             strategyChanged = true;
         } else if (isPlayerNearby() && hasSword) {
