@@ -1,6 +1,7 @@
 package dod.singleton;
 
 import dod.game.CompassDirection;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 public class Settings {
     private static Settings instance;
     private final Map<String, String> userRoles;
+    @Getter
     private final ArrayList<CompassDirection> possibleDirections = new ArrayList<CompassDirection>();
 
     private Settings() {
@@ -27,8 +29,8 @@ public class Settings {
     public static synchronized Settings getInstance() {
         if (instance == null) {
             instance = new Settings();
-        } else {
         }
+
         return instance;
     }
 
@@ -38,9 +40,5 @@ public class Settings {
 
     public String getUserRole(String name) {
         return userRoles.get(name);
-    }
-
-    public ArrayList<CompassDirection> getPossibleDirections() {
-        return possibleDirections;
     }
 }

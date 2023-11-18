@@ -112,7 +112,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     /**
      * Updates the game board to reflect the stored look reply
      */
-    public void updateGameBoard() {
+    private void updateGameBoard() {
         //Removes all components from the game Board
         this.gameBoard.removeAllElements();
         GridBagConstraints gbc = new GridBagConstraints();
