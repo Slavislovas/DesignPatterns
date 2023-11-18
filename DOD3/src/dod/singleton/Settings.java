@@ -26,10 +26,8 @@ public class Settings {
 
     public static synchronized Settings getInstance() {
         if (instance == null) {
-            System.out.println("-- NEW SINGLETON CREATED");
             instance = new Settings();
         } else {
-            System.out.println("-- SAME SINGLETON RETURNED");
         }
         return instance;
     }

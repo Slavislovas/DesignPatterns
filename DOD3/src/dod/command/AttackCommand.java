@@ -20,7 +20,6 @@ public class AttackCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Executing attack command invoked by " + bot.getName());
         short numberOfNearbyPlayers = (short) directions.size();
         short randomNumber = (short) (new Random()).nextInt(numberOfNearbyPlayers);
 

@@ -17,31 +17,26 @@ public class SMapGameItemFactory extends AbstractFactory {
 
     @Override
     public GameItem createHealth() {
-        System.out.println("AbstractFactory: creating MediumHealth");
         return new Health(this.itemType);
     }
 
     @Override
     public GameItem createArmour() {
-        System.out.println("AbstractFactory: creating MediumArmour");
         return new Armour(this.itemType);
     }
 
     @Override
     public GameItem createSword() {
-        System.out.println("AbstractFactory: creating MediumSword");
         return new Sword(this.itemType);
     }
 
     @Override
     public GameItem createLantern() {
-        System.out.println("AbstractFactory: creating MediumLantern");
         return new Lantern(this.itemType);
     }
 
     @Override
     public GameItem createGold() {
-        System.out.println("AbstractFactory: creating MediumGold");
             return new Gold(this.itemType);
     }
 }

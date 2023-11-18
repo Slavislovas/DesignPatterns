@@ -27,12 +27,10 @@ public class AggressiveBotStrategy extends PlayerFindingBot {
     public AggressiveBotStrategy(GameCommunicator comm) {
         super(comm);
         setBotStrategy(this);
-        System.out.println("Creating Bot with Aggressive Strategy");
     }
 
     public AggressiveBotStrategy(GameCommunicator comm, Bot bot) {
         super(comm);
-        System.out.println("Creating Bot with Aggressive Strategy");
         this.lookReply = bot.lookReply;
         this.goal = bot.goal;
         this.currentGold = bot.currentGold;

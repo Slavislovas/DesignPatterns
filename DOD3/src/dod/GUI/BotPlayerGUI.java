@@ -91,12 +91,10 @@ public class BotPlayerGUI extends PlayerGUI {
      * This is useful as we generally want the bot to stop when the GUI is closed.
      */
     @Override
-    protected void die(String message) {
+    public void die(String message) {
         if (bot != null) {
             bot.die();
         }
         super.die(message);
-
     }
-
 }

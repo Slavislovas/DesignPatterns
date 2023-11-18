@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dod.builder.FistWeaponBuilder;
-import dod.builder.SwordWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
-import dod.game.items.sword.Sword;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -263,7 +261,7 @@ public class Player implements GameItemConsumer {
     }
 
     @Override
-    public void addToAP(int value){
+    public void addToAP(int value) {
         this.ap += value;
     }
 

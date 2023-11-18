@@ -13,13 +13,10 @@ public class MapCreator extends Creator{
     public Map factoryMethod(String identifier) throws FileNotFoundException, ParseException {
         switch (identifier){
             case "DOD3/defaultMap":
-                System.out.println("Factory: creating DefaultMap");
                 return new DefaultMap(identifier);
             case "DOD3/sMap":
-                System.out.println("Factory: creating sMap");
                 return new sMap(identifier);
             case "DOD3/vsMap":
-                System.out.println("Factory: creating vsMap");
                 return new vsMap(identifier);
             default:
                 throw new IllegalArgumentException("Map: " + identifier + " does not exist");

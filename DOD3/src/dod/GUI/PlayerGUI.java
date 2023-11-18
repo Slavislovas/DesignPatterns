@@ -1,16 +1,17 @@
 package dod.GUI;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.io.Serial;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import dod.Communicator.GameCommunicator;
+import dod.chainOfResponsibility.*;
 import dod.facadePattern.*;
 import dod.game.Location;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * A GUI for a generic player is having functionality that provides a message feed and a game board
@@ -20,37 +21,32 @@ import lombok.Getter;
 public abstract class PlayerGUI extends MessageFeedGUI {
     @Serial
     private static final long serialVersionUID = 4902461275568435021L;
-
     private final TextField chatField; //The Text field for talking
     protected Panel gameBoard;
     protected GameCommunicator gameCommunicator; //The communicator for communication to the game
     private String[] lookReply; //Stores the look reply
+
+    @Getter
+    @Setter
     private int currentGold;
     private final String name; //The players name
 
     @Getter
+    @Setter
     private boolean hasArmour;
     private final boolean isFinalWindow; //Used to determine how object should die
 
-    /**
-     * -- GETTER --
-     *  Gets the Label containing the current gold
-     *
-     */
-    //stats labels
     @Getter
     private final Label currentGoldLabel;
-    /**
-     * -- GETTER --
-     *  Gets the Label contain the goal gold to win
-     *
-     */
+
     @Getter
     private final Label goalLabel;
 
     //Label to tell the user if they have the sword
     @Getter
     private final Label swordLabel;
+
+    protected MessageHandler nextHandler;
 
     /**
      * The constructor that sets up the communication and the GUI components
@@ -85,6 +81,24 @@ public abstract class PlayerGUI extends MessageFeedGUI {
 
         //Grid bag layout is used for game-board
         gameBoard.setPanelLayout(LayoutTypes.GridBag);
+        initializeHandlers();
+    }
+
+    private void initializeHandlers() {
+        DieHandler dieHandler = new DieHandler();
+        GoalHandler goalHandler = new GoalHandler();
+        ArmorHandler armorHandler = new ArmorHandler();
+        SwordHandler swordHandler = new SwordHandler();
+        GoldHandler goldHandler = new GoldHandler();
+
+        dieHandler.setNextHandler(goalHandler);
+        goalHandler.setNextHandler(armorHandler);
+        armorHandler.setNextHandler(swordHandler);
+        swordHandler.setNextHandler(goldHandler);
+
+        goldHandler.setNextHandler(null);
+
+        nextHandler = dieHandler;
     }
 
     /**
@@ -98,7 +112,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     /**
      * Updates the game board to reflect the stored look reply
      */
-    private void updateGameBoard() {
+    public void updateGameBoard() {
         //Removes all components from the game Board
         this.gameBoard.removeAllElements();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -231,7 +245,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      * Given a button this function will modify it by changing its image to that of a given file name
      *
      * @param imageFileName String The file name of the new image
-     * @param button Button The button to receive the new image
+     * @param button        Button The button to receive the new image
      */
     protected void setImageButton(String imageFileName, Button button) {
         //Image is taken from file
@@ -256,35 +270,14 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     //Interprets the message from the game
     @Override
     public void pushMessage(String message) {
-        //Die messages are treated differently
-        if (message.startsWith(("DIE"))) {
-            die(message);
-        }
-        //Look replies are stored in the lookReply attribute
-        else if (message.startsWith(("LOOKREPLY"))) {
+        if (message.startsWith(("LOOKREPLY"))) {
             lookReply = message.split(System.getProperty("line.separator"));
             //The game board is updated
             updateGameBoard();
             //Class allows subclasses to handle the look reply also
             handelLookReply(this.lookReply);
-        }
-        //Other messages are displayed on message feed
-        else {
-            //Checks for armour
-            if (message.equals("You equip Armour")) {
-                this.hasArmour = true;
-            } else if (message.equals("You equip Sword")) {
-                this.swordLabel.setLabelVisible(true);
-            }
-            //Updates the goal message if need be
-            else if (message.startsWith("GOAL")) {
-                goalLabel.setLabelText(message);
-            }
-            //Updates the current gold message if need be
-            else if (message.startsWith("TREASUREMOD ")) {
-                this.currentGold += getGoldChange(message.substring(12).replace(" ", ""));
-                this.currentGoldLabel.setLabelText("GOLD " + currentGold);
-            }
+        } else {
+            nextHandler.handle(message, this);
 
             //Allows subclasses to read the message if it's needed
             handelMessage(message);
@@ -294,7 +287,6 @@ public abstract class PlayerGUI extends MessageFeedGUI {
             } else {
                 addMessageToFeed(message);
             }
-
         }
     }
 
@@ -304,7 +296,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @param message String The message that was received
      */
-    protected void handelMessage(String message) { }
+    protected void handelMessage(String message) {}
 
     /**
      * Called whenever a look reply is received it is designed to be optionally overridden
@@ -320,7 +312,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      * @param treasureMod The string for which contains the gold change
      * @return int The parsed string, if the string was not a number 0 is returned
      */
-    private int getGoldChange(String treasureMod) {
+    public int getGoldChange(String treasureMod) {
         try {
             return Integer.parseInt(treasureMod);
         } catch (NumberFormatException e) {
@@ -333,7 +325,7 @@ public abstract class PlayerGUI extends MessageFeedGUI {
      *
      * @param message String The message to be displayed
      */
-    protected void die(String message) {
+    public void die(String message) {
         JOptionPane.showMessageDialog(null, message.substring(3));
         //Window is removed
         this.dispose();
@@ -420,5 +412,4 @@ public abstract class PlayerGUI extends MessageFeedGUI {
             gameCommunicator.sendMessageToGame("SHOUT " + message);
         }
     }
-
 }

@@ -27,25 +27,21 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
 
     @Override
     public GameItem createHealth() {
-        System.out.println("AbstractFactory: creating WeakHealth");
         return new Health(this.itemType);
     }
 
     @Override
     public GameItem createArmour() {
-        System.out.println("AbstractFactory: creating LightArmour");
         return new Armour(this.itemType);
     }
 
     @Override
     public GameItem createSword() {
-        System.out.println("AbstractFactory: creating WeakSword");
         return new Sword(this.itemType);
     }
 
     @Override
     public GameItem createLantern() {
-        System.out.println("AbstractFactory: creating WeakLantern");
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
         if (chance < 1) { // 1% chance to get FancyLanternAdapter
@@ -57,7 +53,6 @@ public class DefaultMapGameItemFactory extends AbstractFactory {
 
     @Override
     public GameItem createGold() {
-        System.out.println("AbstractFactory: creating SmallGold");
         int chance = random.nextInt(100); // Generating a random number between 0 and 99
 
         if (chance < 1) { // 1% chance to get MegaGoldPintAdapter
