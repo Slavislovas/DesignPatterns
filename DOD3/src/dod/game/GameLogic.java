@@ -544,9 +544,8 @@ public class GameLogic {
 
         while (true) {
             // Generate a random location
-            final Random random = new Random();
-            final int randomRow = random.nextInt(this.map.getMapHeight());
-            final int randomCol = random.nextInt(this.map.getMapWidth());
+            final int randomRow = rand.nextInt(this.map.getMapHeight());
+            final int randomCol = rand.nextInt(this.map.getMapWidth());
 
             final Location location = new Location(randomCol, randomRow);
 
