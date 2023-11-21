@@ -28,7 +28,6 @@ public class RandomBotStrategy extends Bot {
     public RandomBotStrategy(GameCommunicator comm) {
         super(comm);
         setBotStrategy(this);
-        System.out.println("Creating Bot with Random Strategy");
     }
 
     private RandomBotStrategy(GameCommunicator comm, RandomBotStrategy target) {

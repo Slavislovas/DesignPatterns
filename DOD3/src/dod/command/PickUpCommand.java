@@ -16,7 +16,6 @@ public class PickUpCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Executing pick up command invoked by " + bot.getName());
         if (tileType == 'G') {
             bot.pickupGold();
         } else if (tileType == 'L') {

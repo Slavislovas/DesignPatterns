@@ -1,9 +1,9 @@
 package dod.builder;
 
-public class SwordWeaponBuilder implements WeaponBuilder{
+public class SwordWeaponBuilder implements WeaponBuilder {
     private final Weapon weapon;
 
-    public SwordWeaponBuilder(){
+    public SwordWeaponBuilder() {
         this.weapon = new Weapon();
     }
 
@@ -27,7 +27,6 @@ public class SwordWeaponBuilder implements WeaponBuilder{
 
     @Override
     public Weapon build() {
-        System.out.println("Builder: sword weapon built");
         return weapon;
     }
 }

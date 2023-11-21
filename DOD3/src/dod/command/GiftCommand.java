@@ -20,7 +20,6 @@ public class GiftCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Executing gift command invoked by " + bot.getName());
         int gold = bot.getCurrentGold() - 1;
         bot.setCurrentGold(gold);
 

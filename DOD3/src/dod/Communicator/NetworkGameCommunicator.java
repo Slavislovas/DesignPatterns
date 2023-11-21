@@ -16,7 +16,7 @@ import dod.game.GameLogic;
  * @author Benjamin Dring
  */
 public class NetworkGameCommunicator extends GameCommunicator {
-    private Socket server; //Server Socket
+    private final Socket server; //Server Socket
     private PrintWriter socketPrinter;
     //These two objects are used in constructing the look reply
     private String lookReply;
@@ -76,7 +76,9 @@ public class NetworkGameCommunicator extends GameCommunicator {
     }
 
     @Override
-    public GameLogic GetGameLogic() { return null; }
+    public GameLogic GetGameLogic() {
+        return null;
+    }
 
     /**
      * Listens to the game and relays any messages to the client listener

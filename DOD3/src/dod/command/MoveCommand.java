@@ -19,7 +19,6 @@ public class MoveCommand implements Command {
 
     @Override
     public void execute() {
-        System.out.println("Executing move command invoked by " + bot.getName());
         if (movementObjective == 'R') {
             moveRandomly();
         } else if (movementObjective == 'G' || movementObjective == 'E'

@@ -16,25 +16,21 @@ public class VSMapGameItemFactory extends AbstractFactory {
 
     @Override
     public GameItem createHealth() {
-        System.out.println("AbstractFactory: creating StrongHealth");
         return new Health(this.itemType);
     }
 
     @Override
     public GameItem createArmour() {
-        System.out.println("AbstractFactory: creating HeavyArmour");
         return new Armour(this.itemType);
     }
 
     @Override
     public GameItem createSword() {
-        System.out.println("AbstractFactory: creating StrongSword");
         return new Sword(this.itemType);
     }
 
     @Override
     public GameItem createLantern() {
-        System.out.println("AbstractFactory: creating StrongLantern");
             return new Lantern(this.itemType);
     }
 

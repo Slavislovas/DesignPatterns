@@ -8,7 +8,6 @@ public class WeaponDirector {
     }
 
     public Weapon build(){
-        System.out.println("Weapon Director: building weapon");
         return weaponBuilder
                 .buildDamage()
                 .buildRange()
