@@ -1,5 +1,7 @@
 package test.unit;
 
+import dod.BotLogic.Bot;
+import dod.Communicator.GameCommunicator;
 import dod.User;
 import dod.game.CommandException;
 import dod.game.CompassDirection;
@@ -43,6 +45,7 @@ public class GameLogicUnitTests {
     Tile lanternTile = new Tile(map.getAbstractFactory().createLantern());
     Tile goldTile = new Tile(map.getAbstractFactory().createGold());
     Tile healthTile = new Tile(map.getAbstractFactory().createHealth());
+
     User user1 = new User(gameLogic) {
         @Override
         public void update(String message) {

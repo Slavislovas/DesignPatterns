@@ -38,6 +38,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
     private Location playerLocation; //Player location in the dungeon
     private CommandInvoker commandInvoker;
     private BotStrategy botStrategy;
+    private Random random = new Random();
 
     Settings settings = Settings.getInstance();
 
@@ -202,7 +203,7 @@ public abstract class Bot extends Thread implements BotStrategy, ICloneable<Bot>
             return null;
         } else {
             //Random Index is made and direction is returned
-            int RandomNumber = (new Random()).nextInt(listSize);
+            int RandomNumber = random.nextInt(listSize);
             return possibleDirections.get(RandomNumber);
         }
     }
