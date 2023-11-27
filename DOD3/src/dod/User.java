@@ -4,7 +4,11 @@ import dod.game.CommandException;
 import dod.game.CompassDirection;
 import dod.game.GameLogic;
 import dod.game.PlayerListener;
+import dod.state.ConnectedState;
+import dod.state.UserState;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
 /**
  * Represents a generic user and has methods that is common for both local and network users.
@@ -16,18 +20,18 @@ import lombok.Getter;
 
 @Getter
 public abstract class User implements PlayerListener {
+    public static int autoAsignPlayerNumber = 0; //for when a name is not supplied
     // The game which the command line user will operate on.
     // This is protected to enforce the use of "processCommand".
     protected final GameLogic game;
-
     //Used to identify users from each other
     protected int userID;
-
+    @Setter
+    private UserState currentState;
     private boolean didUserWin; //indicates if a user has won
-
+    @Getter
+    @Setter
     private boolean goalSent; //indicates if a goal message has been sent
-
-    private static int autoAsignPlayerNumber = 0; //for when a name is not supplied
 
     /**
      * Sets up the user and adds their character to the game
@@ -42,6 +46,39 @@ public abstract class User implements PlayerListener {
         userID = game.addPlayer(this);
         this.didUserWin = false;
         this.goalSent = false;
+        this.currentState = new ConnectedState();
+    }
+
+    /**
+     * Sanitises the given message - there are some characters that we can put
+     * in the messages that we don't want in other stuff that we sanitise.
+     *
+     * @param s The message to be sanitised
+     * @return The sanitised message
+     */
+    public static String sanitiseMessage(String s) {
+        return sanitise(s, "[a-zA-Z0-9-_ \\.,:!\\(\\)#]");
+    }
+
+    /**
+     * Strip out anything that isn't in the specified regex.
+     *
+     * @param s     The string to be sanitised
+     * @param regex The regex to use for sanitisiation
+     * @return The sanitised string
+     */
+    private static String sanitise(String s, String regex) {
+        String rv = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            final String tmp = s.substring(i, i + 1);
+
+            if (tmp.matches(regex)) {
+                rv += tmp;
+            }
+        }
+
+        return rv;
     }
 
     /**
@@ -110,158 +147,35 @@ public abstract class User implements PlayerListener {
      * @param commandString the string containing the command and any argument
      */
     public final void processCommand(String commandString) {
-
-
-        // converts to uppercase
         commandString = commandString.toUpperCase();
 
-        // Process the command string e.g. MOVE N
         final String commandStringSplit[] = commandString.split(" ", 2);
         final String command = commandStringSplit[0];
         final String arg = ((commandStringSplit.length == 2) ? commandStringSplit[1]
                 : null);
 
-        try {
-            processCommandAndArgument(command, arg);
-        } catch (final CommandException e) {
-            update("FAIL " + e.getMessage());
-        }
-    }
+        System.out.println(currentState.toString());
+        System.out.println(command);
 
-    /**
-     * Processes the command and an optional argument
-     * This has been partially modified by Benjamin Dring
-     *
-     * @param command the text command
-     * @param arg     the text argument (null if no argument)
-     * @throws CommandException
-     */
-    private void processCommandAndArgument(String command, String arg)
-            throws CommandException {
-        if (command.equals("HELLO")) {
-            if (arg == null) {
-                throw new CommandException("HELLO needs an argument");
-            }
-            String name = sanitiseMessage(arg);
-
-            //Gives a name if the name string is empty
-            if (name.replace(" ", "").equals("")) {
-                name = "Player " + (++autoAsignPlayerNumber);
-            }
-
-            this.game.clientHello(name, userID);
-            update("HELLO " + name);
-            if (!goalSent) {
-                //Goal is sent to the player
-                goalSent = true;
-                update("GOAL " + this.game.getGoal());
-            }
-            if ((game.isPlayerTurn(userID)) && (game.isGameStarted())) {
-                //If it is the players turn then we need to send a message to the user
-                startTurn();
-            }
-            //Informs everyone the user has joines
-            this.game.sendToAll(name + " has joined the game.");
-        } else if (command.equals("LOOK")) {
-            if (arg != null) {
-                throw new CommandException("LOOK does not take an argument");
-            }
-            game.lookAll();
-
-        } else if (command.equals("DIE")) {
-            game.die(userID);
-            game.lookAll();
-        } else if (command.equals("SHOUT")) {
-            // Ensure they have given us something to shout.
-            if (arg == null) {
-                throw new CommandException("need something to shout");
-            }
-
-            this.game.clientShout(sanitiseMessage(arg), this.userID);
-
-        }
-
-        /**
-         * @author Benjamin Dring
-         * Makes sure that it is currently the user's turn if it isn't it throws an exception
-         */
-        else if (!game.isGameStarted()) {
-            throw new CommandException("Game has not started");
-        } else if (!game.isPlayerTurn(userID)) {
-            throw new CommandException("It is not your turn");
-        }
-        /**
-         * End of work by Benjamin Dring
-         */
-
-        else if (command.equals("PICKUP")) {
-            if (arg != null) {
-                throw new CommandException("PICKUP does not take an argument");
-            }
-            this.game.clientPickup();
-            game.lookAll();
-            outputSuccess();
-
-        } else if (command.equals("MOVE")) {
-            // We need to know which direction to move in.
-            if (arg == null) {
-                throw new CommandException("MOVE needs a direction");
-            }
-
-            this.game.clientMove(getDirection(arg));
-            game.lookAll();
-            outputSuccess();
-
-        } else if (command.equals("ATTACK")) {
-            // We need to know which direction to move in.
-            if (arg == null) {
-                throw new CommandException("ATTACK needs a direction");
-            }
-
-            this.game.clientAttack(getDirection(arg));
-            game.lookAll();
-            outputSuccess();
-
-        } else if (command.equals("GIFT")) {
-            if (arg == null) {
-                throw new CommandException("GIFT needs a direction");
-            }
-
-            this.game.clientGift(getDirection(arg));
-            outputSuccess();
-
-        } else if (command.equals("ENDTURN")) {
-            this.game.newTurn();
-
-        } else if (command.equals("SETPLAYERPOS")) {
-            if (arg == null) {
-                throw new CommandException("need a position");
-            }
-
-            // Obtain two co-ordinates
-            final String coordinates[] = arg.split(" ");
-
-            if (coordinates.length != 2) {
-                throw new CommandException("need two co-ordinates");
-            }
-
-            try {
-                final int col = Integer.parseInt(coordinates[0]);
-                final int row = Integer.parseInt(coordinates[1]);
-
-                this.game.setPlayerPosition(col, row);
-                game.lookAll();
-                outputSuccess();
-            } catch (final NumberFormatException e) {
-                throw new CommandException("co-ordinates must be integers");
-            }
-
+        if (command.equals("SHOUT")) {
+            writeToChat(command, arg);
         } else {
-            // If it is none of the above then it must be a bad command.
-            throw new CommandException("invalid command");
+            try {
+                currentState.processCommand(this, command, arg);
+            } catch (final CommandException e) {
+                update("FAIL " + e.getMessage());
+            }
         }
     }
 
+    private void writeToChat(String command, String arg) {
+        if (command.equals("SHOUT")) {
+            if (arg == null) {
+                return;
+            }
+            this.game.clientShout(sanitiseMessage(arg), this.userID);
+        }
+    }
 
     /**
      * Obtains a compass direction from a string. Used to ensure the correct
@@ -271,7 +185,7 @@ public abstract class User implements PlayerListener {
      * @return the compass direction
      * @throws CommandException
      */
-    private CompassDirection getDirection(String string)
+    public CompassDirection getDirection(String string)
             throws CommandException {
         try {
             return CompassDirection.fromString(string);
@@ -281,41 +195,9 @@ public abstract class User implements PlayerListener {
     }
 
     /**
-     * Sanitises the given message - there are some characters that we can put
-     * in the messages that we don't want in other stuff that we sanitise.
-     *
-     * @param s The message to be sanitised
-     * @return The sanitised message
-     */
-    private static String sanitiseMessage(String s) {
-        return sanitise(s, "[a-zA-Z0-9-_ \\.,:!\\(\\)#]");
-    }
-
-    /**
-     * Strip out anything that isn't in the specified regex.
-     *
-     * @param s     The string to be sanitised
-     * @param regex The regex to use for sanitisiation
-     * @return The sanitised string
-     */
-    private static String sanitise(String s, String regex) {
-        String rv = "";
-
-        for (int i = 0; i < s.length(); i++) {
-            final String tmp = s.substring(i, i + 1);
-
-            if (tmp.matches(regex)) {
-                rv += tmp;
-            }
-        }
-
-        return rv;
-    }
-
-    /**
      * Sends a success message in the event that a command has succeeded
      */
-    private void outputSuccess() {
+    public void outputSuccess() {
         //I chose to remove this
         //outputMessage("SUCCESS");
     }
