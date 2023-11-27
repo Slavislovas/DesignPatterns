@@ -37,7 +37,7 @@ public class ConnectedState implements UserState {
     }
 
     @Override
-    public void processCommand(User user, String commandString, String arg) throws CommandException {
+    public void processCommandAndArgument(User user, String commandString, String arg) throws CommandException {
         if (commandString.equals("HELLO")) {
             if (arg == null) {
                 throw new CommandException("HELLO needs an argument");

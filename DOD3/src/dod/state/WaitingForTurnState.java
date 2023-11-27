@@ -39,7 +39,7 @@ public class WaitingForTurnState implements UserState {
     }
 
     @Override
-    public void processCommand(User user, String commandString, String arg) throws CommandException {
+    public void processCommandAndArgument(User user, String commandString, String arg) throws CommandException {
         if ((user.getGame().isPlayerTurn(user.getUserID())) && (user.getGame().isGameStarted())) {
             String[] strings = {commandString, arg};
             startTurn(user, strings);

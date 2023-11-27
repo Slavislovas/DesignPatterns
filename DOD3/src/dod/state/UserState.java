@@ -10,5 +10,5 @@ public interface UserState {
     void attack(User user, String arg) throws CommandException;
     void move(User user, String arg) throws CommandException;
     void gift(User user, String arg) throws CommandException;
-    void processCommand(User user, String commandString, String arg) throws CommandException;
+    void processCommandAndArgument(User user, String commandString, String arg) throws CommandException;
 }

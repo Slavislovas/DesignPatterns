@@ -35,7 +35,7 @@ public class GameOverState implements UserState {
     }
 
     @Override
-    public void processCommand(User user, String commandString, String arg) throws CommandException {
+    public void processCommandAndArgument(User user, String commandString, String arg) throws CommandException {
         if (commandString.equals("DIE")) {
             user.getGame().die(user.getUserID());
             user.getGame().lookAll();

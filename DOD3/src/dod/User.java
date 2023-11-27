@@ -154,14 +154,11 @@ public abstract class User implements PlayerListener {
         final String arg = ((commandStringSplit.length == 2) ? commandStringSplit[1]
                 : null);
 
-        System.out.println(currentState.toString());
-        System.out.println(command);
-
         if (command.equals("SHOUT")) {
             writeToChat(command, arg);
         } else {
             try {
-                currentState.processCommand(this, command, arg);
+                currentState.processCommandAndArgument(this, command, arg);
             } catch (final CommandException e) {
                 update("FAIL " + e.getMessage());
             }

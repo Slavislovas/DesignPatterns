@@ -43,7 +43,7 @@ public class TakingTurnState implements UserState {
     }
 
     @Override
-    public void processCommand(User user, String commandString, String arg) throws CommandException {
+    public void processCommandAndArgument(User user, String commandString, String arg) throws CommandException {
         switch (commandString) {
             case "PICKUP" -> {
                 if (arg != null) {
