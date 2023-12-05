@@ -1,10 +1,12 @@
 package dod.iterator;
 
+import java.util.List;
+
 public class ListIterator<T> implements Iterator<T>{
-    private final CustomCollection<T> elements;
+    private final List<T> elements;
     private int currentIndex;
 
-    public ListIterator(CustomCollection<T> elements) {
+    public ListIterator(List<T> elements) {
         this.elements = elements;
         this.currentIndex = 0;
     }
