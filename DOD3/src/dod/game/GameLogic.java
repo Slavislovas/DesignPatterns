@@ -14,6 +14,9 @@ import dod.game.items.GameItem;
 import dod.game.items.armour.Armour;
 import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
+import dod.iterator.CustomCollection;
+import dod.iterator.Iterator;
+import dod.iterator.PlayerList;
 import dod.observer.Subject;
 import dod.singleton.Settings;
 import lombok.Getter;
@@ -43,7 +46,7 @@ public class GameLogic {
     private Player player;
 
     //The following three variables have been implemented by Benjamin Dring
-    public ArrayList<Player> playerList = new ArrayList<Player>(); //This is the list of all players
+    public CustomCollection<Player> playerList = new PlayerList(); //This is the list of all players
     int currentPlayerIndex; //The index in playerList of the current player
     private boolean turnSwitch; //Used to lock the class from being accessed during transfer of turns
 
@@ -760,21 +763,30 @@ public class GameLogic {
      * Checks to see if there is any living players left if there isn't then the game is ended.
      */
     private boolean isAlivePlayer() {
-        for (Player player : playerList) {
-            if (!player.isDead()) {
+        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
+            if (!iterator.next().isDead()){
                 return true;
             }
         }
         return false;
+//        for (Player player : playerList) {
+//            if (!player.isDead()) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     /**
      * Performs the look reply to every player
      */
     public void lookAll() {
-        for (Player player : playerList) {
-            player.look();
+        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
+            iterator.next().look();
         }
+//        for (Player player : playerList) {
+//            player.look();
+//        }
     }
 
     /**
