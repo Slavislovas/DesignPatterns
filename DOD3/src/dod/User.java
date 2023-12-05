@@ -141,6 +141,17 @@ public abstract class User implements PlayerListener {
                 + this.game.clientLook(this.userID) + "ENDLOOKREPLY");
     }
 
+    public boolean shouldAppendLocalUserTag(){
+        return false;
+    }
+
+    public boolean shouldAppendNetworkUserTag(){
+        return false;
+    }
+
+    public abstract String appendTag(String message);
+
+
     /**
      * Processes a text command from the user.
      *
@@ -151,10 +162,18 @@ public abstract class User implements PlayerListener {
 
         final String commandStringSplit[] = commandString.split(" ", 2);
         final String command = commandStringSplit[0];
-        final String arg = ((commandStringSplit.length == 2) ? commandStringSplit[1]
+        String arg = ((commandStringSplit.length == 2) ? commandStringSplit[1]
                 : null);
 
         if (command.equals("SHOUT")) {
+            if (shouldAppendLocalUserTag()){
+                arg = appendTag(arg);
+            }
+
+            if (shouldAppendNetworkUserTag()){
+                arg = appendTag(arg);
+            }
+
             writeToChat(command, arg);
         } else {
             try {
