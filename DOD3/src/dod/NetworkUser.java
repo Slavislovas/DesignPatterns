@@ -105,7 +105,7 @@ public final class NetworkUser extends User implements Runnable {
 
     @Override
     public String appendTag(String message) {
-        message += "NETWORK_USER";
+        message += " NETWORK_USER";
         return message;
     }
 

@@ -149,7 +149,10 @@ public abstract class User implements PlayerListener {
         return false;
     }
 
-    public abstract String appendTag(String message);
+    public String appendTag(String message){
+        message += " USER";
+        return message;
+    }
 
 
     /**

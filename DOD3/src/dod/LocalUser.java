@@ -38,7 +38,7 @@ public final class LocalUser extends User {
 
     @Override
     public String appendTag(String message) {
-        message += "LOCAL_USER";
+        message += " LOCAL_USER";
         return message;
     }
 
