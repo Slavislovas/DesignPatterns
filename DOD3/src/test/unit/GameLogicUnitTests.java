@@ -48,10 +48,20 @@ public class GameLogicUnitTests {
 
     User user1 = new User(gameLogic) {
         @Override
+        public String appendTag(String message) {
+            return null;
+        }
+
+        @Override
         public void update(String message) {
         }
     };
     User user2 = new User(gameLogic) {
+        @Override
+        public String appendTag(String message) {
+            return null;
+        }
+
         @Override
         public void update(String message) {
         }
