@@ -14,7 +14,7 @@ import dod.game.GameLogic;
  *
  * @author Benjamin Dring
  */
-public class NetworkUser extends User implements Runnable {
+public final class NetworkUser extends User implements Runnable {
     Socket client; //Client socket
     PrintWriter socketPrinter;
 
@@ -101,5 +101,16 @@ public class NetworkUser extends User implements Runnable {
         } catch (IOException e) {
             System.out.println("Can't connect to client");
         }
+    }
+
+    @Override
+    public String appendTag(String message) {
+        message += " NETWORK_USER";
+        return message;
+    }
+
+    @Override
+    public boolean shouldAppendNetworkUserTag(){
+        return true;
     }
 }
