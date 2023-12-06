@@ -55,4 +55,6 @@ public interface PlayerListener extends GameObserver {
      */
     public void look();
 
+    public int userId();
+
 }

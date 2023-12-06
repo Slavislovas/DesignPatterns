@@ -1,13 +1,13 @@
 package dod.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dod.builder.FistWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
+import dod.iterator.GameItemLinkedList;
+import dod.iterator.CustomCollection;
+import dod.iterator.Iterator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +42,7 @@ public class Player implements GameItemConsumer {
     private Weapon weapon;
 
     // Items the player has
-    List<GameItem> items;
+    CustomCollection<GameItem> items;
 
     // Constants
     // How many AP does a player have by default
@@ -66,7 +66,7 @@ public class Player implements GameItemConsumer {
         this.location = location;
 
         // By default the player starts with nothing
-        this.items = new ArrayList<GameItem>();
+        this.items = new GameItemLinkedList();
 
         this.listener = listener;
 
@@ -171,8 +171,11 @@ public class Player implements GameItemConsumer {
         int lookDistance = defaultLookDistance;
 
         // Some items, e.g. the lantern, may increase the look distance
-        for (final GameItem item : this.items) {
-            lookDistance += item.lookDistanceIncrease();
+//        for (final GameItem item : this.items) {
+//            lookDistance += item.lookDistanceIncrease();
+//        }
+        for(Iterator<GameItem> iterator = items.getIterator(); iterator.hasNext();){
+            lookDistance+=iterator.next().lookDistanceIncrease();
         }
 
         return lookDistance;
@@ -201,8 +204,15 @@ public class Player implements GameItemConsumer {
      * @return true if the player has the item, false otherwise
      */
     public boolean hasItem(GameItem item) {
-        for (final GameItem itemToCompare : this.items) {
-            if (item.getClass() == itemToCompare.getClass()) {
+//        for (final GameItem itemToCompare : this.items) {
+//            if (item.getClass() == itemToCompare.getClass()) {
+//                return true;
+//            }
+//        }
+
+        for (Iterator<GameItem> iterator = items.getIterator(); iterator.hasNext();){
+            GameItem itemToCompare = iterator.next();
+            if (item.getClass() == itemToCompare.getClass()){
                 return true;
             }
         }
@@ -298,7 +308,8 @@ public class Player implements GameItemConsumer {
     }
 
     public void clearItems() {
-        this.items.clear();
+//        this.items.clear();
+        this.items = new GameItemLinkedList();
     }
 
     @Override
