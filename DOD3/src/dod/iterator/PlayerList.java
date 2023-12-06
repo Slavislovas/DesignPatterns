@@ -16,8 +16,7 @@ public class PlayerList implements CustomCollection<Player>{
 
     @Override
     public Iterator<Player> getIterator() {
-        System.out.println("PlayerList: getting iterator");
-        return new ListIterator<>(this);
+        return new AlivePlayerIterator(this);
     }
 
     @Override

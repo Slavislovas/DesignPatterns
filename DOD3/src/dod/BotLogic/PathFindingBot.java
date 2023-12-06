@@ -7,7 +7,6 @@ import dod.game.CompassDirection;
 import dod.game.Location;
 import dod.iterator.CustomCollection;
 import dod.iterator.Iterator;
-import dod.iterator.LocationArray;
 
 /**
  * Represents a bot that can path find to things, it introduces a complex path finding algorithm and issues commands to the Game
@@ -88,11 +87,11 @@ public abstract class PathFindingBot extends Bot {
             //We get the numberOfSteps to the next position to be the number of steps to get to this position + 1
             int numberOfSteps = stepCounterMap[location.getRow()][location.getCol()] + 1;
 
-            CustomCollection<Location> surroundingTiles = getSurroundingTiles(location); //This contains the 4 surrounding tiles north, south, east & west
+            Location[] surroundingTiles = getSurroundingTiles(location); //This contains the 4 surrounding tiles north, south, east & west
 
             //It then loops through every tile one movement away
-            for (Iterator<Location> iterator = surroundingTiles.getIterator(); iterator.hasNext();) {
-                Location nearbyTile = iterator.next();
+            for (int i = 0; i < surroundingTiles.length; i++) {
+                Location nearbyTile = surroundingTiles[i];
                 //If that tile is the starting tile then we have mapped enough for our path so we break from the loop
                 if ((nearbyTile.getRow() == playerLocation.getRow()) && (nearbyTile.getCol() == playerLocation.getCol())) {
                     pathFound = true;
@@ -243,18 +242,12 @@ public abstract class PathFindingBot extends Bot {
      * @param cords Location The location you wish to centralise this function around
      * @return Location[] an array of length 4 containing the locations
      */
-    private CustomCollection<Location> getSurroundingTiles(Location cords) {
-//        Location[] surroundingTiles = new Location[4];
-//        surroundingTiles[0] = cords.atCompassDirection(CompassDirection.NORTH);
-//        surroundingTiles[1] = cords.atCompassDirection(CompassDirection.SOUTH);
-//        surroundingTiles[2] = cords.atCompassDirection(CompassDirection.EAST);
-//        surroundingTiles[3] = cords.atCompassDirection(CompassDirection.WEST);
-//        return surroundingTiles;
-        CustomCollection<Location> surroundingTiles = new LocationArray(4);
-        surroundingTiles.set(cords.atCompassDirection(CompassDirection.NORTH), 0);
-        surroundingTiles.set(cords.atCompassDirection(CompassDirection.SOUTH), 1);
-        surroundingTiles.set(cords.atCompassDirection(CompassDirection.EAST), 2);
-        surroundingTiles.set(cords.atCompassDirection(CompassDirection.WEST), 3);
+    private Location[] getSurroundingTiles(Location cords) {
+        Location[] surroundingTiles = new Location[4];
+        surroundingTiles[0] = cords.atCompassDirection(CompassDirection.NORTH);
+        surroundingTiles[1] = cords.atCompassDirection(CompassDirection.SOUTH);
+        surroundingTiles[2] = cords.atCompassDirection(CompassDirection.EAST);
+        surroundingTiles[3] = cords.atCompassDirection(CompassDirection.WEST);
         return surroundingTiles;
     }
 

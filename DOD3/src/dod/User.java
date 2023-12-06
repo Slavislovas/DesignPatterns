@@ -81,6 +81,11 @@ public abstract class User implements PlayerListener {
         return rv;
     }
 
+    @Override
+    public int userId(){
+        return this.userID;
+    }
+
     /**
      * Informs the user of the beginning of a player's turn
      */

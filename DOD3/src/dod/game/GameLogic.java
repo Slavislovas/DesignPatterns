@@ -46,7 +46,7 @@ public class GameLogic {
     private Player player;
 
     //The following three variables have been implemented by Benjamin Dring
-    public CustomCollection<Player> playerList = new PlayerList(); //This is the list of all players
+    public CustomCollection<Player> playerList; //This is the list of all players
     int currentPlayerIndex; //The index in playerList of the current player
     private boolean turnSwitch; //Used to lock the class from being accessed during transfer of turns
 
@@ -73,6 +73,7 @@ public class GameLogic {
         this.serverListener = null;
         this.gameItemFactory = map.getAbstractFactory();
         this.rand = new Random();
+        playerList = new PlayerList();
         setUpAttributes();
 
         // Check if there is enough gold to win
@@ -568,20 +569,30 @@ public class GameLogic {
      *
      * @return true if there is at least one non-wall location, false otherwise
      */
+//    private boolean atLeastOneWalkablelLocation() {
+//        for (int x = 0; x < this.map.getMapWidth(); x++) {
+//            for (int y = 0; y < this.map.getMapHeight(); y++) {
+//
+//                Location location = new Location(x, y);
+//
+//                //it now checks to see if there is a player on the location
+//                if (this.map.getMapCell(location).isWalkable() && (!isPlayerOnTile(location))) {
+//                    // If it's not a wall then we can put them there
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
+
     private boolean atLeastOneWalkablelLocation() {
-        for (int x = 0; x < this.map.getMapWidth(); x++) {
-            for (int y = 0; y < this.map.getMapHeight(); y++) {
-
-                Location location = new Location(x, y);
-
-                //it now checks to see if there is a player on the location
-                if (this.map.getMapCell(location).isWalkable() && (!isPlayerOnTile(location))) {
-                    // If it's not a wall then we can put them there
-                    return true;
-                }
+        for (Iterator<Location> iterator = map.getIterator(); iterator.hasNext();){
+            Location location = iterator.next();
+            if (map.getMapCell(location).isWalkable() && !isPlayerOnTile(location)) {
+                return true;
             }
         }
-
         return false;
     }
 
@@ -691,13 +702,20 @@ public class GameLogic {
      * @return the userId (list index) of the player on the tile it returns -1 if there is no player on the tile
      */
     private int getUserIDOfPlayerOnTile(Location location) {
-        for (int index = 0; index < playerList.size(); index++) {
-            Location playerLocation = playerList.get(index).getLocation();
-            //checks to see if the player is alive and on the same place
-            if ((!playerList.get(index).isDead()) &&
-                    (location.getCol() == playerLocation.getCol()) &&
+//        for (int index = 0; index < playerList.size(); index++) {
+//            Location playerLocation = playerList.get(index).getLocation();
+//            //checks to see if the player is alive and on the same place
+//            if ((!playerList.get(index).isDead()) &&
+//                    (location.getCol() == playerLocation.getCol()) &&
+//                    (location.getRow() == playerLocation.getRow())) {
+//                return index;
+//            }
+//        }
+        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
+            Location playerLocation = iterator.next().getLocation();
+            if ((location.getCol() == playerLocation.getCol()) &&
                     (location.getRow() == playerLocation.getRow())) {
-                return index;
+                return player.getListener().userId();
             }
         }
         return -1;
@@ -763,12 +781,7 @@ public class GameLogic {
      * Checks to see if there is any living players left if there isn't then the game is ended.
      */
     private boolean isAlivePlayer() {
-        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
-            if (!iterator.next().isDead()){
-                return true;
-            }
-        }
-        return false;
+        return playerList.getIterator().hasNext();
 //        for (Player player : playerList) {
 //            if (!player.isDead()) {
 //                return true;

@@ -13,7 +13,6 @@ public class GameItemLinkedList implements CustomCollection<GameItem> {
 
     @Override
     public Iterator<GameItem> getIterator() {
-        System.out.println("GameItemLinkedList: getting iterator");
         return new LinkedListIterator<>(head);
     }
 
