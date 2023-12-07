@@ -1,5 +1,10 @@
 package dod.game;
 
+import dod.Composite.Achievement;
+import dod.Composite.AchievementComposite;
+import dod.Composite.AttackAchievement;
+import dod.Composite.GiftAchievement;
+import dod.Composite.MovementAchievement;
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
@@ -60,6 +65,7 @@ public class GameLogic {
     private Random rand;
 
     private Settings settings = Settings.getInstance();
+    private AchievementComposite achievements;
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -75,6 +81,25 @@ public class GameLogic {
         this.rand = new Random();
         playerList = new PlayerList();
         setUpAttributes();
+
+        achievements = new AchievementComposite(
+                new AchievementComposite( // AGGRESSIVE ACHIEVEMENTS
+                        new AchievementComposite( // ADVANCED AGGRESSIVE ACHIEVEMENTS
+                                new AttackAchievement("ADVANCED_KILL")
+                        ),
+                        new AchievementComposite( // BASIC AGGRESSIVE ACHIEVEMENTS
+                                new AttackAchievement("BASIC_PICKUP_SWORD"),
+                                new AttackAchievement("BASIC_PICKUP_ARMOR")
+                        )
+                ),
+                new AchievementComposite( // PASSIVE ACHIEVEMENTS
+                        new AchievementComposite( // BASIC PASSIVE ACHIEVEMENTS
+                                new MovementAchievement("BASIC_MOVE_FIRST_TIME"),
+                                new GiftAchievement("BASIC_GIFT_GOLD"),
+                                new MovementAchievement("BASIC_MOVE_AGAIN")
+                        )
+                )
+        );
 
         // Check if there is enough gold to win
         if (this.map.remainingGold() < this.map.getGoal()) {
@@ -295,6 +320,8 @@ public class GameLogic {
         // Move the player
         this.player.setLocation(location);
 
+        achievements.unlock("BASIC_MOVE_FIRST_TIME");
+
         // Notify the client of the success
         advanceTurn();
 
@@ -350,6 +377,7 @@ public class GameLogic {
             map.dropGold(victimPlayer.getLocation());
             this.player.sendMessage("The player has died");
             victimPlayer.sendMessage("DIE You were killed by a player");
+            achievements.unlock("ADVANCED_KILL");
         }
         advanceTurn();
         subject.notifyObservers(String.format("%s attacked in direction %s", this.player.getName(), direction));
@@ -394,6 +422,7 @@ public class GameLogic {
         this.player.addGold(-1);
         recieverPlayer.addGold(1);
         recieverPlayer.sendMessage("You were given 1 gold by " + this.player.getName());
+        achievements.unlock("BASIC_GIFT_GOLD");
 
         //We need to check if the receiver has now won
         if ((recieverPlayer.getGold() >= this.map.getGoal())
@@ -447,8 +476,10 @@ public class GameLogic {
 
         if (item instanceof Armour) {
             this.player.sendMessage("You equip Armour");
+            achievements.unlock("BASIC_PICKUP_ARMOR");
         } else if (item instanceof Sword) {
             this.player.sendMessage("You equip Sword");
+            achievements.unlock("BASIC_PICKUP_SWORD");
         }
 
         advanceTurn();
@@ -666,7 +697,9 @@ public class GameLogic {
 
             lookAll();
             subject.notifyObservers(String.format("Game has finished! %s has won", this.player.getName()));
-
+            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();){
+                System.out.println(iterator.next().getIdentifier());
+            }
             this.player.win();
 
         } else {
