@@ -11,11 +11,11 @@ public abstract class PlayerDecorator extends Player {
     }
 
     public void addGold(int gold) {
-        player.addGold(gold);
+        player.handleRequest("Gold", gold);
     }
 
     public void incrementHealth(int hp) {
-        player.incrementHealth(hp);
+        player.handleRequest("Health", hp);
     }
 
     public void sendMessage(String message) {

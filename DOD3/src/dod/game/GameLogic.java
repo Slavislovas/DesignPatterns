@@ -315,7 +315,7 @@ public class GameLogic {
          * End of modification
          */
         // Costs one action point
-        this.player.decrementAp();
+        player.handleRequest("Decrement AP", 1);
 
         // Move the player
         this.player.setLocation(location);
@@ -350,7 +350,7 @@ public class GameLogic {
         }
 
         //AP is zeroed
-        this.player.zeroAP();
+        this.player.handleRequest("Zero AP", 0);
 
         Player victimPlayer = playerList.get(victimUserId);
         //We randomly decide if it hits
@@ -363,7 +363,7 @@ public class GameLogic {
                 damage--;
             }
             //Damage player and display message to attacker
-            victimPlayer.damage(damage);
+            victimPlayer.handleRequest("Damage", damage);
             this.player.sendMessage("You hit your target for " + damage + " hp with weapon " + playerWeapon.getType().name());
             victimPlayer.sendMessage("A player hit you for " + damage + " hp with weapon " + playerWeapon.getType().name());
         } else {
@@ -417,10 +417,10 @@ public class GameLogic {
         Player recieverPlayer = playerList.get(recieverUserID);
 
         // Costs one action point
-        this.player.decrementAp();
+        player.handleRequest("Decrement AP", 1);
 
-        this.player.addGold(-1);
-        recieverPlayer.addGold(1);
+        this.player.handleRequest("Gold", -1);
+        recieverPlayer.handleRequest("Gold", 1);
         recieverPlayer.sendMessage("You were given 1 gold by " + this.player.getName());
         achievements.unlock("BASIC_GIFT_GOLD");
 
@@ -803,7 +803,7 @@ public class GameLogic {
      * @param userID The ID of the user to be killed
      */
     public void die(int userID) {
-        this.playerList.get(userID).kill();
+        this.playerList.get(userID).handleRequest("Kill", 0);
         map.dropGold(this.playerList.get(userID).getLocation()); //gold is dropped
         if (isPlayerTurn(userID)) {
             newTurn();

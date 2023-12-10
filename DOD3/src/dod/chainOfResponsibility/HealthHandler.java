@@ -2,21 +2,21 @@ package dod.chainOfResponsibility;
 
 import dod.game.Player;
 
-public class GoldHandler implements MessageHandler {
+public class HealthHandler implements MessageHandler {
     private MessageHandler nextHandler;
 
     private final Player player;
 
-    public GoldHandler(Player player) {
+    public HealthHandler(Player player) {
         this.player = player;
     }
 
     @Override
     public void handle(String indicator, int value) {
         damagePlayerChance();
-        if (indicator.contains("Gold")) {
-            player.setGold(player.getGold() + value);
-            player.getListener().treasureChange(value);
+        if (indicator.contains("HP")) {
+            player.setHp(player.getHp() + value);
+            player.getListener().hpChange(value);
         } else if (nextHandler != null) {
             nextHandler.handle(indicator, value);
         }

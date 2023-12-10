@@ -46,7 +46,7 @@ public class LocalUserIntegrationTests {
     Player player1 = gameLogic.getPlayer();
     Player player2 = gameLogic.getPlayerByIndex(1);
     Location initialPlayerLocation;
-    int initialPlayer2Hp;
+    double initialPlayer2Hp;
     int initialPlayer2Gold;
     HumanPlayerGUI humanPlayerGUI = new HumanPlayerGUI(localGameCommunicator1, player1.getName(), false);
 
@@ -58,12 +58,12 @@ public class LocalUserIntegrationTests {
     @BeforeEach
     void init() throws CommandException {
         player1.setLocation(new Location(map.getMapWidth() / 2, map.getMapHeight() / 2));
-        player1.incrementHealth(10);
+        player1.handleRequest("Health", 10);
         player1.setGold(0);
         player1.clearItems();
         gameLogic.setTurnSwitch(false);
         player2.setLocation(new Location(-1, -1)); //so that player2 does not hinder movement of player1
-        player2.incrementHealth(10);
+        player2.handleRequest("Health", 10);
         player2.setGold(0);
         initialPlayer2Gold = player2.getGold();
         initialPlayer2Hp = player2.getHp();
@@ -71,7 +71,7 @@ public class LocalUserIntegrationTests {
         humanPlayerGUI.getMessageFeedText().setTextAreaText("");
         gameLogic.setPlayer(player1);
         gameLogic.startGame();
-        player1.addToAP(100);
+        player1.handleRequest("Add AP", 100);
         gameLogic.setRand(Mockito.mock(Random.class));
         random = gameLogic.getRand();
     }
