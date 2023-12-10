@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import dod.Communicator.GameCommunicator;
-import dod.chainOfResponsibility.*;
 import dod.facadePattern.*;
 import dod.game.Location;
 import lombok.Getter;
@@ -46,8 +45,6 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     @Getter
     private final Label swordLabel;
 
-    protected MessageHandler nextHandler;
-
     /**
      * The constructor that sets up the communication and the GUI components
      *
@@ -81,24 +78,6 @@ public abstract class PlayerGUI extends MessageFeedGUI {
 
         //Grid bag layout is used for game-board
         gameBoard.setPanelLayout(LayoutTypes.GridBag);
-        initializeHandlers();
-    }
-
-    private void initializeHandlers() {
-        DieHandler dieHandler = new DieHandler();
-        GoalHandler goalHandler = new GoalHandler();
-        ArmorHandler armorHandler = new ArmorHandler();
-        SwordHandler swordHandler = new SwordHandler();
-        GoldHandler goldHandler = new GoldHandler();
-
-        dieHandler.setNextHandler(goalHandler);
-        goalHandler.setNextHandler(armorHandler);
-        armorHandler.setNextHandler(swordHandler);
-        swordHandler.setNextHandler(goldHandler);
-
-        goldHandler.setNextHandler(null);
-
-        nextHandler = dieHandler;
     }
 
     /**
@@ -270,14 +249,31 @@ public abstract class PlayerGUI extends MessageFeedGUI {
     //Interprets the message from the game
     @Override
     public void pushMessage(String message) {
-        if (message.startsWith(("LOOKREPLY"))) {
+        //Die messages are treated differently
+        if (message.startsWith(("DIE"))) {
+            die(message);
+        } else if (message.startsWith(("LOOKREPLY"))) {
             lookReply = message.split(System.getProperty("line.separator"));
             //The game board is updated
             updateGameBoard();
             //Class allows subclasses to handle the look reply also
             handelLookReply(this.lookReply);
         } else {
-            nextHandler.handle(message, this);
+            //Checks for armour
+            if (message.equals("You equip Armour")) {
+                this.hasArmour = true;
+            } else if (message.equals("You equip Sword")) {
+                this.swordLabel.setLabelVisible(true);
+            }
+            //Updates the goal message if need be
+            else if (message.startsWith("GOAL")) {
+                goalLabel.setLabelText(message);
+            }
+            //Updates the current gold message if need be
+            else if (message.startsWith("TREASUREMOD ")) {
+                this.currentGold += getGoldChange(message.substring(12).replace(" ", ""));
+                this.currentGoldLabel.setLabelText("GOLD " + currentGold);
+            }
 
             //Allows subclasses to read the message if it's needed
             handelMessage(message);

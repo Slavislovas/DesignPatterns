@@ -18,7 +18,7 @@ public class Health extends GameItem {
 
     @Override
     public void processPickUp(GameItemConsumer player) {
-        player.incrementHealth(itemType.getValue());
+        player.handleRequest("Health", itemType.getValue());
     }
 
     @Override

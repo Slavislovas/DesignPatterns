@@ -17,7 +17,7 @@ public class Gold extends GameItem {
 
     @Override
     public void processPickUp(GameItemConsumer player) {
-        player.addGold(itemType.getValue());
+        player.handleRequest("Gold", itemType.getValue());
     }
 
     @Override

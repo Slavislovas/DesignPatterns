@@ -20,7 +20,7 @@ public class Sword extends GameItem {
 
     @Override
     public void processPickUp(GameItemConsumer player) {
-        player.addToAP(itemType.getValue());
+        player.handleRequest("Add AP", itemType.getValue());
         WeaponDirector weaponDirector = new WeaponDirector(new SwordWeaponBuilder());
         player.setWeapon(weaponDirector.build());
     }
