@@ -620,7 +620,7 @@ public class GameLogic {
     private boolean atLeastOneWalkablelLocation() {
         for (Iterator<Location> iterator = map.getIterator(); iterator.hasNext();){
             Location location = iterator.next();
-            if (map.getMapCell(location).isWalkable() && !isPlayerOnTile(location)) {
+            if (!isPlayerOnTile(location)) {
                 return true;
             }
         }

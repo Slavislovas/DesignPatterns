@@ -16,7 +16,14 @@ public class MapIterator implements Iterator<Location>{
 
     @Override
     public boolean hasNext() {
-        return currentX < map.getMapWidth() && currentY < map.getMapHeight();
+        for (int x = currentX; x < map.getMapWidth(); x++){
+            for (int y = currentY; y < map.getMapHeight(); y++){
+                if (map.getMapCell(new Location(x, y)).isWalkable()){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -24,12 +31,17 @@ public class MapIterator implements Iterator<Location>{
         if (!hasNext()) {
             throw new IllegalStateException("No more locations in the map.");
         }
+
         Location nextLocation = new Location(currentX, currentY);
-        currentX++;
-        if (currentX >= map.getMapWidth()) {
-            currentX = 0;
-            currentY++;
+        while (!map.getMapCell(nextLocation).isWalkable()){
+            currentX++;
+            if (currentX >= map.getMapWidth()) {
+                currentX = 0;
+                currentY++;
+            }
+            nextLocation = new Location(currentX, currentY);
         }
+
         return nextLocation;
     }
 

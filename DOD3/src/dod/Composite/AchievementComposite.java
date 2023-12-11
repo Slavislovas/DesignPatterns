@@ -2,7 +2,7 @@ package dod.Composite;
 
 import dod.iterator.IterableCollection;
 import dod.iterator.Iterator;
-import dod.iterator.UnlockedAchievementIterator;
+import dod.iterator.AchievementsIterator;
 
 import java.util.List;
 
@@ -39,6 +39,6 @@ public class AchievementComposite extends Achievement implements IterableCollect
 
     @Override
     public Iterator<Achievement> getIterator() {
-        return new UnlockedAchievementIterator(this);
+        return new AchievementsIterator(this);
     }
 }

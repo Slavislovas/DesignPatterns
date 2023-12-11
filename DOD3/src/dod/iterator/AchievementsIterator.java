@@ -5,11 +5,11 @@ import dod.Composite.AchievementComposite;
 
 import java.util.Stack;
 
-public class UnlockedAchievementIterator implements Iterator<Achievement>{
+public class AchievementsIterator implements Iterator<Achievement>{
     private final AchievementComposite root;
     private final Stack<java.util.Iterator<Achievement>> stack;
 
-    public UnlockedAchievementIterator(AchievementComposite root) {
+    public AchievementsIterator(AchievementComposite root) {
         this.root = root;
         this.stack = new Stack<>();
         stack.push(root.getChildren().iterator());
