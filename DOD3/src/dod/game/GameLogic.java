@@ -23,6 +23,7 @@ import dod.iterator.Iterator;
 import dod.iterator.PlayerList;
 import dod.observer.Subject;
 import dod.singleton.Settings;
+import dod.visitor.Visitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,6 +66,7 @@ public class GameLogic {
 
     private Settings settings = Settings.getInstance();
     private AchievementComposite achievements;
+    private Visitor visitor;
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -99,6 +101,8 @@ public class GameLogic {
                         )
                 )
         );
+
+        this.visitor = new Visitor();
 
         // Check if there is enough gold to win
         if (this.map.remainingGold() < this.map.getGoal()) {
@@ -699,13 +703,16 @@ public class GameLogic {
             for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();){
                 System.out.println(iterator.next().getIdentifier());
             }
+            this.achievements.accept(visitor);
+            System.out.println("Your total score for achievements: " + visitor.getTotalPoints());
             this.player.win();
-
         } else {
             //Now newTurn is called instead for dead players and when there is no Ap left
             if (this.player.isDead()) {
                 map.dropGold(this.player.getLocation());
                 subject.notifyObservers(String.format("%s is dead!", this.player.getName()));
+                this.achievements.accept(visitor);
+                System.out.println("Your total score for achievements: " + visitor.getTotalPoints());
                 newTurn();
                 lookAll();
             }

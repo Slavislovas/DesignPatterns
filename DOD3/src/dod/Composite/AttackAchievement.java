@@ -1,5 +1,7 @@
 package dod.Composite;
 
+import dod.visitor.AchievementVisitor;
+
 public class AttackAchievement extends Achievement{
     public AttackAchievement(String identifier){
         super.setIdentifier(identifier);
@@ -12,5 +14,10 @@ public class AttackAchievement extends Achievement{
             System.out.println("Achieved " + identifier);
             setUnlocked(true);
         }
+    }
+
+    @Override
+    public void accept(AchievementVisitor visitor) {
+        visitor.visit(this);
     }
 }

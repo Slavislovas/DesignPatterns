@@ -3,6 +3,7 @@ package dod.Composite;
 import dod.iterator.IterableCollection;
 import dod.iterator.Iterator;
 import dod.iterator.AchievementsIterator;
+import dod.visitor.AchievementVisitor;
 
 import java.util.List;
 
@@ -40,5 +41,12 @@ public class AchievementComposite extends Achievement implements IterableCollect
     @Override
     public Iterator<Achievement> getIterator() {
         return new AchievementsIterator(this);
+    }
+
+    @Override
+    public void accept(AchievementVisitor visitor) {
+        for (Achievement item : items) {
+            item.accept(visitor);
+        }
     }
 }
