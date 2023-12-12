@@ -700,11 +700,14 @@ public class GameLogic {
 
             lookAll();
             subject.notifyObservers(String.format("Game has finished! %s has won", this.player.getName()));
-            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();){
-                System.out.println(iterator.next().getIdentifier());
+            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();) {
+                Achievement achievement = iterator.next();
+                player.getListener().update("Achievement: " +
+                        achievement.getIdentifier() + " completion status: " +
+                        achievement.isUnlocked());
             }
             this.achievements.accept(visitor);
-            System.out.println("Your total score for achievements: " + visitor.getTotalPoints());
+            player.getListener().update("Your total score for achievements: " + visitor.getTotalPoints());
             this.player.win();
         } else {
             //Now newTurn is called instead for dead players and when there is no Ap left
@@ -712,7 +715,7 @@ public class GameLogic {
                 map.dropGold(this.player.getLocation());
                 subject.notifyObservers(String.format("%s is dead!", this.player.getName()));
                 this.achievements.accept(visitor);
-                System.out.println("Your total score for achievements: " + visitor.getTotalPoints());
+                player.getListener().update("Your total score for achievements: " + visitor.getTotalPoints());
                 newTurn();
                 lookAll();
             }
