@@ -2,6 +2,8 @@ package dod.game.items.armour;
 
 import dod.bridgePattern.IItemType;
 import dod.game.items.GameItem;
+import dod.mediator.IMediator;
+import dod.game.items.ItemType;
 
 /**
  * A class to represent armour. So far this does nothing, but if attacking is
@@ -11,8 +13,8 @@ public class Armour extends GameItem {
 
     public Armour() { }
 
-    public Armour(IItemType itemType) {
-        super(itemType);
+    public Armour(IItemType itemType, IMediator mediator) {
+        super(itemType, mediator);
     }
 
     @Override
@@ -27,5 +29,15 @@ public class Armour extends GameItem {
     @Override
     public char toChar() {
         return 'A';
+    }
+
+    @Override
+    public String getType() {
+        return ItemType.ARMOUR;
+    }
+
+    @Override
+    public void act() {
+
     }
 }

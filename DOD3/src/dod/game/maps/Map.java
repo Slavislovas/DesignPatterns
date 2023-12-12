@@ -4,6 +4,9 @@ import dod.abstractfactory.AbstractFactory;
 import dod.game.Location;
 import dod.game.Tile;
 import dod.game.items.gold.Gold;
+import dod.mediator.IMediator;
+import dod.mediator.ItemMediator;
+import lombok.Getter;
 import dod.iterator.IterableCollection;
 import dod.iterator.Iterator;
 import dod.iterator.MapIterator;
@@ -24,6 +27,9 @@ import java.util.Scanner;
  * client and server.
  */
 public abstract class Map implements IterableCollection<Location> {
+    @Getter
+    private final IMediator _mediator = new ItemMediator();
+
     // The name of the map
     private String name;
 

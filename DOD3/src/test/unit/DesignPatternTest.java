@@ -81,33 +81,33 @@ class DesignPatternTest {
         defaultMapGameItemFactory.setRandom(Mockito.mock(Random.class));
         var random = defaultMapGameItemFactory.getRandom();
         Mockito.when(random.nextInt(100)).thenReturn(1);
-        assertEquals("Small gold pile", defaultMapGameItemFactory.createGold().toString());
-        assertEquals("Small armour", defaultMapGameItemFactory.createArmour().toString());
-        assertEquals("Small sword", defaultMapGameItemFactory.createSword().toString());
-        assertEquals("Small health potion", defaultMapGameItemFactory.createHealth().toString());
-        assertEquals("Small lantern", defaultMapGameItemFactory.createLantern().toString());
+        assertEquals("Small gold pile", defaultMapGameItemFactory.createGold(defaultMap.get_mediator()).toString());
+        assertEquals("Small armour", defaultMapGameItemFactory.createArmour(defaultMap.get_mediator()).toString());
+        assertEquals("Small sword", defaultMapGameItemFactory.createSword(defaultMap.get_mediator()).toString());
+        assertEquals("Small health potion", defaultMapGameItemFactory.createHealth(defaultMap.get_mediator()).toString());
+        assertEquals("Small lantern", defaultMapGameItemFactory.createLantern(defaultMap.get_mediator()).toString());
     }
 
     @Test
     void abstractFactory_SMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/sMap");
         var sMapGameItemFactory = (SMapGameItemFactory)defaultMap.getAbstractFactory();
-        assertEquals("Medium gold pile", sMapGameItemFactory.createGold().toString());
-        assertEquals("Medium armour", sMapGameItemFactory.createArmour().toString());
-        assertEquals("Medium sword", sMapGameItemFactory.createSword().toString());
-        assertEquals("Medium health potion", sMapGameItemFactory.createHealth().toString());
-        assertEquals("Medium lantern", sMapGameItemFactory.createLantern().toString());
+        assertEquals("Medium gold pile", sMapGameItemFactory.createGold(defaultMap.get_mediator()).toString());
+        assertEquals("Medium armour", sMapGameItemFactory.createArmour(defaultMap.get_mediator()).toString());
+        assertEquals("Medium sword", sMapGameItemFactory.createSword(defaultMap.get_mediator()).toString());
+        assertEquals("Medium health potion", sMapGameItemFactory.createHealth(defaultMap.get_mediator()).toString());
+        assertEquals("Medium lantern", sMapGameItemFactory.createLantern(defaultMap.get_mediator()).toString());
     }
 
     @Test
     void abstractFactory_VSMapGameItemFactory_success() throws FileNotFoundException, ParseException {
         Map defaultMap = mapCreator.factoryMethod("DOD3/vsMap");
         var vsMapGameItemFactory = (VSMapGameItemFactory)defaultMap.getAbstractFactory();
-        assertEquals("Large gold pile", vsMapGameItemFactory.createGold().toString());
-        assertEquals("Large armour", vsMapGameItemFactory.createArmour().toString());
-        assertEquals("Large sword", vsMapGameItemFactory.createSword().toString());
-        assertEquals("Large health potion", vsMapGameItemFactory.createHealth().toString());
-        assertEquals("Large lantern", vsMapGameItemFactory.createLantern().toString());
+        assertEquals("Large gold pile", vsMapGameItemFactory.createGold(defaultMap.get_mediator()).toString());
+        assertEquals("Large armour", vsMapGameItemFactory.createArmour(defaultMap.get_mediator()).toString());
+        assertEquals("Large sword", vsMapGameItemFactory.createSword(defaultMap.get_mediator()).toString());
+        assertEquals("Large health potion", vsMapGameItemFactory.createHealth(defaultMap.get_mediator()).toString());
+        assertEquals("Large lantern", vsMapGameItemFactory.createLantern(defaultMap.get_mediator()).toString());
     }
 
     @Test

@@ -1,10 +1,18 @@
 package dod.builder;
 
+import dod.proxy.WeaponBuilderType;
+
 public class SwordWeaponBuilder implements WeaponBuilder {
     private final Weapon weapon;
 
     public SwordWeaponBuilder() {
+        System.out.println("Sword builder created");
         this.weapon = new Weapon();
+    }
+
+    @Override
+    public String getBuilderType() {
+        return WeaponBuilderType.SWORD;
     }
 
     @Override

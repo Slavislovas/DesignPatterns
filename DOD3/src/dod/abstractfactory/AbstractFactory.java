@@ -2,6 +2,7 @@ package dod.abstractfactory;
 
 import dod.bridgePattern.IItemType;
 import dod.game.items.GameItem;
+import dod.mediator.IMediator;
 
 public abstract class AbstractFactory {
 
@@ -11,9 +12,9 @@ public abstract class AbstractFactory {
         itemType = type;
     }
 
-    public abstract GameItem createHealth();
-    public abstract GameItem createArmour();
-    public abstract GameItem createSword();
-    public abstract GameItem createLantern();
-    public abstract GameItem createGold();
+    public abstract GameItem createHealth(IMediator mediator);
+    public abstract GameItem createArmour(IMediator mediator);
+    public abstract GameItem createSword(IMediator mediator);
+    public abstract GameItem createLantern(IMediator mediator);
+    public abstract GameItem createGold(IMediator mediator);
 }

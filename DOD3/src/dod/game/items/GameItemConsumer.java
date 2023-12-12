@@ -11,6 +11,7 @@ import dod.builder.Weapon;
  */
 public interface GameItemConsumer {
     void handleRequest(String indicator, int value);
+    String getName();
     Weapon getWeapon();
     void setWeapon(Weapon weapon);
 }

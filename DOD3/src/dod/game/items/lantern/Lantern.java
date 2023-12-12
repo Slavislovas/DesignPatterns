@@ -2,6 +2,8 @@ package dod.game.items.lantern;
 
 import dod.bridgePattern.IItemType;
 import dod.game.items.GameItem;
+import dod.mediator.IMediator;
+import dod.game.items.ItemType;
 
 /**
  * A class to represent a lantern, which the player holds to allow the player to
@@ -9,10 +11,13 @@ import dod.game.items.GameItem;
  */
 public class Lantern extends GameItem {
 
+    private int _distanceToAdd = 1;
+
     public Lantern() { }
 
-    public Lantern(IItemType itemType) {
-        super(itemType);
+    public Lantern(IItemType itemType, IMediator mediator) {
+        super(itemType, mediator);
+        _distanceToAdd = itemType.getValue();
     }
 
     @Override
@@ -22,7 +27,7 @@ public class Lantern extends GameItem {
 
     @Override
     public int lookDistanceIncrease() {
-        return itemType.getValue();
+        return _distanceToAdd;
     }
 
     @Override
@@ -33,5 +38,15 @@ public class Lantern extends GameItem {
     @Override
     public char toChar() {
         return 'L';
+    }
+
+    @Override
+    public String getType() {
+        return ItemType.LANTERN;
+    }
+
+    @Override
+    public void act() {
+        if(_distanceToAdd > 1) _distanceToAdd--;
     }
 }

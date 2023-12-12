@@ -6,6 +6,8 @@ import dod.builder.WeaponDirector;
 import dod.chainOfResponsibility.*;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
+import dod.game.items.ItemType;
+import dod.proxy.WeaponBuilderType;
 import dod.iterator.GameItemLinkedList;
 import dod.iterator.CustomCollection;
 import dod.iterator.Iterator;
@@ -69,8 +71,8 @@ public class Player implements GameItemConsumer {
 
         this.listener = listener;
 
-        WeaponDirector weaponDirector = new WeaponDirector(new FistWeaponBuilder());
-        this.weapon = weaponDirector.build();
+        WeaponDirector weaponDirector = new WeaponDirector();
+        this.weapon = weaponDirector.setBuilder(WeaponBuilderType.FIST).build(null);
         initializeHandlers();
 
         // Reset the player's AP
@@ -92,6 +94,11 @@ public class Player implements GameItemConsumer {
         healthHandler.setNextHandler(null);
 
         nextHandler = dieHandler;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -197,7 +204,7 @@ public class Player implements GameItemConsumer {
      * @param item the item to pick up
      */
     public void giveItem(GameItem item) {
-        if (hasItem(item)) {
+        if (hasItem(item) && !item.getType().equals(ItemType.SWORD)) {
             throw new IllegalStateException("the player already has this item.");
         }
 

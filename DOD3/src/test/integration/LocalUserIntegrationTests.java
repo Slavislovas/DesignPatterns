@@ -35,11 +35,11 @@ public class LocalUserIntegrationTests {
     Tile wallTile = new Tile(Tile.TileType.WALL);
     Tile floorTile = new Tile(Tile.TileType.FLOOR);
     Tile exitTile = new Tile(Tile.TileType.EXIT);
-    Tile armourTile = new Tile(map.getAbstractFactory().createArmour());
-    Tile swordTile = new Tile(map.getAbstractFactory().createSword());
-    Tile lanternTile = new Tile(map.getAbstractFactory().createLantern());
-    Tile goldTile = new Tile(map.getAbstractFactory().createGold());
-    Tile healthTile = new Tile(map.getAbstractFactory().createHealth());
+    Tile armourTile = new Tile(map.getAbstractFactory().createArmour(map.get_mediator()));
+    Tile swordTile = new Tile(map.getAbstractFactory().createSword(map.get_mediator()));
+    Tile lanternTile = new Tile(map.getAbstractFactory().createLantern(map.get_mediator()));
+    Tile goldTile = new Tile(map.getAbstractFactory().createGold(map.get_mediator()));
+    Tile healthTile = new Tile(map.getAbstractFactory().createHealth(map.get_mediator()));
     LocalGameCommunicator localGameCommunicator1 = new LocalGameCommunicator(gameLogic);
     LocalGameCommunicator localGameCommunicator2 = new LocalGameCommunicator(gameLogic);
     LocalUser localUser1 = localGameCommunicator1.getUser();
@@ -312,7 +312,7 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_pickup_fail_alreadyHasItem(){
         Mockito.doReturn(swordTile).when(map).getMapCell(any());
-        player1.giveItem(map.getAbstractFactory().createSword());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
         localUser1.sendCommand("PICKUP");
         assertTrue(humanPlayerGUI.getMessageFeedText().toString().contains("already have item"));
     }
@@ -320,19 +320,19 @@ public class LocalUserIntegrationTests {
     @Test
     void sendCommand_pickup_success_pickupSword(){
         Mockito.doReturn(swordTile).when(map).getMapCell(any());
-        assertFalse(player1.hasItem(map.getAbstractFactory().createSword()));
+        assertFalse(player1.hasItem(map.getAbstractFactory().createSword(map.get_mediator())));
         assertNotEquals(player1.getWeapon().getType(), WeaponType.SWORD);
         localUser1.sendCommand("PICKUP");
-        assertTrue(player1.hasItem(map.getAbstractFactory().createSword()));
+        assertTrue(player1.hasItem(map.getAbstractFactory().createSword(map.get_mediator())));
         assertEquals(player1.getWeapon().getType(), WeaponType.SWORD);
     }
 
     @Test
     void sendCommand_pickup_success_pickupArmour(){
         Mockito.doReturn(armourTile).when(map).getMapCell(any());
-        assertFalse(player1.hasItem(map.getAbstractFactory().createArmour()));
+        assertFalse(player1.hasItem(map.getAbstractFactory().createArmour(map.get_mediator())));
         localUser1.sendCommand("PICKUP");
-        assertTrue(player1.hasItem(map.getAbstractFactory().createArmour()));
+        assertTrue(player1.hasItem(map.getAbstractFactory().createArmour(map.get_mediator())));
     }
 
     @Test

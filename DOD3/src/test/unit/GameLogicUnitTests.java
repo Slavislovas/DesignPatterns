@@ -40,11 +40,11 @@ public class GameLogicUnitTests {
     Map map = gameLogic.getMap();
     Tile floorTile = new Tile(Tile.TileType.FLOOR);
     Tile exitTile = new Tile(Tile.TileType.EXIT);
-    Tile armourTile = new Tile(map.getAbstractFactory().createArmour());
-    Tile swordTile = new Tile(map.getAbstractFactory().createSword());
-    Tile lanternTile = new Tile(map.getAbstractFactory().createLantern());
-    Tile goldTile = new Tile(map.getAbstractFactory().createGold());
-    Tile healthTile = new Tile(map.getAbstractFactory().createHealth());
+    Tile armourTile = new Tile(map.getAbstractFactory().createArmour(map.get_mediator()));
+    Tile swordTile = new Tile(map.getAbstractFactory().createSword(map.get_mediator()));
+    Tile lanternTile = new Tile(map.getAbstractFactory().createLantern(map.get_mediator()));
+    Tile goldTile = new Tile(map.getAbstractFactory().createGold(map.get_mediator()));
+    Tile healthTile = new Tile(map.getAbstractFactory().createHealth(map.get_mediator()));
 
     User user1 = new User(gameLogic) {
         @Override
@@ -225,7 +225,7 @@ public class GameLogicUnitTests {
     @Test
     void clientPickup_fail_playerAlreadyHasSword(){
         Mockito.doReturn(swordTile).when(map).getMapCell(any());
-        GameItem sword = map.getAbstractFactory().createSword();
+        GameItem sword = map.getAbstractFactory().createSword(map.get_mediator());
         player1.giveItem(sword);
         assertThrows(CommandException.class, () -> gameLogic.clientPickup());
     }
@@ -233,7 +233,7 @@ public class GameLogicUnitTests {
     @Test
     void clientPickup_fail_playerAlreadyHasArmour(){
         Mockito.doReturn(armourTile).when(map).getMapCell(any());
-        GameItem armour = map.getAbstractFactory().createArmour();
+        GameItem armour = map.getAbstractFactory().createArmour(map.get_mediator());
         player1.giveItem(armour);
         assertThrows(CommandException.class, () -> gameLogic.clientPickup());
     }
@@ -241,7 +241,7 @@ public class GameLogicUnitTests {
     @Test
     void clientPickup_fail_playerAlreadyHasLantern(){
         Mockito.doReturn(lanternTile).when(map).getMapCell(any());
-        GameItem lantern = map.getAbstractFactory().createLantern();
+        GameItem lantern = map.getAbstractFactory().createLantern(map.get_mediator());
         player1.giveItem(lantern);
         assertThrows(CommandException.class, () -> gameLogic.clientPickup());
     }
@@ -298,7 +298,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackNorthWithSword_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 2));
         gameLogic.clientAttack(CompassDirection.NORTH);
     }
@@ -306,7 +306,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackEastWithSword_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() + 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.EAST);
     }
@@ -314,7 +314,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackSouthWithSword_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 2));
         gameLogic.clientAttack(CompassDirection.SOUTH);
     }
@@ -322,7 +322,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackWestWithSword_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() - 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.WEST);
     }
@@ -330,7 +330,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackNorthWithoutSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 1));
         gameLogic.clientAttack(CompassDirection.NORTH);
     }
@@ -338,7 +338,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackEastWithoutSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() + 1, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.EAST);
     }
@@ -346,7 +346,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackSouthWithoutSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 1));
         gameLogic.clientAttack(CompassDirection.SOUTH);
     }
@@ -354,7 +354,7 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackWestWithoutSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() - 1, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.WEST);
     }
@@ -362,8 +362,8 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackNorthWithSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() - 2));
         gameLogic.clientAttack(CompassDirection.NORTH);
     }
@@ -371,8 +371,8 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackEastWithSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() + 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.EAST);
     }
@@ -380,8 +380,8 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackSouthWithSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol(), player1.getLocation().getRow() + 2));
         gameLogic.clientAttack(CompassDirection.SOUTH);
     }
@@ -389,8 +389,8 @@ public class GameLogicUnitTests {
     @Test
     void clientAttack_attackWestWithSwordVictimWithArmour_success() throws CommandException {
         Mockito.when(gameLogic.getRand().nextInt(5)).thenReturn(1);
-        player1.giveItem(map.getAbstractFactory().createSword());
-        player2.giveItem(map.getAbstractFactory().createArmour());
+        player1.giveItem(map.getAbstractFactory().createSword(map.get_mediator()));
+        player2.giveItem(map.getAbstractFactory().createArmour(map.get_mediator()));
         player2.setLocation(new Location(player1.getLocation().getCol() - 2, player1.getLocation().getRow()));
         gameLogic.clientAttack(CompassDirection.WEST);
     }
