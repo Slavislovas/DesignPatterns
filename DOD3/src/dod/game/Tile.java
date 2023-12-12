@@ -2,7 +2,6 @@ package dod.game;
 
 import dod.abstractfactory.AbstractFactory;
 import dod.game.items.GameItem;
-import dod.game.maps.DefaultMap;
 import dod.game.maps.Map;
 
 import java.util.HashMap;
@@ -137,11 +136,14 @@ public class Tile {
             }
         }
         HashMap<Character, GameItem> itemHashMap = new HashMap<>();
-        itemHashMap.put(gameItemFactory.createArmour().toChar(), gameItemFactory.createArmour());
-        itemHashMap.put(gameItemFactory.createGold().toChar(), gameItemFactory.createGold());
-        itemHashMap.put(gameItemFactory.createHealth().toChar(), gameItemFactory.createHealth());
-        itemHashMap.put(gameItemFactory.createLantern().toChar(), gameItemFactory.createLantern());
-        itemHashMap.put(gameItemFactory.createSword().toChar(), gameItemFactory.createSword());
+        itemHashMap.put(gameItemFactory.createArmour(map.get_mediator()).toChar(), gameItemFactory.createArmour(map.get_mediator()));
+        itemHashMap.put(gameItemFactory.createGold(map.get_mediator()).toChar(), gameItemFactory.createGold(map.get_mediator()));
+        itemHashMap.put(gameItemFactory.createHealth(map.get_mediator()).toChar(), gameItemFactory.createHealth(map.get_mediator()));
+        itemHashMap.put(gameItemFactory.createLantern(map.get_mediator()).toChar(), gameItemFactory.createLantern(map.get_mediator()));
+        itemHashMap.put(gameItemFactory.createSword(map.get_mediator()).toChar(), gameItemFactory.createSword(map.get_mediator()));
+
+        map.get_mediator().addComponent(itemHashMap.get(character));
+
         // If we get here, it must be an tile with an item
         return new Tile(itemHashMap.get(character));
     }

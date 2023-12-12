@@ -26,7 +26,7 @@ public class DefaultMap extends Map{
     public void dropGold(Location location) {
         Tile tile = getMapCell(location);
         if ((!tile.hasItem()) && (!tile.isExit())) {
-            this.map[location.getRow()][location.getCol()] = new Tile(abstractFactory.createGold());
+            this.map[location.getRow()][location.getCol()] = new Tile(abstractFactory.createGold(get_mediator()));
         }
     }
 }

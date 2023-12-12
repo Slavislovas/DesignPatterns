@@ -27,7 +27,7 @@ public class vsMap extends Map{
     public void dropGold(Location location) {
         Tile tile = getMapCell(location);
         if ((tile.hasItem() == false) && (tile.isExit() == false)) {
-            this.map[location.getRow()][location.getCol()] = new Tile(abstractFactory.createGold());
+            this.map[location.getRow()][location.getCol()] = new Tile(abstractFactory.createGold(get_mediator()));
         }
     }
 }

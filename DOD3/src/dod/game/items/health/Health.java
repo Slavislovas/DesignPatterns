@@ -3,6 +3,8 @@ package dod.game.items.health;
 import dod.bridgePattern.IItemType;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
+import dod.mediator.IMediator;
+import dod.game.items.ItemType;
 
 /**
  * A class to represent health "potion", which is consumed immediately and gives
@@ -10,15 +12,21 @@ import dod.game.items.GameItemConsumer;
  */
 public class Health extends GameItem {
 
+    private int _healthToAdd = 1;
+
     public Health() { }
 
-    public Health(IItemType itemType) {
-        super(itemType);
+    public Health(IItemType itemType, IMediator mediator) {
+        super(itemType, mediator);
+        _healthToAdd = itemType.getValue();
     }
+
 
     @Override
     public void processPickUp(GameItemConsumer player) {
-        player.incrementHealth(itemType.getValue());
+        System.out.printf("%d health added%n", _healthToAdd);
+        player.incrementHealth(_healthToAdd);
+        mediator.notify(this);
     }
 
     @Override
@@ -34,5 +42,18 @@ public class Health extends GameItem {
     @Override
     public char toChar() {
         return 'H';
+    }
+
+    @Override
+    public String getType() {
+        return ItemType.HEALTH;
+    }
+
+    @Override
+    public void act() {
+        if(_healthToAdd > 1) {
+            _healthToAdd--;
+            System.out.println("Health to get lowered");
+        }
     }
 }

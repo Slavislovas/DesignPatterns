@@ -8,6 +8,8 @@ import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
+import dod.game.items.ItemType;
+import dod.proxy.WeaponBuilderType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -70,11 +72,16 @@ public class Player implements GameItemConsumer {
 
         this.listener = listener;
 
-        WeaponDirector weaponDirector = new WeaponDirector(new FistWeaponBuilder());
-        this.weapon = weaponDirector.build();
+        WeaponDirector weaponDirector = new WeaponDirector();
+        this.weapon = weaponDirector.setBuilder(WeaponBuilderType.FIST).build(null);
 
         // Reset the player's AP
         resetAP();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     /**
@@ -217,7 +224,7 @@ public class Player implements GameItemConsumer {
      * @param item the item to pick up
      */
     public void giveItem(GameItem item) {
-        if (hasItem(item)) {
+        if (hasItem(item) && !item.getType().equals(ItemType.SWORD)) {
             throw new IllegalStateException("the player already has this item.");
         }
 

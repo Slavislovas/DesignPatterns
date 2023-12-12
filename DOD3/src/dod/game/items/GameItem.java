@@ -1,6 +1,8 @@
 package dod.game.items;
 
 import dod.bridgePattern.IItemType;
+import dod.mediator.IMediator;
+import dod.mediator.IMediatorComponent;
 
 /**
  * A class to represent the items on the map.
@@ -10,14 +12,17 @@ import dod.bridgePattern.IItemType;
  * points or defence against attack.
  */
 
-public abstract class GameItem {
+public abstract class GameItem implements IMediatorComponent {
+
+    protected IMediator mediator;
 
     protected IItemType itemType;
 
     public GameItem() { }
 
-    public GameItem(IItemType type) {
+    public GameItem(IItemType type, IMediator mediatr) {
         itemType = type;
+        mediator = mediatr;
     }
 
     /**

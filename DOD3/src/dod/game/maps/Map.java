@@ -4,6 +4,9 @@ import dod.abstractfactory.AbstractFactory;
 import dod.game.Location;
 import dod.game.Tile;
 import dod.game.items.gold.Gold;
+import dod.mediator.IMediator;
+import dod.mediator.ItemMediator;
+import lombok.Getter;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,6 +24,9 @@ import java.util.Scanner;
  * client and server.
  */
 public abstract class Map {
+    @Getter
+    private final IMediator _mediator = new ItemMediator();
+
     // The name of the map
     private String name;
 

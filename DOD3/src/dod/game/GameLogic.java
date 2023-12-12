@@ -3,9 +3,7 @@ package dod.game;
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
-import dod.builder.SwordWeaponBuilder;
 import dod.builder.Weapon;
-import dod.builder.WeaponDirector;
 import dod.decorator.GoldDecorator;
 import dod.decorator.HealthDecorator;
 import dod.decorator.MessageDecorator;
@@ -14,6 +12,7 @@ import dod.game.items.GameItem;
 import dod.game.items.armour.Armour;
 import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
+import dod.game.items.ItemType;
 import dod.observer.Subject;
 import dod.singleton.Settings;
 import lombok.Getter;
@@ -220,13 +219,13 @@ public class GameLogic {
                     //R is a player with armour on a standard tile
                     //K is a player with armour on an exit tile
                     if (this.map.getMapCell(location).toChar() == 'E') {
-                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour())) {
+                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour(map.get_mediator()))) {
                             content = 'K';
                         } else {
                             content = 'Q';
                         }
                     } else {
-                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour())) {
+                        if (playerList.get(tilePlayerID).hasItem(gameItemFactory.createArmour(map.get_mediator()))) {
                             content = 'R';
                         } else {
                             content = 'P';
@@ -327,7 +326,7 @@ public class GameLogic {
         {
             //if it hits we get the victim player from the list
             int damage = playerWeapon.getDamage();
-            if (victimPlayer.hasItem(gameItemFactory.createArmour())) {
+            if (victimPlayer.hasItem(gameItemFactory.createArmour(map.get_mediator()))) {
                 //minus one for victim having armour
                 damage--;
             }
@@ -434,7 +433,7 @@ public class GameLogic {
         // Get the item
         final GameItem item = playersTile.getItem();
 
-        if (this.player.hasItem(item)) {
+        if (this.player.hasItem(item) && !item.getType().equals(ItemType.SWORD)) {
             throw new CommandException("already have item");
         }
 

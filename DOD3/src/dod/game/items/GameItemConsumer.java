@@ -11,6 +11,7 @@ import dod.builder.Weapon;
  */
 public interface GameItemConsumer {
 
+    public abstract String getName();
     /**
      * Adds more gold to the amount of gold the player already has
      *
