@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import dod.Communicator.GameCommunicator;
 import dod.game.CompassDirection;
 import dod.game.Location;
+import dod.iterator.CustomCollection;
+import dod.iterator.Iterator;
 
 /**
  * Represents a bot that can path find to things, it introduces a complex path finding algorithm and issues commands to the Game
@@ -88,7 +90,8 @@ public abstract class PathFindingBot extends Bot {
             Location[] surroundingTiles = getSurroundingTiles(location); //This contains the 4 surrounding tiles north, south, east & west
 
             //It then loops through every tile one movement away
-            for (Location nearbyTile : surroundingTiles) {
+            for (int i = 0; i < surroundingTiles.length; i++) {
+                Location nearbyTile = surroundingTiles[i];
                 //If that tile is the starting tile then we have mapped enough for our path so we break from the loop
                 if ((nearbyTile.getRow() == playerLocation.getRow()) && (nearbyTile.getCol() == playerLocation.getCol())) {
                     pathFound = true;

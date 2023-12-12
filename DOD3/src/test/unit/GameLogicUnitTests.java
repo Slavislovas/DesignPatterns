@@ -48,10 +48,20 @@ public class GameLogicUnitTests {
 
     User user1 = new User(gameLogic) {
         @Override
+        public String appendTag(String message) {
+            return null;
+        }
+
+        @Override
         public void update(String message) {
         }
     };
     User user2 = new User(gameLogic) {
+        @Override
+        public String appendTag(String message) {
+            return null;
+        }
+
         @Override
         public void update(String message) {
         }
@@ -154,7 +164,7 @@ public class GameLogicUnitTests {
 
     @Test
     void clientMove_fail_playerHasNoAp(){
-        player1.zeroAP();
+        player1.handleRequest("Reset AP", 0);
         assertThrows(IllegalStateException.class, () -> gameLogic.clientMove(CompassDirection.NORTH));
     }
 
@@ -163,7 +173,7 @@ public class GameLogicUnitTests {
         Mockito.doReturn(true).when(map).insideMap(any());
         Mockito.doReturn(exitTile).when(map).getMapCell(any());
         assertFalse(gameLogic.isPlayerWon());
-        player1.addGold(map.getGoal());
+        player1.handleRequest("Gold", map.getGoal());
         gameLogic.clientMove(CompassDirection.NORTH);
         assertTrue(gameLogic.isPlayerWon());
     }
@@ -253,7 +263,7 @@ public class GameLogicUnitTests {
     @Test
     void clientPickup_fail_playerHasNoAp(){
         int initialAp = player1.remainingAp();
-        player1.zeroAP();
+        player1.handleRequest("Reset AP", 0);
         assertThrows(IllegalStateException.class, () -> gameLogic.clientPickup());
     }
 
@@ -465,7 +475,7 @@ public class GameLogicUnitTests {
 
     @Test
     void clientAttack_fail_playerHasNoAp(){
-        player1.zeroAP();
+        player1.handleRequest("Reset AP", 0);
         assertThrows(IllegalStateException.class, () -> gameLogic.clientAttack(CompassDirection.NORTH));
     }
 

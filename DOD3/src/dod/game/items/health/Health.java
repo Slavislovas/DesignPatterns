@@ -25,7 +25,7 @@ public class Health extends GameItem {
     @Override
     public void processPickUp(GameItemConsumer player) {
         System.out.printf("%d health added%n", _healthToAdd);
-        player.incrementHealth(_healthToAdd);
+        player.handleRequest("Health", _healthToAdd);
         mediator.notify(this);
     }
 

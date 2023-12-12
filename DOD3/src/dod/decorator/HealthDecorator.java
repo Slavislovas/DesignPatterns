@@ -9,6 +9,6 @@ public class HealthDecorator extends PlayerDecorator {
     }
 
     public void incrementHealth(int hp) {
-        super.incrementHealth(hp + 20); // Adding 20 as a bonus
+        super.handleRequest("Health", hp + 20);
     }
 }

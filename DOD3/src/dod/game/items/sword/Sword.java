@@ -33,12 +33,12 @@ public class Sword extends GameItem {
             WeaponType weaponType = player.getWeapon().getType();
             if (weaponType == WeaponType.SWORD) {
                 System.out.printf("%d additional attack power added%n", sword.getDamage());
-                player.addToAP(sword.getDamage());
+                player.handleRequest("Add AP", sword.getDamage());
             } else {
                 player.setWeapon(sword);
             }
             System.out.printf("%d attack power added%n", _attackPowerToAdd);
-            player.addToAP(_attackPowerToAdd);
+            player.handleRequest("Add AP", _attackPowerToAdd);
             mediator.notify(this);
         }
     }

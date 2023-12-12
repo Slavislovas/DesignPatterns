@@ -8,7 +8,7 @@ import dod.game.GameLogic;
  *
  * @author Benjamin Dring
  */
-public class LocalUser extends User {
+public final class LocalUser extends User {
     private LocalGameCommunicator localComm; //Uses the object directly for communication
 
     /**
@@ -34,5 +34,16 @@ public class LocalUser extends User {
     @Override
     public void update(String message) {
         localComm.sendMessageFromGame(message);
+    }
+
+    @Override
+    public String appendTag(String message) {
+        message += " LOCAL_USER";
+        return message;
+    }
+
+    @Override
+    public boolean shouldAppendLocalUserTag(){
+        return true;
     }
 }

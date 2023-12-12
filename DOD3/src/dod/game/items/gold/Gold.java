@@ -23,7 +23,7 @@ public class Gold extends GameItem {
     @Override
     public void processPickUp(GameItemConsumer player) {
         System.out.printf("%d gold added%n", _goldToAdd);
-        player.addGold(_goldToAdd);
+        player.handleRequest("Gold", _goldToAdd);
         mediator.notify(this);
     }
 

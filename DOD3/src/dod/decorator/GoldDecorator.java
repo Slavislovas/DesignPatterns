@@ -11,7 +11,6 @@ public class GoldDecorator extends PlayerDecorator {
     @Override
     public void addGold(int gold) {
         System.out.println("Getting extra gold!");
-        super.addGold(gold * 10);
-
+        player.handleRequest("Gold", gold * 10);
     }
 }

@@ -1,15 +1,16 @@
 package dod.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dod.builder.FistWeaponBuilder;
 import dod.builder.Weapon;
 import dod.builder.WeaponDirector;
+import dod.chainOfResponsibility.*;
 import dod.game.items.GameItem;
 import dod.game.items.GameItemConsumer;
 import dod.game.items.ItemType;
 import dod.proxy.WeaponBuilderType;
+import dod.iterator.GameItemLinkedList;
+import dod.iterator.CustomCollection;
+import dod.iterator.Iterator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Player implements GameItemConsumer {
+    protected MessageHandler nextHandler;
     private String name;
 
     // Does the player have a default name
@@ -38,21 +40,18 @@ public class Player implements GameItemConsumer {
     private int gold = 0;
 
     // Player attribute value things
+    @Getter
+    @Setter
     private int hp = 3;
     private int ap = 0;
 
     private Weapon weapon;
 
+    @Getter
     // Items the player has
-    List<GameItem> items;
+    CustomCollection<GameItem> items;
 
     // Constants
-    // How many AP does a player have by default
-    private static final int defaultAP = 6;
-
-    // How many AP does the player lose per item
-    private static final int apPenaltyPerItem = 1;
-
     // How far can a player see by default and with a lantern
     private static final int defaultLookDistance = 2;
 
@@ -68,15 +67,33 @@ public class Player implements GameItemConsumer {
         this.location = location;
 
         // By default the player starts with nothing
-        this.items = new ArrayList<GameItem>();
+        this.items = new GameItemLinkedList();
 
         this.listener = listener;
 
         WeaponDirector weaponDirector = new WeaponDirector();
         this.weapon = weaponDirector.setBuilder(WeaponBuilderType.FIST).build(null);
+        initializeHandlers();
 
         // Reset the player's AP
-        resetAP();
+        handleRequest("Reset AP", 0);
+    }
+
+    private void initializeHandlers() {
+        DieHandler dieHandler = new DieHandler(this);
+        GoldHandler goldHandler = new GoldHandler(this);
+        DamageHandler damageHandler = new DamageHandler(this);
+        ActionPointHandler actionPointHandler = new ActionPointHandler(this);
+        HealthHandler healthHandler = new HealthHandler(this);
+
+        dieHandler.setNextHandler(actionPointHandler);
+        actionPointHandler.setNextHandler(goldHandler);
+        goldHandler.setNextHandler(damageHandler);
+        damageHandler.setNextHandler(healthHandler);
+
+        healthHandler.setNextHandler(null);
+
+        nextHandler = dieHandler;
     }
 
     @Override
@@ -99,15 +116,9 @@ public class Player implements GameItemConsumer {
         this.defaultName = false;
     }
 
-    /**
-     * Adds gold to the player
-     *
-     * @param gold Amount of gold to give to the player
-     */
     @Override
-    public void addGold(int gold) {
-        this.gold += gold;
-        this.listener.treasureChange(gold);
+    public void handleRequest(String indicator, int value) {
+        nextHandler.handle(indicator, value);
     }
 
     /**
@@ -117,31 +128,6 @@ public class Player implements GameItemConsumer {
      */
     public boolean isDead() {
         return (this.hp <= 0);
-    }
-
-    public void kill() {
-        this.hp = 0;
-    }
-
-    /**
-     * Increments the player's health, e.g. for health potion
-     *
-     * @param hp The amount of hp to add ot the player
-     */
-    @Override
-    public void incrementHealth(int hp) {
-        this.hp += hp;
-        this.listener.hpChange(hp);
-    }
-
-    /**
-     * @param hpLoss the hp that is lost
-     * @author Benjamin Dring
-     * removes hp from a player for an attack
-     */
-    public void damage(int hpLoss) {
-        this.hp -= hpLoss;
-        this.listener.damage(hpLoss);
     }
 
     /**
@@ -154,22 +140,6 @@ public class Player implements GameItemConsumer {
     }
 
     /**
-     * Decreases the amount of AP the player has by 1
-     */
-    public void decrementAp() {
-        this.ap--;
-        assert this.ap >= 0;
-    }
-
-    /**
-     * Set's the player's AP to zero instantly
-     */
-    @Override
-    public void zeroAP() {
-        this.ap = 0;
-    }
-
-    /**
      * Calculates the distances the player can see
      *
      * @return the distance visible to the player
@@ -178,8 +148,11 @@ public class Player implements GameItemConsumer {
         int lookDistance = defaultLookDistance;
 
         // Some items, e.g. the lantern, may increase the look distance
-        for (final GameItem item : this.items) {
-            lookDistance += item.lookDistanceIncrease();
+//        for (final GameItem item : this.items) {
+//            lookDistance += item.lookDistanceIncrease();
+//        }
+        for (Iterator<GameItem> iterator = items.getIterator(); iterator.hasNext(); ) {
+            lookDistance += iterator.next().lookDistanceIncrease();
         }
 
         return lookDistance;
@@ -208,7 +181,14 @@ public class Player implements GameItemConsumer {
      * @return true if the player has the item, false otherwise
      */
     public boolean hasItem(GameItem item) {
-        for (final GameItem itemToCompare : this.items) {
+//        for (final GameItem itemToCompare : this.items) {
+//            if (item.getClass() == itemToCompare.getClass()) {
+//                return true;
+//            }
+//        }
+
+        for (Iterator<GameItem> iterator = items.getIterator(); iterator.hasNext(); ) {
+            GameItem itemToCompare = iterator.next();
             if (item.getClass() == itemToCompare.getClass()) {
                 return true;
             }
@@ -248,7 +228,7 @@ public class Player implements GameItemConsumer {
      * Handle the start of a player's turn
      */
     public void startTurn() {
-        resetAP();
+        handleRequest("Reset AP", 0);
         this.listener.startTurn();
     }
 
@@ -256,7 +236,7 @@ public class Player implements GameItemConsumer {
      * Handle the end of a player's turn
      */
     public void endTurn() {
-        this.zeroAP();
+        handleRequest("Zero AP", 0);
         this.listener.endTurn();
     }
 
@@ -267,18 +247,6 @@ public class Player implements GameItemConsumer {
         this.listener.win();
     }
 
-    @Override
-    public void addToAP(int value) {
-        this.ap += value;
-    }
-
-    /**
-     * Reset the player's AP to the initial value.
-     */
-    private void resetAP() {
-        this.ap = initialAP();
-    }
-
     /**
      * @author Benjamin Dring
      * Causes the player to issue a look command
@@ -287,25 +255,9 @@ public class Player implements GameItemConsumer {
         this.listener.look();
     }
 
-    /**
-     * Calculates the number of AP a player starts his or her turn with
-     *
-     * @return The amount of AP at the start of a turn
-     */
-    private int initialAP() {
-        final int initialAP = Player.defaultAP - Player.apPenaltyPerItem
-                * this.items.size();
-
-        if (initialAP < 0) {
-            // Better drop some items
-            return 0;
-        }
-
-        return initialAP;
-    }
-
     public void clearItems() {
-        this.items.clear();
+//        this.items.clear();
+        this.items = new GameItemLinkedList();
     }
 
     @Override

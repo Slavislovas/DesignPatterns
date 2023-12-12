@@ -5,9 +5,8 @@ import dod.game.items.GameItemConsumer;
 public class MegaGoldPint {
 
     public void processPickUpGold(GameItemConsumer player) {
-        player.addGold(100);
+        player.handleRequest("Gold", 100);
     }
-
 
     public boolean isRetainableGold() {
         return false;

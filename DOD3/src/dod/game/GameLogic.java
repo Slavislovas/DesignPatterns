@@ -1,5 +1,10 @@
 package dod.game;
 
+import dod.Composite.Achievement;
+import dod.Composite.AchievementComposite;
+import dod.Composite.AttackAchievement;
+import dod.Composite.GiftAchievement;
+import dod.Composite.MovementAchievement;
 import dod.GUI.ClientListener;
 import dod.GUI.MainMenu;
 import dod.abstractfactory.AbstractFactory;
@@ -13,6 +18,9 @@ import dod.game.items.armour.Armour;
 import dod.game.items.sword.Sword;
 import dod.game.maps.Map;
 import dod.game.items.ItemType;
+import dod.iterator.CustomCollection;
+import dod.iterator.Iterator;
+import dod.iterator.PlayerList;
 import dod.observer.Subject;
 import dod.singleton.Settings;
 import lombok.Getter;
@@ -42,7 +50,7 @@ public class GameLogic {
     private Player player;
 
     //The following three variables have been implemented by Benjamin Dring
-    public ArrayList<Player> playerList = new ArrayList<Player>(); //This is the list of all players
+    public CustomCollection<Player> playerList; //This is the list of all players
     int currentPlayerIndex; //The index in playerList of the current player
     private boolean turnSwitch; //Used to lock the class from being accessed during transfer of turns
 
@@ -56,6 +64,7 @@ public class GameLogic {
     private Random rand;
 
     private Settings settings = Settings.getInstance();
+    private AchievementComposite achievements;
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -69,7 +78,27 @@ public class GameLogic {
         this.serverListener = null;
         this.gameItemFactory = map.getAbstractFactory();
         this.rand = new Random();
+        playerList = new PlayerList();
         setUpAttributes();
+
+        achievements = new AchievementComposite(
+                new AchievementComposite( // AGGRESSIVE ACHIEVEMENTS
+                        new AchievementComposite( // ADVANCED AGGRESSIVE ACHIEVEMENTS
+                                new AttackAchievement("ADVANCED_KILL")
+                        ),
+                        new AchievementComposite( // BASIC AGGRESSIVE ACHIEVEMENTS
+                                new AttackAchievement("BASIC_PICKUP_SWORD"),
+                                new AttackAchievement("BASIC_PICKUP_ARMOR")
+                        )
+                ),
+                new AchievementComposite( // PASSIVE ACHIEVEMENTS
+                        new AchievementComposite( // BASIC PASSIVE ACHIEVEMENTS
+                                new MovementAchievement("BASIC_MOVE_FIRST_TIME"),
+                                new GiftAchievement("BASIC_GIFT_GOLD"),
+                                new MovementAchievement("BASIC_MOVE_AGAIN")
+                        )
+                )
+        );
 
         // Check if there is enough gold to win
         if (this.map.remainingGold() < this.map.getGoal()) {
@@ -285,10 +314,12 @@ public class GameLogic {
          * End of modification
          */
         // Costs one action point
-        this.player.decrementAp();
+        player.handleRequest("Decrement AP", 1);
 
         // Move the player
         this.player.setLocation(location);
+
+        achievements.unlock("BASIC_MOVE_FIRST_TIME");
 
         // Notify the client of the success
         advanceTurn();
@@ -318,7 +349,7 @@ public class GameLogic {
         }
 
         //AP is zeroed
-        this.player.zeroAP();
+        this.player.handleRequest("Zero AP", 0);
 
         Player victimPlayer = playerList.get(victimUserId);
         //We randomly decide if it hits
@@ -331,7 +362,7 @@ public class GameLogic {
                 damage--;
             }
             //Damage player and display message to attacker
-            victimPlayer.damage(damage);
+            victimPlayer.handleRequest("Damage", damage);
             this.player.sendMessage("You hit your target for " + damage + " hp with weapon " + playerWeapon.getType().name());
             victimPlayer.sendMessage("A player hit you for " + damage + " hp with weapon " + playerWeapon.getType().name());
         } else {
@@ -345,6 +376,7 @@ public class GameLogic {
             map.dropGold(victimPlayer.getLocation());
             this.player.sendMessage("The player has died");
             victimPlayer.sendMessage("DIE You were killed by a player");
+            achievements.unlock("ADVANCED_KILL");
         }
         advanceTurn();
         subject.notifyObservers(String.format("%s attacked in direction %s", this.player.getName(), direction));
@@ -384,11 +416,12 @@ public class GameLogic {
         Player recieverPlayer = playerList.get(recieverUserID);
 
         // Costs one action point
-        this.player.decrementAp();
+        player.handleRequest("Decrement AP", 1);
 
-        this.player.addGold(-1);
-        recieverPlayer.addGold(1);
+        this.player.handleRequest("Gold", -1);
+        recieverPlayer.handleRequest("Gold", 1);
         recieverPlayer.sendMessage("You were given 1 gold by " + this.player.getName());
+        achievements.unlock("BASIC_GIFT_GOLD");
 
         //We need to check if the receiver has now won
         if ((recieverPlayer.getGold() >= this.map.getGoal())
@@ -442,8 +475,10 @@ public class GameLogic {
 
         if (item instanceof Armour) {
             this.player.sendMessage("You equip Armour");
+            achievements.unlock("BASIC_PICKUP_ARMOR");
         } else if (item instanceof Sword) {
             this.player.sendMessage("You equip Sword");
+            achievements.unlock("BASIC_PICKUP_SWORD");
         }
 
         advanceTurn();
@@ -564,20 +599,30 @@ public class GameLogic {
      *
      * @return true if there is at least one non-wall location, false otherwise
      */
+//    private boolean atLeastOneWalkablelLocation() {
+//        for (int x = 0; x < this.map.getMapWidth(); x++) {
+//            for (int y = 0; y < this.map.getMapHeight(); y++) {
+//
+//                Location location = new Location(x, y);
+//
+//                //it now checks to see if there is a player on the location
+//                if (this.map.getMapCell(location).isWalkable() && (!isPlayerOnTile(location))) {
+//                    // If it's not a wall then we can put them there
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
+
     private boolean atLeastOneWalkablelLocation() {
-        for (int x = 0; x < this.map.getMapWidth(); x++) {
-            for (int y = 0; y < this.map.getMapHeight(); y++) {
-
-                Location location = new Location(x, y);
-
-                //it now checks to see if there is a player on the location
-                if (this.map.getMapCell(location).isWalkable() && (!isPlayerOnTile(location))) {
-                    // If it's not a wall then we can put them there
-                    return true;
-                }
+        for (Iterator<Location> iterator = map.getIterator(); iterator.hasNext();){
+            Location location = iterator.next();
+            if (!isPlayerOnTile(location)) {
+                return true;
             }
         }
-
         return false;
     }
 
@@ -651,7 +696,9 @@ public class GameLogic {
 
             lookAll();
             subject.notifyObservers(String.format("Game has finished! %s has won", this.player.getName()));
-
+            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();){
+                System.out.println(iterator.next().getIdentifier());
+            }
             this.player.win();
 
         } else {
@@ -687,13 +734,20 @@ public class GameLogic {
      * @return the userId (list index) of the player on the tile it returns -1 if there is no player on the tile
      */
     private int getUserIDOfPlayerOnTile(Location location) {
-        for (int index = 0; index < playerList.size(); index++) {
-            Location playerLocation = playerList.get(index).getLocation();
-            //checks to see if the player is alive and on the same place
-            if ((!playerList.get(index).isDead()) &&
-                    (location.getCol() == playerLocation.getCol()) &&
+//        for (int index = 0; index < playerList.size(); index++) {
+//            Location playerLocation = playerList.get(index).getLocation();
+//            //checks to see if the player is alive and on the same place
+//            if ((!playerList.get(index).isDead()) &&
+//                    (location.getCol() == playerLocation.getCol()) &&
+//                    (location.getRow() == playerLocation.getRow())) {
+//                return index;
+//            }
+//        }
+        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
+            Location playerLocation = iterator.next().getLocation();
+            if ((location.getCol() == playerLocation.getCol()) &&
                     (location.getRow() == playerLocation.getRow())) {
-                return index;
+                return player.getListener().userId();
             }
         }
         return -1;
@@ -748,7 +802,7 @@ public class GameLogic {
      * @param userID The ID of the user to be killed
      */
     public void die(int userID) {
-        this.playerList.get(userID).kill();
+        this.playerList.get(userID).handleRequest("Kill", 0);
         map.dropGold(this.playerList.get(userID).getLocation()); //gold is dropped
         if (isPlayerTurn(userID)) {
             newTurn();
@@ -759,21 +813,25 @@ public class GameLogic {
      * Checks to see if there is any living players left if there isn't then the game is ended.
      */
     private boolean isAlivePlayer() {
-        for (Player player : playerList) {
-            if (!player.isDead()) {
-                return true;
-            }
-        }
-        return false;
+        return playerList.getIterator().hasNext();
+//        for (Player player : playerList) {
+//            if (!player.isDead()) {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 
     /**
      * Performs the look reply to every player
      */
     public void lookAll() {
-        for (Player player : playerList) {
-            player.look();
+        for (Iterator<Player> iterator = playerList.getIterator(); iterator.hasNext();){
+            iterator.next().look();
         }
+//        for (Player player : playerList) {
+//            player.look();
+//        }
     }
 
     /**

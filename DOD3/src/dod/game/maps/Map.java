@@ -7,6 +7,9 @@ import dod.game.items.gold.Gold;
 import dod.mediator.IMediator;
 import dod.mediator.ItemMediator;
 import lombok.Getter;
+import dod.iterator.IterableCollection;
+import dod.iterator.Iterator;
+import dod.iterator.MapIterator;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -23,7 +26,7 @@ import java.util.Scanner;
  * to perform error checking on the extra code that you write to network the
  * client and server.
  */
-public abstract class Map {
+public abstract class Map implements IterableCollection<Location> {
     @Getter
     private final IMediator _mediator = new ItemMediator();
 
@@ -54,6 +57,11 @@ public abstract class Map {
      */
     public Map(String filename) throws ParseException, FileNotFoundException {
         loadMap(loadMapLines(filename));
+    }
+
+    @Override
+    public Iterator<Location> getIterator(){
+        return new MapIterator(this);
     }
 
     private List<String> loadMapLines(String filename)  throws ParseException, FileNotFoundException {

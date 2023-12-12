@@ -10,30 +10,8 @@ import dod.builder.Weapon;
  * Future items could do more, e.g. kill the player instantly.
  */
 public interface GameItemConsumer {
-
-    public abstract String getName();
-    /**
-     * Adds more gold to the amount of gold the player already has
-     *
-     * @param gold The amount of gold to add
-     */
-    public abstract void addGold(int gold);
-
-    /**
-     * Add to the player's HP
-     *
-     * @param hp The amount of HP to add to the player
-     */
-    public abstract void incrementHealth(int hp);
-
-    /**
-     * Sets the AP to zero. Used by actions which take up all the AP
-     */
-    public abstract void zeroAP();
-
-    public abstract void addToAP(int value);
-
+    void handleRequest(String indicator, int value);
+    String getName();
     Weapon getWeapon();
     void setWeapon(Weapon weapon);
-
 }
