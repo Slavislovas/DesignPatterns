@@ -23,6 +23,7 @@ import dod.iterator.Iterator;
 import dod.iterator.PlayerList;
 import dod.observer.Subject;
 import dod.singleton.Settings;
+import dod.visitor.Visitor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -65,6 +66,7 @@ public class GameLogic {
 
     private Settings settings = Settings.getInstance();
     private AchievementComposite achievements;
+    private Visitor visitor;
 
     /**
      * Constructor that specifies the map which the game should be played on.
@@ -99,6 +101,8 @@ public class GameLogic {
                         )
                 )
         );
+
+        this.visitor = new Visitor();
 
         // Check if there is enough gold to win
         if (this.map.remainingGold() < this.map.getGoal()) {
@@ -696,16 +700,22 @@ public class GameLogic {
 
             lookAll();
             subject.notifyObservers(String.format("Game has finished! %s has won", this.player.getName()));
-            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();){
-                System.out.println(iterator.next().getIdentifier());
+            for (Iterator<Achievement> iterator = achievements.getIterator(); iterator.hasNext();) {
+                Achievement achievement = iterator.next();
+                player.getListener().update("Achievement: " +
+                        achievement.getIdentifier() + " completion status: " +
+                        achievement.isUnlocked());
             }
+            this.achievements.accept(visitor);
+            player.getListener().update("Your total score for achievements: " + visitor.getTotalPoints());
             this.player.win();
-
         } else {
             //Now newTurn is called instead for dead players and when there is no Ap left
             if (this.player.isDead()) {
                 map.dropGold(this.player.getLocation());
                 subject.notifyObservers(String.format("%s is dead!", this.player.getName()));
+                this.achievements.accept(visitor);
+                player.getListener().update("Your total score for achievements: " + visitor.getTotalPoints());
                 newTurn();
                 lookAll();
             }
